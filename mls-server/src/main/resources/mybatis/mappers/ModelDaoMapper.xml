@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="sics.seiois.mlsserver.dao.ModelDaoMapper">
+
+    <insert id="save" parameterType="sics.seiois.mlsserver.model.entity.Model">
+        INSERT INTO mls.mls_model(id,
+        name,
+        type,
+        threshold,
+        tag,
+        description,
+        version,
+        path,
+        warehouse,
+        is_del,
+        status,
+        create_time,
+        last_update_time)
+        VALUES (#{id},
+        #{name},
+        #{type},
+        #{threshold},
+        #{tag},
+        #{description},
+        #{version},
+        #{path},
+        #{warehouse},
+        0,
+        0,
+        0,
+        floor(extract(epoch from now())),
+        floor(extract(epoch from now())));
+    </insert>
+
+    <select id="findById" resultType="sics.seiois.mlsserver.model.entity.Model" parameterType="String">
+        select id,
+        type,
+        threshold,
+        name,
+        tag,
+        description,
+        version,
+        path,
+        warehouse,
+        status
+        from mls.mls_model
+        <where>
+            id = #{id} and is_del = '0'
+        </where>
+    </select>
+
+    <update id="deleteById" parameterType="String">
+        UPDATE mls.mls_model
+        SET is_del = '1'
+        <where>
+            id = #{id} and is_del = '0'
+        </where>
+    </update>
+
+    <select id="listByName" resultType="sics.seiois.mlsserver.model.entity.Model" parameterType="String" >
+        select id,
+        type,
+        threshold,
+        name,
+        tag,
+        description,
+        version
+        from mls.mls_model
+        <where>
+            name = #{name} and is_del = '0'
+        </where>
+    </select>
+
+    <select id="list" resultType="sics.seiois.mlsserver.model.entity.Model">
+        select id,
+        type,
+        threshold,
+        name,
+        tag,
+        description,
+        version,
+        path,
+        warehouse,
+        status
+        from mls.mls_model
+        <where>
+            is_del = '0'
+            <if test="name!=null">
+                and name like '%'||#{name}||'%'
+            </if>
+            <if test="description!=null">
+                and description like '%'||#{description}||'%'
+            </if>
+            <if test="tag!=null">
+                and tag like '%'||#{tag}||'%'
+            </if>
+            <if test="type!=null">
+                and type = #{type}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateStatus">
+        UPDATE mls.mls_model
+        SET status = #{status}
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <select id="findVersionByName" resultType="Long">
+        select max(version)
+        from mls.mls_model
+        <where>
+            name = #{name} and is_del = '0'
+        </where>
+    </select>
+
+    <select id="findByStatus" resultType="String">
+        select id
+        from mls.mls_model
+        <where>
+            id = #{id} and status = 100 and is_del = '0'
+        </where>
+    </select>
+
+    <update id="updateFail">
+        UPDATE mls.mls_model
+        SET status = -1
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <update id="addtmTask">
+        UPDATE mls.mls_model
+        SET taskid = #{taskid}
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <select id="listStatus" resultType="Float">
+        select status
+        from mls.mls_model
+        <where>
+            id = #{id} and is_del = '0'
+        </where>
+    </select>
+
+    <select id="getPath" resultType="String">
+        select path
+        from mls.mls_model
+        <where>
+            name = #{name} and is_del = '0' and status != 0 and status != -1
+        </where>
+    </select>
+
+    <update id="updateSucc">
+        UPDATE mls.mls_model
+        SET status = #{status}
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <update id="updateFini">
+        UPDATE mls.mls_model
+        SET status = 100
+        <where>
+            id = #{id}
+        </where>
+    </update>
+
+    <select id="getStatus" resultType="Float">
+        select status
+        from mls.mls_model
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+    <select id="findWarehouseById">
+        select warehouse
+        from mls.mls_model
+        <where>
+            id = #{id}
+        </where>
+    </select>
+
+</mapper>

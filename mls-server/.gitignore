@@ -1,0 +1,12 @@
+.idea
+.mvn
+.toDelete
+target
+*.iml
+*.prefs
+*.classpath
+*.project
+lib
+*.pid
+META-INF
+
