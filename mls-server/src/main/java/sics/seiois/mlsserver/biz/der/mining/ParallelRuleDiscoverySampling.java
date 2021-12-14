@@ -77,7 +77,7 @@ public class ParallelRuleDiscoverySampling {
     // use reinforcement learning for predicate association compute
     private int ifRL = 0;
     private int ifOnlineTrainRL = 1;
-    private int ifOnlineTrainStage; // for offline RL, if at training stage
+    private int ifOfflineTrainStage; // for offline RL; 1 at training stage, 0 at predicting stage
     private HashMap<PredicateSet, Long> ps_rewards;
     private ArrayList<PredicateSet> MEM;
     private String PI_path;
@@ -185,11 +185,11 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
-    public ParallelRuleDiscoverySampling(ArrayList<Predicate> predicates, int K, int maxTupleNum, long support,
+    public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr,
-                                         int ifRL, int ifOnlineTrainRL, int ifOnlineTrainStage,
+                                         int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage,
                                          String PI_path, String RL_code_path, int N, int DeltaL,
                                          float learning_rate, float reward_decay, float e_greedy,
                                          int replace_target_iter, int memory_size, int batch_size) {
@@ -199,7 +199,7 @@ public class ParallelRuleDiscoverySampling {
         this.MEM = new ArrayList<>();
         this.ifRL = ifRL;
         this.ifOnlineTrainRL = ifOnlineTrainRL;
-        this.ifOnlineTrainStage = ifOnlineTrainStage;
+        this.ifOfflineTrainStage = ifOfflineTrainStage;
         this.ps_rewards = new HashMap<>();
         this.PI_path = PI_path;
         if (RL_code_path.endsWith("/")) {
@@ -480,6 +480,7 @@ public class ParallelRuleDiscoverySampling {
             // train RL model
             logger.info("ifRL: {}", ifRL);
             if (this.ifRL == 1 && this.ifOnlineTrainRL == 1 && level % this.DeltaL == 0) {
+                logger.info("#### Online Train RL Model...");
                 long beginRLTime = System.currentTimeMillis();
 
                 String sequence;
@@ -599,7 +600,7 @@ public class ParallelRuleDiscoverySampling {
                     long beginUseRLTime = System.currentTimeMillis();
                     String predict_actions = useRL(sequence, 0, 0, legal_nextP_indices,
                             this.allExistPredicates.size(), this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name); // form: "pid1;pid2;pid3;..."
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N); // form: "pid1;pid2;pid3;..."
                     long predictRLTime = System.currentTimeMillis() - beginUseRLTime;
                     logger.info("#### finish predicting next predicate at level {} with step 0, using time: {}", level, predictRLTime);
                     int rm_idx = 0;
@@ -655,7 +656,7 @@ public class ParallelRuleDiscoverySampling {
                     long beginUseRLTime = System.currentTimeMillis();
                     useRL(sequence, 1, ifInitTrain, "", this.allExistPredicates.size(),
                             this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name);
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
                     long useRLTime = System.currentTimeMillis() - beginUseRLTime;
                     logger.info("#### finish training RL model at level {} with step 0, using time: {}", level, useRLTime);
                 }
@@ -692,7 +693,7 @@ public class ParallelRuleDiscoverySampling {
                     long beginUseRLTime = System.currentTimeMillis();
                     String predict_actions = useRL(sequence, 0, 0, legal_nextP_indices,
                             this.allExistPredicates.size(), this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name); // form: "pid1;pid2;pid3;..."
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N); // form: "pid1;pid2;pid3;..."
                     long predictRLTime = System.currentTimeMillis() - beginUseRLTime;
                     logger.info("#### finish predicting next predicate at level {} with step {}, using time: {}", level, step, predictRLTime);
                     next_p.clear();
@@ -742,7 +743,7 @@ public class ParallelRuleDiscoverySampling {
                     beginUseRLTime = System.currentTimeMillis();
                     useRL(sequence, 1, 0, "", this.allExistPredicates.size(),
                             this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name);
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
                     long trainRLTime = System.currentTimeMillis() - beginUseRLTime;
                     logger.info("#### begin training RL model at level {} with step {}, using time: {}", level, step, trainRLTime);
                 }
@@ -761,7 +762,7 @@ public class ParallelRuleDiscoverySampling {
             ArrayList<WorkUnit> workUnits_init = lattice.generateWorkUnits();
             workUnits_init = this.mergeWorkUnits(workUnits_init);
 
-            if (level == 1) {
+            if (level == 0 || level == 1) {
                 this.conf_filter_thr = 0.001f;
             } else if (level == 2) {
                 this.conf_filter_thr = 0.01f;
@@ -814,9 +815,10 @@ public class ParallelRuleDiscoverySampling {
                 }
 
                 // for offline RL
-                if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOnlineTrainStage == 1 && messages != null) {
+                if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1 && messages != null) {
+                    logger.info("#### Get Training Data, i.e., Rewards for OFFLINE RL...");
                     for (Message msg : messages) {
-                        // wrong
+                        // method 1-2
 //                        if (msg.getCurrentSet().size() <= 1) {
 //                            continue;
 //                        }
@@ -825,6 +827,8 @@ public class ParallelRuleDiscoverySampling {
 //                            continue;
 //                        }
 //                        this.ps_rewards.put(msg.getCurrentSet(), X_supp - this.support);
+
+                        // method 3
                         String Psel_sequence = "";
                         for (Predicate p : msg.getCurrentSet()) {
                             Psel_sequence += this.allExistPredicates.indexOf(p);
@@ -899,7 +903,7 @@ public class ParallelRuleDiscoverySampling {
 
             }
 
-            if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOnlineTrainStage == 1 && ifReachN) {
+            if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1 && ifReachN) {
                 break;
             }
 
@@ -917,8 +921,8 @@ public class ParallelRuleDiscoverySampling {
             level++;
         }
 
-        // offline train RL model
-        if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOnlineTrainStage == 1) {
+        // save training data, i.e., rewards for offline RL
+        if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1) {
             long beginOfflineTrainRLTime = System.currentTimeMillis();
             // method-1
 //            trainRLModel(this.ps_rewards);
@@ -930,7 +934,7 @@ public class ParallelRuleDiscoverySampling {
             writeToFile(sequenceResults.substring(0, sequenceResults.length() - 1));
 
             long offlineTrainRLTime = System.currentTimeMillis() - beginOfflineTrainRLTime;
-            logger.info("#### finish offline training RL model, using time: {}", offlineTrainRLTime);
+            logger.info("#### finish saving training data, i.e., rewards for OFFLINE RL, using time: {}", offlineTrainRLTime);
         }
     }
 
@@ -981,9 +985,9 @@ public class ParallelRuleDiscoverySampling {
         } else {
             broadcastLattice = new BroadcastLattice(allPredicates, this.allExistPredicates, invalidX, invalidXRHSs, validXRHSs,
                     interestingness, KthScore, suppRatios, predicateProviderIndex, option,
-                    this.ifRL, this.ifOnlineTrainRL, this.ifOnlineTrainStage, ifExistModel, this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
+                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
                     this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size,
-                    this.table_name);
+                    this.table_name, this.N);
         }
 
         Broadcast<BroadcastLattice> bcpsLattice = sc.broadcast(broadcastLattice);
@@ -1040,9 +1044,9 @@ public class ParallelRuleDiscoverySampling {
 
             Lattice latticeWorker = task.generateNextLatticeLevel(bLattice.getAllPredicates(), bLattice.getAllExistPredicates(), bLattice.getInvalidX(), bLattice.getInvalidRHSs(), bLattice.getValidXRHSs(),
                     bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
-                    bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOnlineTrainStage(), bLattice.getIfExistModel(),
+                    bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOfflineTrainStage(), bLattice.getIfExistModel(),
                     bLattice.getPI_path(), bLattice.getRL_code_path(), bLattice.getLearning_rate(), bLattice.getReward_decay(), bLattice.getE_greedy(),
-                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name());
+                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name(), bLattice.getN());
             return latticeWorker;
 
         }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
@@ -1064,9 +1068,9 @@ public class ParallelRuleDiscoverySampling {
 //
 //            Lattice latticeWorker = task.generateNextLatticeLevel(bLattice.getAllPredicates(), bLattice.getAllExistPredicates(), bLattice.getInvalidX(), bLattice.getInvalidRHSs(), bLattice.getValidXRHSs(),
 //                    bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
-//                    bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOnlineTrainStage(), bLattice.getIfExistModel(),
+//                    bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOfflineTrainStage(), bLattice.getIfExistModel(),
 //                    bLattice.getPI_path(), bLattice.getRL_code_path(), bLattice.getLearning_rate(), bLattice.getReward_decay(), bLattice.getE_greedy(),
-//                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name());
+//                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name(), bLattice.getN());
 //            return latticeWorker;
 //
 //        }).reduce(new Lattice(), new ILatticeAggFunction()::call, new ILatticeAggFunction()::call);
@@ -2365,7 +2369,7 @@ public class ParallelRuleDiscoverySampling {
     public void writeToFile(String sequence) {
         // save sequence to file
         try {
-            BufferedWriter out = new BufferedWriter(new FileWriter(this.RL_code_path + "/model/sequence_" + this.table_name + ".txt"));
+            BufferedWriter out = new BufferedWriter(new FileWriter(this.RL_code_path + "/model/sequence_" + this.table_name + "_N" + this.N + ".txt"));
             out.write(String.valueOf(this.allExistPredicates.size()));
             out.write("\n");
             out.write(sequence);
@@ -2379,7 +2383,7 @@ public class ParallelRuleDiscoverySampling {
         try {
             String RL_model_path = this.RL_code_path + "/model/";
             String shell_code_path = this.RL_code_path + "/put_sequence.sh";
-            String[] argv = new String[]{"sh", shell_code_path, RL_model_path, this.table_name};
+            String[] argv = new String[]{"sh", shell_code_path, RL_model_path, this.table_name, String.valueOf(this.N)};
             proc = Runtime.getRuntime().exec(argv);
             // obtain the result with the input/output stream
             BufferedReader in = new BufferedReader(new InputStreamReader(
@@ -2448,7 +2452,7 @@ public class ParallelRuleDiscoverySampling {
         logger.info("#### the sequences for RL training is: {}", sequence);
         useRL(sequence, 1, 1, "", this.allExistPredicates.size(),
                 this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay, this.e_greedy,
-                this.replace_target_iter, this.memory_size, this.batch_size, this.table_name);
+                this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
 
         // save RL model to HDFS
         putLoadModelToFromHDFS(this.RL_code_path, 1, this.table_name);
@@ -2462,7 +2466,7 @@ public class ParallelRuleDiscoverySampling {
     public String useRL(String sequence, int ifTrain, int ifInitTrain, String legal_nextP_indices,
                         int allPredicatesNum, String python_path, String RL_code_path,
                         float lr, float rd, float eg, int rtr, int ms, int bs,
-                        String table_name) {
+                        String table_name, int N_num) {
         String predicted_results = "";
         Process proc;
         try {
@@ -2472,7 +2476,7 @@ public class ParallelRuleDiscoverySampling {
             } else {
                 python_code_path = RL_code_path + "/predict.py";
             }
-            String model_path = RL_code_path + "/model/" + table_name + "/model.ckpt";
+            String model_path = RL_code_path + "/model/" + table_name + "_N" + N_num + "/model.ckpt";
             String[] argv = new String[]{python_path, python_code_path,
                     "-model_path", model_path,
                     "-init_train", String.valueOf(ifInitTrain),
@@ -2872,7 +2876,7 @@ public class ParallelRuleDiscoverySampling {
                     sequence = transformSequence(this.allExistPredicates, Psel, null, null);
                     String predict_actions = useRL(sequence, 0, 0, legal_nextP_indices,
                             this.allExistPredicates.size(), this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name); // form: "pid1;pid2;pid3;..."
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N); // form: "pid1;pid2;pid3;..."
                     int rm_idx = 0;
                     for (String action : predict_actions.split(";")) {
                         if (action.equals("-1")) {
@@ -2921,7 +2925,7 @@ public class ParallelRuleDiscoverySampling {
                 if (ifContinue) {
                     useRL(sequence, 1, ifInitTrain, "", this.allExistPredicates.size(),
                             this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name);
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
                 }
 
                 // the left (DeltaL - 1) step
@@ -2955,7 +2959,7 @@ public class ParallelRuleDiscoverySampling {
                     sequence = transformSequence(this.allExistPredicates, Psel, null, null);
                     String predict_actions = useRL(sequence, 0, 0, legal_nextP_indices,
                             this.allExistPredicates.size(), this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name); // form: "pid1;pid2;pid3;..."
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N); // form: "pid1;pid2;pid3;..."
                     next_p.clear();
                     int rm_idx = 0;
                     for (String action : predict_actions.split(";")) {
@@ -2998,7 +3002,7 @@ public class ParallelRuleDiscoverySampling {
                     sequence = transformSequence(this.allExistPredicates, Psel, next_p, reward);
                     useRL(sequence, 1, 0, "", this.allExistPredicates.size(),
                             this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name);
+                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
                 }
             }
 
@@ -3043,9 +3047,9 @@ public class ParallelRuleDiscoverySampling {
                 }
 
                 // for offline RL
-                if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOnlineTrainStage == 1 && messages != null) {
+                if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1 && messages != null) {
                     for (Message msg : messages) {
-                        // wrong
+                        // method 1-2
 //                        if (msg.getCurrentSet().size() <= 1) {
 //                            continue;
 //                        }
@@ -3054,6 +3058,8 @@ public class ParallelRuleDiscoverySampling {
 //                            continue;
 //                        }
 //                        this.ps_rewards.put(msg.getCurrentSet(), X_supp - this.support);
+
+                        // method-3
                         String Psel_sequence = "";
                         for (Predicate p : msg.getCurrentSet()) {
                             Psel_sequence += this.allExistPredicates.indexOf(p);
@@ -3122,7 +3128,7 @@ public class ParallelRuleDiscoverySampling {
 
             }
 
-            if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOnlineTrainStage == 1 && ifReachN) {
+            if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1 && ifReachN) {
                 break;
             }
 
@@ -3163,8 +3169,8 @@ public class ParallelRuleDiscoverySampling {
             lattice.setAllLatticeVertexBits(lattice.getLatticeLevel());
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
-                    this.ifRL, this.ifOnlineTrainRL, this.ifOnlineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
-                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name);
+                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
+                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);
             if (nextLattice == null || nextLattice.size() == 0) {
@@ -3176,7 +3182,7 @@ public class ParallelRuleDiscoverySampling {
 
         // offline train RL model
         long beginOfflineTrainRLTime = System.currentTimeMillis();
-        if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOnlineTrainStage == 1) {
+        if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1) {
             // method-1
 //            trainRLModel(this.ps_rewards);
 

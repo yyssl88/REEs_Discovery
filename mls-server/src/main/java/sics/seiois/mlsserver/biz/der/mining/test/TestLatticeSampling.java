@@ -66,7 +66,7 @@ public class TestLatticeSampling {
         // whether to use reinforcement learning for predicate association computation
         int ifRL = 1;
         int ifOnlineTrainRL = 0;
-        int ifOnlineTrainStage = 1; // for offline RL, if at training stage
+        int ifOfflineTrainStage = 1; // for offline RL, if at training stage
 //        String PI_path = "/opt/anaconda3/envs/py36/bin/python";
         String PI_path = "C:\\Users\\hanzy\\Anaconda3\\envs\\py36\\python.exe"; // python interpreter path
 //        String PI_path = "C:\\Users\\wangys\\Anaconda3\\python.exe"; // ""C:\\Users\\hanzy\\Anaconda3\\envs\\py36\\python.exe"; // python interpreter path
@@ -150,7 +150,7 @@ public class TestLatticeSampling {
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float)errorThreshold, maxOneRelationNum, input, allCount,
                         w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f,
-                        ifRL, ifOnlineTrainRL, ifOnlineTrainStage, PI_path, RL_code_path,N, DeltaL,
+                        ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path,N, DeltaL,
                         learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
             }
 

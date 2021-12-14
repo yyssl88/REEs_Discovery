@@ -350,6 +350,7 @@ public class Lattice implements KryoSerializable {
             double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates().getBitset()), 1.0, lv.getPredicates(), null);
             if (ub < KthScore) {
                 this.latticeLevel.remove(key);
+                this.allLatticeVertexBits.remove(key);
             }
         }
     }
@@ -480,6 +481,7 @@ public class Lattice implements KryoSerializable {
         // remove useless keys
         for (IBitSet key : removeKeys) {
             this.latticeLevel.remove(key);
+            this.allLatticeVertexBits.remove(key);
         }
     }
 
@@ -554,6 +556,9 @@ public class Lattice implements KryoSerializable {
     /*
         invalidX: predicates of lattice vertex whose support < k
         option: "original" and "anytime"
+        ifRL: 1-use RL; 0-not use RL
+        ifOnlineTrainRL: 1-online; 0-offline
+        ifOfflineTrainStage: 1-offline training stage-to get sequence for RL offline training; 0-offline prediction stage
      */
     public Lattice generateNextLatticeLevel(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates, HashSet<IBitSet> invalidX,
                                             HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
@@ -561,10 +566,10 @@ public class Lattice implements KryoSerializable {
                                             Interestingness interestingness, double KthScore, HashMap<PredicateSet, Double> suppRatios,
                                             PredicateProviderIndex predicateProviderIndex,
                                             String option, ArrayList<LatticeVertex> partialRules,
-                                            int ifRL, int ifOnlineTrainRL, int ifOnlineTrainStage, boolean ifExistModel,
+                                            int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage, boolean ifExistModel,
                                             String python_path, String RL_code_path,
                                             float lr, float rd, float eg, int rtr, int ms, int bs,
-                                            String table_name) {
+                                            String table_name, int N_num) {
         logger.info("#####generate Next Lattice level!");
         // for RL
         ArrayList<PredicateSet> currPsel = new ArrayList<>();
@@ -816,7 +821,7 @@ public class Lattice implements KryoSerializable {
             return nextLevel;
         }
 
-        if (ifOnlineTrainRL == 0 && ifOnlineTrainStage == 1) {
+        if (ifOnlineTrainRL == 0 && ifOfflineTrainStage == 1) {
             return nextLevel;
         }
 
@@ -841,7 +846,7 @@ public class Lattice implements KryoSerializable {
         String sequence = tmp_parallelRuleDiscoverySampling.transformSequence(allExistPredicates, currPsel, newPredicates, null);
         long beginUseRLTime = System.currentTimeMillis();
         String predicted_results = tmp_parallelRuleDiscoverySampling.useRL(sequence, 0, 0, "", allExistPredicates.size(),
-                python_path, RL_code_path, lr, rd, eg, rtr, ms, bs, table_name);  // form: "1;0;1;1;0;1;..."
+                python_path, RL_code_path, lr, rd, eg, rtr, ms, bs, table_name, N_num);  // form: "1;0;1;1;0;1;..."
         long predictTime = System.currentTimeMillis() - beginUseRLTime;
         logger.info("#### predicted results: {}", predicted_results);
         logger.info("#### use RL to predict whether expand, using time: {}", predictTime);
@@ -891,6 +896,9 @@ public class Lattice implements KryoSerializable {
             // expand each vertex with a new predicate
             // IBitSet k = entry.getKey();
             LatticeVertex lv = entry.getValue();
+            if (this.ifAllConstantPredicates(lv.getPredicates())) {
+                continue;
+            }
             // check support K --- pruning
             if (invalidX.contains(lv.getPredicates().getBitset())) {
                 continue;

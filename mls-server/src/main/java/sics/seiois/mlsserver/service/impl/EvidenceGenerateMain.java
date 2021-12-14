@@ -289,11 +289,11 @@ public class EvidenceGenerateMain {
             ccount++;
         }
         // add constant predicates
-//        for (Predicate p : reeFinderEvidSet.getConstantPredicateBuilder().getPredicates()) {
-//            if (p.getOperator() == Operator.EQUAL) {
-//                allPredicates.add(p);
-//            }
-//        }
+        for (Predicate p : reeFinderEvidSet.getConstantPredicateBuilder().getPredicates()) {
+            if (p.getOperator() == Operator.EQUAL) {
+                allPredicates.add(p);
+            }
+        }
 
         int maxOneRelationNum = reeFinderEvidSet.getInput().getMaxTupleOneRelation();
         int allCount = reeFinderEvidSet.getInput().getAllCount();
@@ -313,6 +313,7 @@ public class EvidenceGenerateMain {
         // for RL
         int ifRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifRL"));
 
+        // use confidence to filter work units
         int if_conf_filter = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifConfFilter"));
         float conf_filter_thr = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"confFilterThr"));
 
@@ -325,7 +326,7 @@ public class EvidenceGenerateMain {
                     1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr);
         } else {
             int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
-            int ifOnlineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainStage"));
+            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
             String PI_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"PIPath")); // python interpreter path
             String RL_code_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"RLCodePath")); // PredicateAssc code path
             int N = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"N"));
@@ -341,7 +342,7 @@ public class EvidenceGenerateMain {
             parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                     1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr,
-                    ifRL, ifOnlineTrainRL, ifOnlineTrainStage, PI_path, RL_code_path, N, DeltaL,
+                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
                     learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
         }
 
@@ -354,6 +355,7 @@ public class EvidenceGenerateMain {
         DenialConstraintSet rees = parallelRuleDiscoverySampling.getTopKREEs();
 
         timeInfo.append("REE Discovery Time : ").append(duringTime).append("\n");
+        logger.info("#### REE Discovery Time: {}", duringTime);
 
         // save rules
         for (DenialConstraint ree : rees) {
@@ -489,6 +491,7 @@ public class EvidenceGenerateMain {
         DenialConstraintSet rees = constantRecovery.getREEsResults();
 
         timeInfo.append("REE Discovery Time : ").append(duringTime).append("\n");
+        logger.info("#### REE Discovery Time: {}", duringTime);
 
         // save rules
         for (DenialConstraint ree : rees) {
@@ -577,6 +580,10 @@ public class EvidenceGenerateMain {
         float w_succ = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea4"));
         float w_sub = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"subjectiveFea"));
 
+        // whether use RL to prune
+        int ifRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifRL"));
+
+        // use confidence to filter work units
         int if_conf_filter = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifConfFilter"));
         float conf_filter_thr = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"confFilterThr"));
 
@@ -586,13 +593,40 @@ public class EvidenceGenerateMain {
 //                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
 //                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune);
 
-        ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
-                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr);
+//        ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
+//                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
+//                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr);
 
 //        ParallelRuleDiscoverySampling parallelRuleDiscovery =  new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
 //                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
 //                1, 1, 1, 1, 1, 0);
+
+        ParallelRuleDiscoverySampling parallelRuleDiscovery;
+        if (ifRL == 0) {
+            parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
+                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
+                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr);
+        } else {
+            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
+            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
+            String PI_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"PIPath")); // python interpreter path
+            String RL_code_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"RLCodePath")); // PredicateAssc code path
+            int N = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"N"));
+            int DeltaL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"deltaL"));
+            // parameters for RL model
+            float learning_rate = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"learningRate"));
+            float reward_decay = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"rewardDecay"));
+            float e_greedy = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"eGreedy"));
+            int replace_target_iter = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"replaceTargetIter"));
+            int memory_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"memorySize"));
+            int batch_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"batchSize"));
+
+            parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
+                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
+                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr,
+                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
+                    learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
+        }
 
         // rule discovery
         String taskId = request.getTaskId();
@@ -603,6 +637,7 @@ public class EvidenceGenerateMain {
         DenialConstraintSet rees = parallelRuleDiscovery.getTopKREEs();
 
         timeInfo.append("REE Discovery Time : ").append(duringTime).append("\n");
+        logger.info("#### REE Discovery Time: {}", duringTime);
 
         // save rules
         for (DenialConstraint ree : rees) {

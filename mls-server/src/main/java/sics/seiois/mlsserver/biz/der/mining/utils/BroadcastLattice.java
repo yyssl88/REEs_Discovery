@@ -34,7 +34,7 @@ public class BroadcastLattice implements Serializable {
     // for RL
     private int ifRL = 0;
     private int ifOnlineTrainRL;
-    private int ifOnlineTrainStage;
+    private int ifOfflineTrainStage;
     private String PI_path;
     private String RL_code_path;
     private boolean ifExistModel;
@@ -48,6 +48,7 @@ public class BroadcastLattice implements Serializable {
     private ArrayList<Predicate> allExistPredicates;
 
     private String table_name;
+    private int N;
 
 
     public BroadcastLattice(List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
@@ -73,13 +74,13 @@ public class BroadcastLattice implements Serializable {
                             Interestingness interestingness, double KthScore,
                             HashMap<PredicateSet, Double> suppRatios, PredicateProviderIndex predicateProviderIndex,
                             String option,
-                            int ifRL, int ifOnlineTrainRL, int ifOnlineTrainStage, boolean ifExistModel, String python_path, String RL_code_path, float lr, float rd, float eg, int rtr, int ms, int bs,
-                            String table_name) {
+                            int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage, boolean ifExistModel, String python_path, String RL_code_path, float lr, float rd, float eg, int rtr, int ms, int bs,
+                            String table_name, int N_num) {
         this(allPredicates, invalidX, invalidXRHSs, validXRHSs, interestingness, KthScore, suppRatios, predicateProviderIndex, option);
         this.allExistPredicates = allExistPredicates;
         this.ifRL = ifRL;
         this.ifOnlineTrainRL = ifOnlineTrainRL;
-        this.ifOnlineTrainStage = ifOnlineTrainStage;
+        this.ifOfflineTrainStage = ifOfflineTrainStage;
         this.ifExistModel = ifExistModel;
         this.PI_path = python_path;
         this.RL_code_path = RL_code_path;
@@ -90,6 +91,7 @@ public class BroadcastLattice implements Serializable {
         this.memory_size = ms;
         this.batch_size = bs;
         this.table_name = table_name;
+        this.N = N_num;
     }
 
 
@@ -141,8 +143,8 @@ public class BroadcastLattice implements Serializable {
         return this.ifOnlineTrainRL;
     }
 
-    public int getIfOnlineTrainStage() {
-        return this.ifOnlineTrainStage;
+    public int getIfOfflineTrainStage() {
+        return this.ifOfflineTrainStage;
     }
 
     public String getPI_path() {
@@ -184,4 +186,9 @@ public class BroadcastLattice implements Serializable {
     public String getTable_name() {
         return this.table_name;
     }
+
+    public int getN() {
+        return this.N;
+    }
+
 }

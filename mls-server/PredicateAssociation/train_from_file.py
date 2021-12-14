@@ -16,7 +16,7 @@ tf.disable_v2_behavior()
 # state: Psel - pid1  pid2  ...
 # action: pid
 # pnum: whole predicate num
-def run(model, sequence_file, N, RL_model_path):
+def run(model, epoch, sequence_file, N, RL_model_path):
     pnum = 0
     line_id = 0
     file = open(sequence_file, 'r')
@@ -47,12 +47,15 @@ def run(model, sequence_file, N, RL_model_path):
     file.close()
 
     # train RL model
-    model.learn()
+    for episode in range(epoch):
+        if episode % 100 == 0:
+            print("episode: {}", episode)
+        model.learn()
 
     # save RL model
     saver = tf.train.Saver()
     save_path = saver.save(model.sess, RL_model_path)
-    print("Model saved in path: %s" % save_path)
+    print("Model saved in path: {}", save_path)
 
 
 def main():
@@ -66,7 +69,8 @@ def main():
     parser.add_argument('-memory_size', '--memory_size', type=int, default=2000)
     parser.add_argument('-batch_size', '--batch_size', type=int, default=32)
     parser.add_argument('-data_name', '--data_name', type=str, default="airports")
-    parser.add_argument('-N', '--N', type=int, default=1000)
+    parser.add_argument('-N', '--N', type=int, default=100)
+    parser.add_argument('-epoch', '--epoch', type=int, default=1000)
 
     args = parser.parse_args()
     arg_dict = args.__dict__
@@ -78,7 +82,7 @@ def main():
     data_name = arg_dict["data_name"]
     N = arg_dict["N"]
 
-    sequence_file = "./model/sequence_" + data_name + ".txt"
+    sequence_file = "./model/sequence_" + data_name + "_N" + str(N) + ".txt"
     RL_model_path = "./model/" + data_name + "_N" + str(N) + "/model.ckpt"
 
     pnum = 0
@@ -98,7 +102,7 @@ def main():
                       )
 
 
-    run(model, sequence_file, N + 1, RL_model_path)
+    run(model, arg_dict['epoch'], sequence_file, N + 1, RL_model_path)
 
     end = time.time()
 

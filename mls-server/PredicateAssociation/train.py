@@ -1,11 +1,12 @@
 # import sys
 # print(sys.version)
-# print("In run.py:", sys.path, "\n")
+# print("In train.py:", sys.path, "\n")
 
 from model import DeepQNetwork
 import argparse
 import logging
 import numpy as np
+import time
 
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
@@ -15,7 +16,7 @@ tf.disable_v2_behavior()
 # state: Psel - pid1  pid2  ...
 # action: pid
 # pnum: whole predicate num
-def run(model, pnum, sequence, RL_model_path):
+def run(model, epoch, pnum, sequence, RL_model_path):
     triples = sequence.split(";")
     for triple in triples:
         seq = triple.split(",")
@@ -37,15 +38,20 @@ def run(model, pnum, sequence, RL_model_path):
         model.store_transition(observation, action, reward, observation_)
 
     # train RL model
-    model.learn()
+    for episode in range(epoch):
+        if episode % 100 == 0:
+            print("episode: {}", episode)
+        model.learn()
 
     # save RL model
     saver = tf.train.Saver()
     save_path = saver.save(model.sess, RL_model_path)
-    print("Model saved in path: %s" % save_path)
+    print("Model saved in path: {}", save_path)
 
 
 def main():
+    start = time.time()
+
     parser = argparse.ArgumentParser(description="Learn Predicate Association")
     parser.add_argument('-init_train', '--init_train', type=int, default=1)
     parser.add_argument('-predicate_num', '--predicate_num', type=int, default=0)
@@ -58,6 +64,7 @@ def main():
     parser.add_argument('-memory_size', '--memory_size', type=int, default=2000)
     parser.add_argument('-batch_size', '--batch_size', type=int, default=32)
     parser.add_argument('-model_path', '--model_path', type=str, default="")
+    parser.add_argument('-epoch', '--epoch', type=int, default=1000)
 
     args = parser.parse_args()
     arg_dict = args.__dict__
@@ -83,8 +90,11 @@ def main():
         saver.restore(model.sess, RL_model_path)
         print("Model restored from: ", RL_model_path)
 
-    run(model, arg_dict["predicate_num"], arg_dict["sequence"], RL_model_path)
-    print("finish training...")
+    run(model, arg_dict['epoch'], arg_dict["predicate_num"], arg_dict["sequence"], RL_model_path)
+
+    end = time.time()
+
+    print("finish training, using time: ", str(end - start))
 
 
 if __name__ == "__main__":

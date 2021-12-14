@@ -219,7 +219,7 @@ public class RuleFinder {
         // for RL
         String ifRL = argsMap.get("ifRL");
         String ifOnlineTrainRL = argsMap.get("ifOnlineTrainRL");
-        String ifOnlineTrainStage = argsMap.get("ifOnlineTrainStage");
+        String ifOfflineTrainStage = argsMap.get("ifOfflineTrainStage");
         String PI_path = argsMap.get("PIPath");
         String RL_code_path = argsMap.get("RLCodePath");
         String N = argsMap.get("N");
@@ -255,7 +255,7 @@ public class RuleFinder {
         otherParam.append("MLOption=" + mlOption + ";");
         otherParam.append("ifRL=" + ifRL + ";");
         otherParam.append("ifOnlineTrainRL=" + ifOnlineTrainRL + ";");
-        otherParam.append("ifOnlineTrainStage=" + ifOnlineTrainStage + ";");
+        otherParam.append("ifOfflineTrainStage=" + ifOfflineTrainStage + ";");
         otherParam.append("PIPath=" + PI_path + ";");
         otherParam.append("RLCodePath=" + RL_code_path + ";");
         otherParam.append("N=" + N + ";");
