@@ -145,17 +145,32 @@ public class RuleFindRequestMock {
             case "tax1000w":
                 mockTax1000w(ruleRequest);
                 break;
+            case "tax1000wSampling":
+                mockSampleData(ruleRequest, ruleRequest.getTaskId());
+                break;
             case "tax200w":
                 mockTax200w(ruleRequest);
+                break;
+            case "tax200wSampling":
+                mockSampleData(ruleRequest, ruleRequest.getTaskId());
                 break;
             case "tax400w":
                 mockTax400w(ruleRequest);
                 break;
+            case "tax400wSampling":
+                mockSampleData(ruleRequest, ruleRequest.getTaskId());
+                break;
             case "tax600w":
                 mockTax600w(ruleRequest);
                 break;
+            case "tax600wSampling":
+                mockSampleData(ruleRequest, ruleRequest.getTaskId());
+                break;
             case "tax800w":
                 mockTax800w(ruleRequest);
+                break;
+            case "tax800wSampling":
+                mockSampleData(ruleRequest, ruleRequest.getTaskId());
                 break;
             case "tax100w":
                 mockTax100w(ruleRequest);
@@ -312,6 +327,12 @@ public class RuleFindRequestMock {
                 ruleRequest.setDimensionID(directory);
                 mockPaperAuthor_ml(ruleRequest);
                 break;
+            case "aminerSampling" :
+                directory = "hdfs:///tmp/aminer/us_csv/";
+                ruleRequest.setDimensionID(directory);
+                String[] options = dataOption.split("__");
+                mockPaperAuthorSampling(ruleRequest, options);
+                break;
             case "aminerlarge" :
                 directory = "hdfs:///tmp/aminer/csv/";
                 ruleRequest.setDimensionID(directory);
@@ -397,17 +418,32 @@ public class RuleFindRequestMock {
             case "tax1000w":
                 mockTax1000w(ruleRequest);
                 break;
+            case "tax1000wSampling":
+                mockSampleData(ruleRequest, dataOption);
+                break;
             case "tax200w":
                 mockTax200w(ruleRequest);
+                break;
+            case "tax200wSampling":
+                mockSampleData(ruleRequest, dataOption);
                 break;
             case "tax400w":
                 mockTax400w(ruleRequest);
                 break;
+            case "tax400wSampling":
+                mockSampleData(ruleRequest, dataOption);
+                break;
             case "tax600w":
                 mockTax600w(ruleRequest);
                 break;
+            case "tax600wSampling":
+                mockSampleData(ruleRequest, dataOption);
+                break;
             case "tax800w":
                 mockTax800w(ruleRequest);
+                break;
+            case "tax800wSampling":
+                mockSampleData(ruleRequest, dataOption);
                 break;
             case "tax100w":
                 mockTax100w(ruleRequest);
@@ -748,6 +784,29 @@ public class RuleFindRequestMock {
         return table1;
     }
 
+
+    private static void mockTaxSampling(RuleDiscoverExecuteRequest ruleRequest, String[] options, int size) {
+        TableInfos tables = new TableInfos();
+        TableInfo tax = getTaxSampling(options, size);
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(tax);
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/" + ruleRequest.getTaskId() + "/result_" + generateDataMark(options) + ".ree");
+    }
+
+    private static TableInfo getTaxSampling(String[] options, int size) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("tax" + size + "w");
+        table1.setTableDataPath("hdfs:///tmp/zhangjun/" + "tax" + size + "w__" + generateDataMark(options) + ".csv");
+
+        String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
 
     private static void mockTax1000w(RuleDiscoverExecuteRequest ruleRequest) {
         TableInfos tables = new TableInfos();
@@ -1885,6 +1944,16 @@ public class RuleFindRequestMock {
             mockInspectionSampling(ruleRequest, options);
         } else if (dataName.equals("ncvoter")) {
             mockNcvoterSampling(ruleRequest, options);
+        } else if (dataName.equals("tax200w")) {
+            mockTaxSampling(ruleRequest, options, 200);
+        } else if (dataName.equals("tax400w")) {
+            mockTaxSampling(ruleRequest, options, 400);
+        } else if (dataName.equals("tax600w")) {
+            mockTaxSampling(ruleRequest, options, 600);
+        } else if (dataName.equals("tax800w")) {
+            mockTaxSampling(ruleRequest, options, 800);
+        } else if (dataName.equals("tax1000w")) {
+            mockTaxSampling(ruleRequest, options, 1000);
         }
     }
 
@@ -2904,6 +2973,22 @@ public class RuleFindRequestMock {
 
     }
 
+    private static void mockPaperAuthorSampling(RuleDiscoverExecuteRequest ruleRequest, String[] options){
+        TableInfos tables = new TableInfos();
+        TableInfo author = getAuthor2_sampling(ruleRequest.getDimensionID(), options);
+        TableInfo paper = getPaper2_sampling(ruleRequest.getDimensionID(), options);
+        TableInfo a2p = getA2P_sampling(ruleRequest.getDimensionID(), options);
+
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(author);
+        listable.add(paper);
+        listable.add(a2p);
+
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/" + ruleRequest.getTaskId() + "/result.ree");
+    }
 
     private static void mockPaperAuthorSample(RuleDiscoverExecuteRequest ruleRequest, String dataName){
         String[] datanames = dataName.split("_");
@@ -3084,6 +3169,47 @@ public class RuleFindRequestMock {
         return table1;
     }
 
+    private static TableInfo getA2P_sampling(String path, String[] options) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("AMiner_Author2Paper");
+        table1.setTableDataPath(path + "/AMiner_Author2Paper__" + generateDataMark(options) + ".csv");
+
+        String header = "author2paper_id,author_id,paper_id,author_position";
+        String type = "varchar(20),varchar(20),varchar(20),DOUBLE";
+
+        String[] colNames = header.split(",");
+        String[] colTypes = type.split(",");
+
+        List<ColumnInfo> list1 = new ArrayList<>();
+
+        for (int i = 0; i < colNames.length; i++) {
+            ColumnInfo c1 = new ColumnInfo();
+            c1.setColumnName(colNames[i]);
+            c1.setColumnType(colTypes[i]);
+            if (c1.getColumnName().equals("author_id")) {
+                List<FKMsg> fkMsgList = new ArrayList<>();
+                FKMsg fkMsg = new FKMsg();
+                fkMsg.setFkColumnName("author_id");
+                fkMsg.setFkTableName("AMiner_Author");
+                fkMsgList.add(fkMsg);
+                c1.setFkMsgList(fkMsgList);
+            }
+            if (c1.getColumnName().equals("paper_id")) {
+                List<FKMsg> fkMsgList = new ArrayList<>();
+                FKMsg fkMsg = new FKMsg();
+                fkMsg.setFkColumnName("paper_id");
+                fkMsg.setFkTableName("AMiner_Paper");
+                fkMsgList.add(fkMsg);
+                c1.setFkMsgList(fkMsgList);
+            }
+            list1.add(c1);
+        }
+        table1.setColumnList(list1);
+
+//        constructTable(table1, header, type);
+        return table1;
+    }
+
     private static TableInfo getA2PSample(String sample_ratio) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("AMiner_Author2Paper");
@@ -3231,6 +3357,18 @@ public class RuleFindRequestMock {
         return table1;
     }
 
+    private static TableInfo getPaper2_sampling(String path, String[] options) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("AMiner_Paper");
+        table1.setTableDataPath(path + "/AMiner_Paper__" + generateDataMark(options) + ".csv");
+
+        String header = "paper_id,paper_title,author,paper_affiliations,year,venue";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),DOUBLE,varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
     private static TableInfo getPaperSample(String sample_ratio) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("AMiner_Paper");
@@ -3306,6 +3444,18 @@ public class RuleFindRequestMock {
 
         String header = "author_id,author_name,author_affiliations,published_papers,citations,h_index,p_index,p_index_with_unequal_a_index,research_interests,author_affiliations_ml";
         String type = "varchar(20),varchar(20),varchar(20),DOUBLE,DOUBLE,DOUBLE,DOUBLE,DOUBLE,varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getAuthor2_sampling(String path, String[] options) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("AMiner_Author");
+        table1.setTableDataPath(path + "/AMiner_Author__" + generateDataMark(options) + ".csv");
+
+        String header = "author_id,author_name,author_affiliations,published_papers,citations,h_index,p_index,p_index_with_unequal_a_index,research_interests";
+        String type = "varchar(20),varchar(20),varchar(20),DOUBLE,DOUBLE,DOUBLE,DOUBLE,DOUBLE,varchar(20)";
 
         constructTable(table1, header, type);
         return table1;

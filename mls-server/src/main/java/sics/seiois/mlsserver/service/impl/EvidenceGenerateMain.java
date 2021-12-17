@@ -444,7 +444,7 @@ public class EvidenceGenerateMain {
                                                                    TableInfos tableInfos, FileSystem hdfs, SparkSession spark,
                                                                    PredicateConfig config) throws Exception {
 
-        logger.info("#### generateMultiTupleRuleSampling start----------------------------------------------------");
+        logger.info("#### generateMultiTupleRuleSamplingConstantRecovery start----------------------------------------------------");
         SparkContextConfig sparkContextConfig = new SparkContextConfig(config, request, tableInfos);
         // collect all predicates, including ML, constant and other traditional predicates.
         // for paper: do not consider comparison predicates, i.e., <, >, <=, >=
