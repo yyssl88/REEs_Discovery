@@ -799,7 +799,7 @@ public class RuleFindRequestMock {
     private static TableInfo getTaxSampling(String[] options, int size) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("tax" + size + "w");
-        table1.setTableDataPath("hdfs:///tmp/zhangjun/" + "tax" + size + "w__" + generateDataMark(options) + ".csv");
+        table1.setTableDataPath("hdfs:///tmp/zhangjun/" + "tax_" + size + "w__" + generateDataMark(options) + ".csv");
 
         String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
