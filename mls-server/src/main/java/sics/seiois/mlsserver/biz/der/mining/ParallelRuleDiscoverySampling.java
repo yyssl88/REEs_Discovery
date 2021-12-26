@@ -220,25 +220,25 @@ public class ParallelRuleDiscoverySampling {
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
         ArrayList<Predicate> applicationRHSs = new ArrayList<>();
         // 1 - choose the first 4 rhss
-        logger.info("#### choose the first 4 rhss");
-        int count = 0;
-        HashMap<String, Predicate> temp = new HashMap<>();
-        for (Predicate p : predicates) {
-            if (p.isConstant()) {
-                continue;
-            }
-            if (!temp.containsKey(p.toString())) {
-                temp.put(p.toString(), p);
-            }
-        }
-
-        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
-            applicationRHSs.add(entry.getValue());
-            count++;
-            if (count == 4) {
-                break;
-            }
-        }
+//        logger.info("#### choose the first 4 rhss");
+//        int count = 0;
+//        HashMap<String, Predicate> temp = new HashMap<>();
+//        for (Predicate p : predicates) {
+//            if (p.isConstant()) {
+//                continue;
+//            }
+//            if (!temp.containsKey(p.toString())) {
+//                temp.put(p.toString(), p);
+//            }
+//        }
+//
+//        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
+//            applicationRHSs.add(entry.getValue());
+//            count++;
+//            if (count == 4) {
+//                break;
+//            }
+//        }
 
 
         // 2 - choose 4 rhss with minimum support value
@@ -303,23 +303,23 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 4. randomly choose 5 RHS.
-//        logger.info("#### randomly choose 5 RHSs");
-//        Collections.sort(predicates, new Comparator<Predicate>() {
-//            @Override
-//            public int compare(Predicate o1, Predicate o2) {
-//                return o1.toString().compareTo(o2.toString());
-//            }
-//        });
-//        Random rand = new Random();
-//        rand.setSeed(1234567);
-//        HashSet<Integer> random_idx = new HashSet<>();
-//        while (random_idx.size() < 5) {
-//            int idx = rand.nextInt(predicates.size());
-//            random_idx.add(idx);
-//        }
-//        for (int choose_idx : random_idx) {
-//            applicationRHSs.add(predicates.get(choose_idx));
-//        }
+        logger.info("#### randomly choose 5 RHSs");
+        Collections.sort(predicates, new Comparator<Predicate>() {
+            @Override
+            public int compare(Predicate o1, Predicate o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Random rand = new Random();
+        rand.setSeed(1234567);
+        HashSet<Integer> random_idx = new HashSet<>();
+        while (random_idx.size() < 5) {
+            int idx = rand.nextInt(predicates.size());
+            random_idx.add(idx);
+        }
+        for (int choose_idx : random_idx) {
+            applicationRHSs.add(predicates.get(choose_idx));
+        }
 
         // 5. randomly choose 5 RHSs: 2 nonConstant and 3 constant RHSs
 //        logger.info("#### randomly choose 5 RHSs, including 2 nonConstant RHSs and 3 constant RHSs");

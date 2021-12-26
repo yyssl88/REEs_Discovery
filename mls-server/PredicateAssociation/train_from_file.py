@@ -49,13 +49,13 @@ def run(model, epoch, sequence_file, N, RL_model_path):
     # train RL model
     for episode in range(epoch):
         if episode % 100 == 0:
-            print("episode: {}", episode)
+            print("episode: ", episode)
         model.learn()
 
     # save RL model
     saver = tf.train.Saver()
     save_path = saver.save(model.sess, RL_model_path)
-    print("Model saved in path: {}", save_path)
+    print("Model saved in path: ", save_path)
 
 
 def main():
@@ -106,7 +106,7 @@ def main():
 
     end = time.time()
 
-    print("finish training, using time: ", str(end - start))
+    print("finish training, model path: ", RL_model_path, ", using time: ", str(end - start))
 
 
 if __name__ == "__main__":
