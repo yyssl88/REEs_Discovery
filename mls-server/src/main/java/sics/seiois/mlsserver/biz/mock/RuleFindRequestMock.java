@@ -484,6 +484,11 @@ public class RuleFindRequestMock {
             case "inspectionSampling":
                 mockSampleData(ruleRequest, dataOption);
                 break;
+            case "property" :
+                directory = "hdfs:///tmp/zhangjun/property/";
+                ruleRequest.setDimensionID(directory);
+                mockProperty(ruleRequest);
+                break;
             case "hepatitis":
                 mockHepatitis(ruleRequest);
                 break;
@@ -2738,44 +2743,44 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyFeatures() {
-
-        TableInfo table1 = new TableInfo();
-        table1.setTableName("Property_Feature");
-        table1.setTableDataPath("hdfs:///tmp/milliondata/Property_Features.csv");
-
-        String header = "ID,Air_Conditioning,Alarm,Balconey,BBQ,City_view,Close_to_Shops,Close_to_Transport,Close_to_Schools,courtyard,Dining_room,Dish_Washer,Ducted,Ensuite,Family_Room,Fireplace,Fully_Fenced,gas_heating,Gym,Heating,Intercom,Laundry,Mountain_Views,Park,Swimming_Pool,Renovated,River_Views,Rumpus_Room,Sauna,Study_room,Sun_Room,System_Heating,Tennis_Court,Water_Views,wordrobe,SUM";
-        String type = "VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20)";
-
-        constructTable(table1, header, type);
-        return table1;
-    }
-
-    private static TableInfo getPropertyAddress() {
-
-        TableInfo table1 = new TableInfo();
-        table1.setTableName("Property_Address");
-        table1.setTableDataPath("hdfs:///tmp/small/Property_Address.csv");
-
-        String header = "proID,Lat,Lng,Formated_Address,Locality,State,Postal_Code";
-        String type = "VARCHAR(20),DOUBLE,DOUBLE,VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20)";
-
-        constructTable(table1, header, type);
-        return table1;
-    }
-
-
-    private static TableInfo getPropertyBasic() {
-        TableInfo table1 = new TableInfo();
-        table1.setTableName("Propery_Basic");
-        table1.setTableDataPath("hdfs:///tmp/small/Propery_Basic.csv");
-
-        String header = "proID,address,price,bedroom,bathroom,parking,proType,sold_date,agency_name,agency_addr,des_head,des_content,features";
-        String type = "varchar(20),varchar(20),int,int,int,int,varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
-
-        constructTable(table1, header, type);
-        return table1;
-    }
+//    private static TableInfo getPropertyFeatures() {
+//
+//        TableInfo table1 = new TableInfo();
+//        table1.setTableName("Property_Feature");
+//        table1.setTableDataPath("hdfs:///tmp/milliondata/Property_Features.csv");
+//
+//        String header = "ID,Air_Conditioning,Alarm,Balconey,BBQ,City_view,Close_to_Shops,Close_to_Transport,Close_to_Schools,courtyard,Dining_room,Dish_Washer,Ducted,Ensuite,Family_Room,Fireplace,Fully_Fenced,gas_heating,Gym,Heating,Intercom,Laundry,Mountain_Views,Park,Swimming_Pool,Renovated,River_Views,Rumpus_Room,Sauna,Study_room,Sun_Room,System_Heating,Tennis_Court,Water_Views,wordrobe,SUM";
+//        String type = "VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20)";
+//
+//        constructTable(table1, header, type);
+//        return table1;
+//    }
+//
+//    private static TableInfo getPropertyAddress() {
+//
+//        TableInfo table1 = new TableInfo();
+//        table1.setTableName("Property_Address");
+//        table1.setTableDataPath("hdfs:///tmp/small/Property_Address.csv");
+//
+//        String header = "proID,Lat,Lng,Formated_Address,Locality,State,Postal_Code";
+//        String type = "VARCHAR(20),DOUBLE,DOUBLE,VARCHAR(20),VARCHAR(20),VARCHAR(20),VARCHAR(20)";
+//
+//        constructTable(table1, header, type);
+//        return table1;
+//    }
+//
+//
+//    private static TableInfo getPropertyBasic() {
+//        TableInfo table1 = new TableInfo();
+//        table1.setTableName("Propery_Basic");
+//        table1.setTableDataPath("hdfs:///tmp/small/Propery_Basic.csv");
+//
+//        String header = "proID,address,price,bedroom,bathroom,parking,proType,sold_date,agency_name,agency_addr,des_head,des_content,features";
+//        String type = "varchar(20),varchar(20),int,int,int,int,varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+//
+//        constructTable(table1, header, type);
+//        return table1;
+//    }
 
 
     private static void mockPaperAuthorSmall(RuleDiscoverExecuteRequest ruleRequest){
@@ -2887,6 +2892,184 @@ public class RuleFindRequestMock {
         return table1;
     }
 
+    private static void mockProperty(RuleDiscoverExecuteRequest ruleRequest){
+        TableInfos tables = new TableInfos();
+        TableInfo basic = getProperyBasic(ruleRequest.getDimensionID());
+        TableInfo address = getPropertyAddress(ruleRequest.getDimensionID());
+        TableInfo features = getPropertyFeatures(ruleRequest.getDimensionID());
+        TableInfo picture = getPropertyPicture(ruleRequest.getDimensionID());
+        TableInfo sa1_satistics = getPropertySA1Satistics(ruleRequest.getDimensionID());
+        TableInfo mapping_sa1 = getPropertyMappingSA1(ruleRequest.getDimensionID());
+        TableInfo school = getPropertySchool(ruleRequest.getDimensionID());
+        TableInfo school_ranking = getPropertySchoolRanking(ruleRequest.getDimensionID());
+        TableInfo mapping_school = getPropertyMappingSchool(ruleRequest.getDimensionID());
+        TableInfo train_station = getPropertyTrainStation(ruleRequest.getDimensionID());
+        TableInfo train_time = getPropertyTrainTime(ruleRequest.getDimensionID());
+        TableInfo mapping_train_station = getPropertyMappingTrainStation(ruleRequest.getDimensionID());
+
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(basic);
+        listable.add(address);
+        listable.add(features);
+        listable.add(picture);
+        listable.add(sa1_satistics);
+        listable.add(mapping_sa1);
+        listable.add(school);
+        listable.add(school_ranking);
+        listable.add(mapping_school);
+        listable.add(train_station);
+        listable.add(train_time);
+        listable.add(mapping_train_station);
+
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/"+ruleRequest.getTaskId() +"/result.ree");
+    }
+
+    private static TableInfo getProperyBasic(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Propery_Basic");
+        table1.setTableDataPath(path + "/1_Propery_Basic.csv");
+
+        String header = "proID,address,price,bedroom,bathroom,parking,proType,sold_date,agency_name,agency_addr,des_head,des_content,features";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyAddress(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Propery_Address");
+        table1.setTableDataPath(path + "/2_Property_Address.csv");
+
+        String header = "proID,Lat,Lng,Formated_Address,Locality,State,Postal Code";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyFeatures(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Property_Features");
+        table1.setTableDataPath(path + "/3_Property_Features.csv");
+
+        String header = "IDxx,Air Conditioning,Alarm,Balconey,BBQ,City view,Close to Shops,Close to Transport,Close to Schools,courtyard,Dining room,Dish Washer,Ducted,Ensuite,Family Room,Fireplace,Fully Fenced,gas heating,Gym,Heating,Intercom,Laundry,Mountain Views,Park,Swimming Pool,Renovated,River Views,Rumpus Room,Sauna,Study room,Sun Room,System Heating,Tennis Court,Water Views,wordrobe,SUM";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyPicture(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Picture");
+        table1.setTableDataPath(path + "/4_Picture.csv");
+
+        String header = "proID,picNo,picAddr";
+        String type = "varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertySA1Satistics(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("SA1_Satistics");
+        table1.setTableDataPath(path + "/5_SA1_Satistics.csv");
+
+        String header = "region_id,sa1_no,residents,Median_age,Median_total_personal_income_weekly,Birthplace_Australia_Persons,Birthplace_Australia_Persons_percentage,Language_spoken_at_home_English_only_Persons,English_Percentage,Australian_citizen_Persons,AU_percentage,Age_of_Persons_attending_an_educational_institution_25_years_and_over_Persons,Highest_year_of_school_completed_Year_12_or_equivalent_Persons,Median_rent_weekly";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyMappingSA1(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Mapping_SA1");
+        table1.setTableDataPath(path + "/6_Mapping_SA1.csv");
+
+        String header = "proID,sa1_no";
+        String type = "varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertySchool(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("School");
+        table1.setTableDataPath(path + "/7_School.csv");
+
+        String header = "school_ID,name,gender,restrictedZone,type,school_lng,school_lat";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertySchoolRanking(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("School_ranking");
+        table1.setTableDataPath(path + "/8_School_ranking.csv");
+
+        String header = "school_ID,oriName,Ranking ,Locality,IB,Students Enrolled in VCE,Median VCE score,Scores of 40+ (%)";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyMappingSchool(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Mapping_School");
+        table1.setTableDataPath(path + "/9_Mapping_School.csv");
+
+        String header = "pro_ID,sec1,sec2";
+        String type = "varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyTrainStation(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Train_Station");
+        table1.setTableDataPath(path + "/10_Train_Station.csv");
+
+        String header = "stop_id,stop_no,stop_short_name,stop_name,stop_lat,stop_lon";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyTrainTime(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Train_Time");
+        table1.setTableDataPath(path + "/11_Train_Time.csv");
+
+        String header = "id,stop_ori,stop_des,avg_time,trans_flag";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static TableInfo getPropertyMappingTrainStation(String path) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("Mapping_Train_Station");
+        table1.setTableDataPath(path + "/12_Mapping_Train_Station.csv");
+
+        String header = "id,propertyID,stop_id,distance_text1,distance_value1,duration_text1,duration_value1";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
 
 
     private static void mockPaperAuthor(RuleDiscoverExecuteRequest ruleRequest){

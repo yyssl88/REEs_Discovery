@@ -303,23 +303,23 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 4. randomly choose 5 RHS.
-        logger.info("#### randomly choose 5 RHSs");
-        Collections.sort(predicates, new Comparator<Predicate>() {
-            @Override
-            public int compare(Predicate o1, Predicate o2) {
-                return o1.toString().compareTo(o2.toString());
-            }
-        });
-        Random rand = new Random();
-        rand.setSeed(1234567);
-        HashSet<Integer> random_idx = new HashSet<>();
-        while (random_idx.size() < 5) {
-            int idx = rand.nextInt(predicates.size());
-            random_idx.add(idx);
-        }
-        for (int choose_idx : random_idx) {
-            applicationRHSs.add(predicates.get(choose_idx));
-        }
+//        logger.info("#### randomly choose 5 RHSs");
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        while (random_idx.size() < 5) {
+//            int idx = rand.nextInt(predicates.size());
+//            random_idx.add(idx);
+//        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
 
         // 5. randomly choose 5 RHSs: 2 nonConstant and 3 constant RHSs
 //        logger.info("#### randomly choose 5 RHSs, including 2 nonConstant RHSs and 3 constant RHSs");
@@ -352,7 +352,28 @@ public class ParallelRuleDiscoverySampling {
 //            applicationRHSs.add(predicates.get(choose_idx));
 //        }
 
-        // 6. use all predicates as RHSs
+        // 6. randomly choose 4 non-constant RHS.
+        logger.info("#### randomly choose 4 non-constant RHSs");
+        Collections.sort(predicates, new Comparator<Predicate>() {
+            @Override
+            public int compare(Predicate o1, Predicate o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Random rand = new Random();
+        rand.setSeed(1234567);
+        HashSet<Integer> random_idx = new HashSet<>();
+        while (random_idx.size() < 4) {
+            int idx = rand.nextInt(predicates.size());
+            if (!predicates.get(idx).isConstant()) {
+                random_idx.add(idx);
+            }
+        }
+        for (int choose_idx : random_idx) {
+            applicationRHSs.add(predicates.get(choose_idx));
+        }
+
+        // 7. use all predicates as RHSs
 //        logger.info("#### choose all RHSs");
 //        for (Predicate p : predicates) {
 //            applicationRHSs.add(p);
