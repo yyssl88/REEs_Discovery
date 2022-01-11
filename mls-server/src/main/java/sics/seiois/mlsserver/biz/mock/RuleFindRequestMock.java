@@ -487,7 +487,12 @@ public class RuleFindRequestMock {
             case "property" :
                 directory = "hdfs:///tmp/zhangjun/property/";
                 ruleRequest.setDimensionID(directory);
-                mockProperty(ruleRequest);
+                mockProperty(ruleRequest, null);
+                break;
+            case "propertySampling" :
+                directory = "hdfs:///tmp/zhangjun/property/";
+                ruleRequest.setDimensionID(directory);
+                mockSampleData(ruleRequest, dataOption);
                 break;
             case "hepatitis":
                 mockHepatitis(ruleRequest);
@@ -1959,6 +1964,8 @@ public class RuleFindRequestMock {
             mockTaxSampling(ruleRequest, options, 800);
         } else if (dataName.equals("tax1000w")) {
             mockTaxSampling(ruleRequest, options, 1000);
+        } else if (dataName.equals("property")) {
+            mockProperty(ruleRequest, options);
         }
     }
 
@@ -2892,20 +2899,20 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static void mockProperty(RuleDiscoverExecuteRequest ruleRequest){
+    private static void mockProperty(RuleDiscoverExecuteRequest ruleRequest, String[] options){
         TableInfos tables = new TableInfos();
-        TableInfo basic = getProperyBasic(ruleRequest.getDimensionID());
-        TableInfo address = getPropertyAddress(ruleRequest.getDimensionID());
-        TableInfo features = getPropertyFeatures(ruleRequest.getDimensionID());
-        TableInfo picture = getPropertyPicture(ruleRequest.getDimensionID());
-        TableInfo sa1_satistics = getPropertySA1Satistics(ruleRequest.getDimensionID());
-        TableInfo mapping_sa1 = getPropertyMappingSA1(ruleRequest.getDimensionID());
-        TableInfo school = getPropertySchool(ruleRequest.getDimensionID());
-        TableInfo school_ranking = getPropertySchoolRanking(ruleRequest.getDimensionID());
-        TableInfo mapping_school = getPropertyMappingSchool(ruleRequest.getDimensionID());
-        TableInfo train_station = getPropertyTrainStation(ruleRequest.getDimensionID());
-        TableInfo train_time = getPropertyTrainTime(ruleRequest.getDimensionID());
-        TableInfo mapping_train_station = getPropertyMappingTrainStation(ruleRequest.getDimensionID());
+        TableInfo basic = getProperyBasic(ruleRequest.getDimensionID(), options);
+        TableInfo address = getPropertyAddress(ruleRequest.getDimensionID(), options);
+        TableInfo features = getPropertyFeatures(ruleRequest.getDimensionID(), options);
+        TableInfo picture = getPropertyPicture(ruleRequest.getDimensionID(), options);
+        TableInfo sa1_satistics = getPropertySA1Satistics(ruleRequest.getDimensionID(), options);
+        TableInfo mapping_sa1 = getPropertyMappingSA1(ruleRequest.getDimensionID(), options);
+        TableInfo school = getPropertySchool(ruleRequest.getDimensionID(), options);
+        TableInfo school_ranking = getPropertySchoolRanking(ruleRequest.getDimensionID(), options);
+        TableInfo mapping_school = getPropertyMappingSchool(ruleRequest.getDimensionID(), options);
+        TableInfo train_station = getPropertyTrainStation(ruleRequest.getDimensionID(), options);
+        TableInfo train_time = getPropertyTrainTime(ruleRequest.getDimensionID(), options);
+        TableInfo mapping_train_station = getPropertyMappingTrainStation(ruleRequest.getDimensionID(), options);
 
         List<TableInfo> listable = new ArrayList<>();
         listable.add(basic);
@@ -2927,10 +2934,14 @@ public class RuleFindRequestMock {
         ruleRequest.setResultStorePath("/tmp/rulefind/"+ruleRequest.getTaskId() +"/result.ree");
     }
 
-    private static TableInfo getProperyBasic(String path) {
+    private static TableInfo getProperyBasic(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Propery_Basic");
-        table1.setTableDataPath(path + "/1_Propery_Basic.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/1_Propery_Basic.csv");
+        } else {
+            table1.setTableDataPath(path + "/1_Propery_Basic__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "proID,address,price,bedroom,bathroom,parking,proType,sold_date,agency_name,agency_addr,des_head,des_content,features";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -2939,10 +2950,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyAddress(String path) {
+    private static TableInfo getPropertyAddress(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Propery_Address");
-        table1.setTableDataPath(path + "/2_Property_Address.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/2_Property_Address.csv");
+        } else {
+            table1.setTableDataPath(path + "/2_Property_Address__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "proID,Lat,Lng,Formated_Address,Locality,State,Postal Code";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -2951,10 +2966,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyFeatures(String path) {
+    private static TableInfo getPropertyFeatures(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Property_Features");
-        table1.setTableDataPath(path + "/3_Property_Features.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/3_Property_Features.csv");
+        } else {
+            table1.setTableDataPath(path + "/3_Property_Features__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "IDxx,Air Conditioning,Alarm,Balconey,BBQ,City view,Close to Shops,Close to Transport,Close to Schools,courtyard,Dining room,Dish Washer,Ducted,Ensuite,Family Room,Fireplace,Fully Fenced,gas heating,Gym,Heating,Intercom,Laundry,Mountain Views,Park,Swimming Pool,Renovated,River Views,Rumpus Room,Sauna,Study room,Sun Room,System Heating,Tennis Court,Water Views,wordrobe,SUM";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -2963,10 +2982,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyPicture(String path) {
+    private static TableInfo getPropertyPicture(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Picture");
-        table1.setTableDataPath(path + "/4_Picture.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/4_Picture.csv");
+        } else {
+            table1.setTableDataPath(path + "/4_Picture__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "proID,picNo,picAddr";
         String type = "varchar(20),varchar(20),varchar(20)";
@@ -2975,10 +2998,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertySA1Satistics(String path) {
+    private static TableInfo getPropertySA1Satistics(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("SA1_Satistics");
-        table1.setTableDataPath(path + "/5_SA1_Satistics.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/5_SA1_Satistics.csv");
+        } else {
+            table1.setTableDataPath(path + "/5_SA1_Satistics__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "region_id,sa1_no,residents,Median_age,Median_total_personal_income_weekly,Birthplace_Australia_Persons,Birthplace_Australia_Persons_percentage,Language_spoken_at_home_English_only_Persons,English_Percentage,Australian_citizen_Persons,AU_percentage,Age_of_Persons_attending_an_educational_institution_25_years_and_over_Persons,Highest_year_of_school_completed_Year_12_or_equivalent_Persons,Median_rent_weekly";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -2987,10 +3014,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyMappingSA1(String path) {
+    private static TableInfo getPropertyMappingSA1(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Mapping_SA1");
-        table1.setTableDataPath(path + "/6_Mapping_SA1.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/6_Mapping_SA1.csv");
+        } else {
+            table1.setTableDataPath(path + "/6_Mapping_SA1__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "proID,sa1_no";
         String type = "varchar(20),varchar(20)";
@@ -2999,10 +3030,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertySchool(String path) {
+    private static TableInfo getPropertySchool(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("School");
-        table1.setTableDataPath(path + "/7_School.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/7_School.csv");
+        } else {
+            table1.setTableDataPath(path + "/7_School__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "school_ID,name,gender,restrictedZone,type,school_lng,school_lat";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -3011,10 +3046,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertySchoolRanking(String path) {
+    private static TableInfo getPropertySchoolRanking(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("School_ranking");
-        table1.setTableDataPath(path + "/8_School_ranking.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/8_School_ranking.csv");
+        } else {
+            table1.setTableDataPath(path + "/8_School_ranking__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "school_ID,oriName,Ranking ,Locality,IB,Students Enrolled in VCE,Median VCE score,Scores of 40+ (%)";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -3023,10 +3062,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyMappingSchool(String path) {
+    private static TableInfo getPropertyMappingSchool(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Mapping_School");
-        table1.setTableDataPath(path + "/9_Mapping_School.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/9_Mapping_School.csv");
+        } else {
+            table1.setTableDataPath(path + "/9_Mapping_School__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "pro_ID,sec1,sec2";
         String type = "varchar(20),varchar(20),varchar(20)";
@@ -3035,10 +3078,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyTrainStation(String path) {
+    private static TableInfo getPropertyTrainStation(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Train_Station");
-        table1.setTableDataPath(path + "/10_Train_Station.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/10_Train_Station.csv");
+        } else {
+            table1.setTableDataPath(path + "/10_Train_Station__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "stop_id,stop_no,stop_short_name,stop_name,stop_lat,stop_lon";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -3047,10 +3094,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyTrainTime(String path) {
+    private static TableInfo getPropertyTrainTime(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Train_Time");
-        table1.setTableDataPath(path + "/11_Train_Time.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/11_Train_Time.csv");
+        } else {
+            table1.setTableDataPath(path + "/11_Train_Time__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "id,stop_ori,stop_des,avg_time,trans_flag";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -3059,10 +3110,14 @@ public class RuleFindRequestMock {
         return table1;
     }
 
-    private static TableInfo getPropertyMappingTrainStation(String path) {
+    private static TableInfo getPropertyMappingTrainStation(String path, String[] options) {
         TableInfo table1 = new TableInfo();
         table1.setTableName("Mapping_Train_Station");
-        table1.setTableDataPath(path + "/12_Mapping_Train_Station.csv");
+        if (options == null) {
+            table1.setTableDataPath(path + "/12_Mapping_Train_Station.csv");
+        } else {
+            table1.setTableDataPath(path + "/12_Mapping_Train_Station__" + generateDataMark(options) + ".csv");
+        }
 
         String header = "id,propertyID,stop_id,distance_text1,distance_value1,duration_text1,duration_value1";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
