@@ -422,7 +422,7 @@ public class EvidenceGenerateMain {
 
     private static DenialConstraintSet loadREEs(String taskId, String outputResultFile, FileSystem hdfs, REEFinderEvidSet reeFinderEvidSet) throws Exception {
         DenialConstraintSet rees = new DenialConstraintSet();
-        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + taskId + "/rule_all/" +  outputResultFile; //"experiment_results";
+        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "constantRecovery/" + taskId + "/rule_all/" +  outputResultFile; //"experiment_results";
         FSDataInputStream inputTxt = hdfs.open(new Path(inputTxtPath));
         String rees_org = inputTxt.toString();
         String[] lines = rees_org.split("\n");
