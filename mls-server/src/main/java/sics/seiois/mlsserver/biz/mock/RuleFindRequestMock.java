@@ -3055,7 +3055,7 @@ public class RuleFindRequestMock {
             table1.setTableDataPath(path + "/8_School_ranking__" + generateDataMark(options) + ".csv");
         }
 
-        String header = "school_ID,oriName,Ranking,Locality,IB,Students_Enrolled_in_VCE,Median_VCE_score,Scores_of_40+(%)";
+        String header = "school_ID,oriName,Ranking,Locality,IB,Students_Enrolled_in_VCE,Median_VCE_score,Scores_of_40_percentage";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
