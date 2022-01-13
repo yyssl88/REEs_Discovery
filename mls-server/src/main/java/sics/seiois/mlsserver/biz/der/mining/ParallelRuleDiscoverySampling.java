@@ -70,6 +70,8 @@ public class ParallelRuleDiscoverySampling {
     private int if_conf_filter;
     private float conf_filter_thr;
 
+    private int if_cluster_workunits;
+
     // interestingness
     Interestingness interestingness;
 
@@ -100,7 +102,7 @@ public class ParallelRuleDiscoverySampling {
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
-                                         int if_conf_filter, float conf_filter_thr) {
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits) {
         this.allPredicates = predicates;
         this.K = K;
         this.maxTupleNum = maxTupleNum;
@@ -114,6 +116,8 @@ public class ParallelRuleDiscoverySampling {
 
         this.if_conf_filter = if_conf_filter;
         this.conf_filter_thr = conf_filter_thr;
+
+        this.if_cluster_workunits = if_cluster_workunits;
 
         // set support for each predicate;
         HashMap<String, HashMap<Integer, Long>> statistic = new HashMap<>();
@@ -188,14 +192,14 @@ public class ParallelRuleDiscoverySampling {
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
-                                         int if_conf_filter, float conf_filter_thr,
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits,
                                          int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage,
                                          String PI_path, String RL_code_path, int N, int DeltaL,
                                          float learning_rate, float reward_decay, float e_greedy,
                                          int replace_target_iter, int memory_size, int batch_size) {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
-                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr);
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits);
         this.MEM = new ArrayList<>();
         this.ifRL = ifRL;
         this.ifOnlineTrainRL = ifOnlineTrainRL;
@@ -1146,7 +1150,17 @@ public class ParallelRuleDiscoverySampling {
 
         //增加聚类方法聚合Unit
         logger.info(">>>>begin cluster");
-        ArrayList<WorkUnits> unitSets = clusterByPredicate(workUnits, 2);
+        ArrayList<WorkUnits> unitSets;
+        if (this.if_cluster_workunits == 1) {
+            unitSets = clusterByPredicate(workUnits, 2);
+        } else {
+            unitSets = new ArrayList<>();
+            for (WorkUnit workUnit : workUnits) {
+                WorkUnits cluster = new WorkUnits();
+                cluster.addUnit(workUnit);
+                unitSets.add(cluster);
+            }
+        }
         logger.info(">>>>end cluster");
 
         // set allCount of each work unit

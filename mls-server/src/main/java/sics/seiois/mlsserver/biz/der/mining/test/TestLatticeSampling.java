@@ -62,6 +62,7 @@ public class TestLatticeSampling {
         int ifPrune = 1;
 
         int if_conf_filter = 1;
+        int if_cluster_workunits = 1;
 
         // whether to use reinforcement learning for predicate association computation
         int ifRL = 1;
@@ -145,11 +146,11 @@ public class TestLatticeSampling {
             if (ifRL == 0) {
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float) errorThreshold, maxOneRelationNum, input, allCount,
-                        w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f);
+                        w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits);
             } else {
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float)errorThreshold, maxOneRelationNum, input, allCount,
-                        w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f,
+                        w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits,
                         ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path,N, DeltaL,
                         learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
             }

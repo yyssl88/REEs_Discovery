@@ -2959,7 +2959,7 @@ public class RuleFindRequestMock {
             table1.setTableDataPath(path + "/2_Property_Address__" + generateDataMark(options) + ".csv");
         }
 
-        String header = "proID,Lat,Lng,Formated_Address,Locality,State,Postal Code";
+        String header = "proID,Lat,Lng,Formated_Address,Locality,State,Postal_Code";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
@@ -2975,7 +2975,7 @@ public class RuleFindRequestMock {
             table1.setTableDataPath(path + "/3_Property_Features__" + generateDataMark(options) + ".csv");
         }
 
-        String header = "IDxx,Air Conditioning,Alarm,Balconey,BBQ,City view,Close to Shops,Close to Transport,Close to Schools,courtyard,Dining room,Dish Washer,Ducted,Ensuite,Family Room,Fireplace,Fully Fenced,gas heating,Gym,Heating,Intercom,Laundry,Mountain Views,Park,Swimming Pool,Renovated,River Views,Rumpus Room,Sauna,Study room,Sun Room,System Heating,Tennis Court,Water Views,wordrobe,SUM";
+        String header = "IDxx,Air_Conditioning,Alarm,Balconey,BBQ,City_view,Close_to_Shops,Close_to_Transport,Close_to_Schools,courtyard,Dining_room,Dish_Washer,Ducted,Ensuite,Family_Room,Fireplace,Fully_Fenced,gas_heating,Gym,Heating,Intercom,Laundry,Mountain_Views,Park,Swimming_Pool,Renovated,River_Views,Rumpus_Room,Sauna,Study_room,Sun_Room,System_Heating,Tennis_Court,Water_Views,wordrobe,SUM";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
@@ -3055,7 +3055,7 @@ public class RuleFindRequestMock {
             table1.setTableDataPath(path + "/8_School_ranking__" + generateDataMark(options) + ".csv");
         }
 
-        String header = "school_ID,oriName,Ranking ,Locality,IB,Students Enrolled in VCE,Median VCE score,Scores of 40+ (%)";
+        String header = "school_ID,oriName,Ranking,Locality,IB,Students_Enrolled_in_VCE,Median_VCE_score,Scores_of_40+(%)";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
