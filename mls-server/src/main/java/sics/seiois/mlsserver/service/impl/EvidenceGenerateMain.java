@@ -715,6 +715,7 @@ public class EvidenceGenerateMain {
     private static List<String> generateConstant(String taskId, TableInfos tableInfos, SparkSession spark, PredicateConfig config,
                                                  boolean erRuleFinderFlag, String eidName) {
         if (!config.isExecuteOnlyNonConstantPred()) {
+            List<String> allTablePredicates = new ArrayList<>();
             for (TableInfo tableInfo : tableInfos.getTableInfoList()) {
                 List<String> tablePredicate = null;
                 List<Row> constantRow = ConstantPredicateGenerateMain.geneConstantList(spark, tableInfo, config, erRuleFinderFlag, eidName);
@@ -723,8 +724,9 @@ public class EvidenceGenerateMain {
                 tablePredicate = ConstantPredicateGenerateMain.genePredicateList(constantRow, tableInfo, config);
                 logger.info("####{},{} generate constant predicate {} 条", taskId, tableInfo.getTableName(), tablePredicate.size());
                 logger.info("####{},{} generate constant predicate {}", taskId, tableInfo.getTableName(), tablePredicate.toString());
-                return tablePredicate;
+                allTablePredicates.addAll(tablePredicate);
             }
+            return allTablePredicates;
         }
         return new ArrayList<>();
     }
