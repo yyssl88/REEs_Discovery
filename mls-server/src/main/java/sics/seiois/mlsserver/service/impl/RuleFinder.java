@@ -234,6 +234,8 @@ public class RuleFinder {
         String if_conf_filter = argsMap.get("ifConfFilter");
         String conf_filter_thr = argsMap.get("confFilterThr");
 
+        String if_cluster_workunits = argsMap.get("ifClusterWorkunits");
+
         numOfProcessors = numOfProcessors_;
 
         StringBuffer otherParam = new StringBuffer();
@@ -270,6 +272,7 @@ public class RuleFinder {
         otherParam.append("ifConfFilter=" + if_conf_filter + ";");
         otherParam.append("confFilterThr=" + conf_filter_thr + ";");
 
+        otherParam.append("ifClusterWorkunits=" + if_cluster_workunits + ";");
 
 //        RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset);
         RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset, taskID);
