@@ -40,7 +40,7 @@ public class TestLatticeSampling {
         Boolean noCrossColumn = Boolean.TRUE;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
-        String directory_path = "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
+        String directory_path =  "D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
         String constant_file = ""; //""D:/REE/tmp/airports/constant_airports.txt";
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
@@ -65,7 +65,7 @@ public class TestLatticeSampling {
         int if_cluster_workunits = 1;
 
         // whether to use reinforcement learning for predicate association computation
-        int ifRL = 1;
+        int ifRL = 0;
         int ifOnlineTrainRL = 0;
         int ifOfflineTrainStage = 1; // for offline RL, if at training stage
 //        String PI_path = "/opt/anaconda3/envs/py36/bin/python";
