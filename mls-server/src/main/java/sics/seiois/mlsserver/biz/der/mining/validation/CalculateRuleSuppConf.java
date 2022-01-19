@@ -201,6 +201,10 @@ public class CalculateRuleSuppConf {
         }
     }
 
+    public int getAllPredicatesNum() {
+        return this.allExistPredicates.size();
+    }
+
     // sequence: "1 3 12,5;2 1,7;..."
     public double[] getConfidence(String sequence) {
         ArrayList<WorkUnit> workUnits = new ArrayList<>();
