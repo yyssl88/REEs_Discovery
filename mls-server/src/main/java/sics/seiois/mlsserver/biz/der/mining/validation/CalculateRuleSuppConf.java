@@ -7,8 +7,6 @@ import de.metanome.algorithm_integration.input.RelationalInput;
 import de.metanome.backend.input.file.FileIterator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraint;
-import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraintSet;
 import sics.seiois.mlsserver.biz.der.metanome.input.Dir;
 import sics.seiois.mlsserver.biz.der.metanome.input.Input;
 import sics.seiois.mlsserver.biz.der.metanome.mlsel.MLSelection;
@@ -28,14 +26,7 @@ import java.util.*;
 
 public class CalculateRuleSuppConf {
 
-    public static final String NO_CROSS_COLUMN = "NO_CROSS_COLUMN";
-    public static final String CROSS_COLUMN_STRING_MIN_OVERLAP = "CROSS_COLUMN_STRING_MIN_OVERLAP";
-    public static final String APPROXIMATION_DEGREE = "APPROXIMATION_DEGREE";
-    public static final String CHUNK_LENGTH = "CHUNK_LENGTH";
-    public static final String BUFFER_LENGTH = "BUFFER_LENGTH";
-    public static final String INPUT = "INPUT";
     private static Logger logger = LoggerFactory.getLogger(CalculateRuleSuppConf.class);
-    // generate all predicate set including different tuple ID pair
     private static final PredicateProviderIndex predicateProviderIndex = PredicateProviderIndex.getInstance();
 
     private ArrayList<Predicate> allPredicates;
@@ -233,7 +224,7 @@ public class CalculateRuleSuppConf {
 
         ParallelRuleDiscoverySampling parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling();
 
-        List<Message> messages = parallelRuleDiscoverySampling.runLocal(workUnits);
+        List<Message> messages = parallelRuleDiscoverySampling.runLocal_new(workUnits);
         double[] confidences = new double[messages.size()];
         for (int i = 0; i < messages.size(); i++) {
             long lhs_supp = 0;
@@ -247,5 +238,9 @@ public class CalculateRuleSuppConf {
             confidences[i] = rule_supp * 1.0 / lhs_supp;
         }
         return confidences;
+    }
+
+    public static void main(String[] args) {
+
     }
 }

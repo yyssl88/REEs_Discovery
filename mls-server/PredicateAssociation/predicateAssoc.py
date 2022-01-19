@@ -6,17 +6,17 @@ import time
 import sys
 
 class PAssoc(object):
-    def __init__(self, if_interactive, p_num, supp_taus, data_file):
+    def __init__(self, if_interactive, p_num, supp_taus, conf_taus, data_file):
         super(PAssoc, self).__init__()
         self.source_data = None
         self.current_state = None
         self.attrs = []
         self.satisfied_tuples = {}
-        self.supp_taus = None
+        self.supp_taus = supp_taus
+        self.conf_taus = conf_taus
         self.if_interactive = if_interactive
         self.state_num = p_num
         if self.if_interactive == 0:
-            self.supp_taus = supp_taus
             self.loadData(data_file)
             self.buildPLI()
             self.state_num = len(self.attrs)
@@ -101,7 +101,7 @@ class PAssoc(object):
             state[e] = 1.0
         return state
 
-    def step(self, action, validator):
+    def step(self, action, select_rhs, validator):
         base_action = np.zeros(self.state_num)
         base_action[action] = 1.0
         # next state
@@ -111,7 +111,11 @@ class PAssoc(object):
         # reward function
         reward = None
         if self.if_interactive == 1:
-            reward = validator.getConfidence(next_state) # to be implemented!!!
+            lhs_indices = np.nonzero(next_state)
+            sequence = " ".join(str(idx) for idx in lhs_indices)
+            sequence += ","
+            sequence += str(select_rhs)
+            reward = validator.getConfidence(sequence)[0] - self.conf_taus
         else:
             attr_arr = self.transformAttr(next_state)
             if len(attr_arr) == 0:
