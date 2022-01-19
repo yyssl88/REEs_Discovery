@@ -1,0 +1,247 @@
+package sics.seiois.mlsserver.biz.der.mining.validation;
+
+import de.metanome.algorithm_integration.Operator;
+import de.metanome.algorithm_integration.configuration.ConfigurationSettingFileInput;
+import de.metanome.algorithm_integration.input.InputIterationException;
+import de.metanome.algorithm_integration.input.RelationalInput;
+import de.metanome.backend.input.file.FileIterator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraint;
+import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraintSet;
+import sics.seiois.mlsserver.biz.der.metanome.input.Dir;
+import sics.seiois.mlsserver.biz.der.metanome.input.Input;
+import sics.seiois.mlsserver.biz.der.metanome.mlsel.MLSelection;
+import sics.seiois.mlsserver.biz.der.metanome.predicates.ConstantPredicateBuilder;
+import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
+import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateBuilder;
+import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
+import sics.seiois.mlsserver.biz.der.mining.Message;
+import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
+import sics.seiois.mlsserver.biz.der.mining.utils.ParsedColumnLight;
+import sics.seiois.mlsserver.biz.der.mining.utils.PredicateProviderIndex;
+import sics.seiois.mlsserver.biz.der.mining.utils.WorkUnit;
+
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.util.*;
+
+public class CalculateRuleSuppConf {
+
+    public static final String NO_CROSS_COLUMN = "NO_CROSS_COLUMN";
+    public static final String CROSS_COLUMN_STRING_MIN_OVERLAP = "CROSS_COLUMN_STRING_MIN_OVERLAP";
+    public static final String APPROXIMATION_DEGREE = "APPROXIMATION_DEGREE";
+    public static final String CHUNK_LENGTH = "CHUNK_LENGTH";
+    public static final String BUFFER_LENGTH = "BUFFER_LENGTH";
+    public static final String INPUT = "INPUT";
+    private static Logger logger = LoggerFactory.getLogger(CalculateRuleSuppConf.class);
+    // generate all predicate set including different tuple ID pair
+    private static final PredicateProviderIndex predicateProviderIndex = PredicateProviderIndex.getInstance();
+
+    private ArrayList<Predicate> allPredicates;
+    private ArrayList<Predicate> allExistPredicates;
+    private int maxTupleNum;
+
+
+    private void prepareAllPredicatesMultiTuples() {
+        // add to Predicate Set
+        for (Predicate p : this.allPredicates) {
+            predicateProviderIndex.addPredicate(p);
+        }
+
+        HashMap<String, ParsedColumnLight<?>> colsMap = new HashMap<>();
+        for (Predicate p : this.allPredicates) {
+            String k = p.getOperand1().getColumn().toStringData();
+            if (!colsMap.containsKey(k)) {
+                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand1().getColumn());
+                colsMap.put(k, col);
+            }
+            k = p.getOperand2().getColumn().toStringData();
+            if (!colsMap.containsKey(k)) {
+                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand2().getColumn());
+                colsMap.put(k, col);
+            }
+        }
+        // delete value int data of ParsedColumn
+        for (Predicate p : this.allPredicates) {
+            p.getOperand1().getColumn().cleanValueIntBeforeBroadCast();
+            p.getOperand2().getColumn().cleanValueIntBeforeBroadCast();
+        }
+        // insert parsedColumnLight for each predicate
+        PredicateSet ps = new PredicateSet();
+        for (Predicate p : this.allPredicates) {
+            // set columnLight
+            String k = p.getOperand1().getColumn().toStringData();
+            p.getOperand1().setColumnLight(colsMap.get(k));
+            k = p.getOperand2().getColumn().toStringData();
+            p.getOperand2().setColumnLight(colsMap.get(k));
+            ps.add(p);
+            for (int t1 = 0; t1 < this.maxTupleNum; t1++) {
+                if (p.isConstant()) {
+                    Predicate p_new = predicateProviderIndex.getPredicate(p, t1, t1);
+                    k = p_new.getOperand1().getColumn().toStringData();
+                    p_new.getOperand1().setColumnLight(colsMap.get(k));
+                    k = p_new.getOperand2().getColumn().toStringData();
+                    p_new.getOperand2().setColumnLight(colsMap.get(k));
+                    ps.add(p_new);
+                    continue;
+                }
+                for (int t2 = t1 + 1; t2 < this.maxTupleNum; t2++) {
+                    Predicate p_new = predicateProviderIndex.getPredicate(p, t1, t2);
+                    k = p_new.getOperand1().getColumn().toStringData();
+                    p_new.getOperand1().setColumnLight(colsMap.get(k));
+                    k = p_new.getOperand2().getColumn().toStringData();
+                    p_new.getOperand2().setColumnLight(colsMap.get(k));
+                    ps.add(p_new);
+                }
+            }
+        }
+
+        this.allExistPredicates = new ArrayList<>();
+        for (Predicate p : ps) {
+            this.allExistPredicates.add(p);
+        }
+    }
+
+    public static Map<String, String> convert(String[] args) {
+        logger.info("arguments : {}", args);
+        Map<String, String> argsMap = new HashMap<>();
+        for (String arg : args) {
+            logger.info("argument : {}", arg);
+            String[] name2value = arg.split("=");
+            argsMap.put(name2value[0], name2value[1]);
+        }
+        return argsMap;
+    }
+
+    public void preparePredicates(String args[]) {
+        Map<String, String> argsMap = convert(args);
+        String directory_path = argsMap.get("directory_path");
+        String constant_file = argsMap.get("constant_file");
+        int chunkLength = Integer.parseInt(argsMap.get("chunkLength"));
+        this.maxTupleNum = Integer.parseInt(argsMap.get("maxTupleNum"));
+
+        Boolean noCrossColumn = false;
+        double minimumSharedValue = 0.30d;
+        double maximumSharedValue = 0.7d;
+        double rowLimit = 1.0;
+        double errorThreshold = 0.9;
+        double relation_num_ratio = 1.0;
+        String mlsel_file = null;
+        String ml_config_file = null;
+        String type_attr_file = null;
+
+        Dir directory = new Dir(directory_path, relation_num_ratio);
+
+        ArrayList<FileReader> fileReaders = new ArrayList<>();
+
+        try {
+            Collection<RelationalInput> relations = new ArrayList<>();
+            Iterator<String> iter_rname = directory.iterator_r();
+            Iterator<String> iter_path = directory.iterator_a();
+            while (iter_rname.hasNext()) {
+                String rname = iter_rname.next();
+                String rpath = iter_path.next();
+                FileReader fileReader = new FileReader(rpath);
+                fileReaders.add(fileReader);
+                relations.add(new FileIterator(rname, fileReader,
+                        new ConfigurationSettingFileInput(rpath)));
+            }
+            Input input = new Input(relations, rowLimit, type_attr_file);
+            int maxOneRelationNum = input.getMaxTupleOneRelation();
+            int allCount = input.getAllCount();
+
+            PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue, ml_config_file);
+            ConstantPredicateBuilder cpredicates = new ConstantPredicateBuilder(input, constant_file);
+            logger.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
+
+            // construct PLI index
+            input.buildPLIs_col_OnSpark(chunkLength);
+
+            // load ML Selection
+            MLSelection mlsel = new MLSelection();
+            mlsel.configure(mlsel_file);
+
+            // calculate support
+            long rsize = input.getLineCount();
+
+            this.allPredicates = new ArrayList<>();
+            for (Predicate p : predicates.getPredicates()) {
+                if (p.isML() || p.getOperator() == Operator.EQUAL) {
+                    this.allPredicates.add(p);
+                }
+            }
+
+            // set value INT for constant predicates
+            HashSet<Predicate> constantPs = new HashSet<>();
+            for (Predicate cp : cpredicates.getPredicates()) {
+                constantPs.add(cp);
+            }
+            input.transformConstantPredicates(constantPs);
+
+            // add constant predicates
+            for (Predicate p : constantPs) {
+                this.allPredicates.add(p);
+            }
+
+            prepareAllPredicatesMultiTuples();
+
+        } catch (FileNotFoundException | InputIterationException e) {
+            logger.info("Cannot load file\n");
+        } finally {
+            for (FileReader fileReader : fileReaders) {
+                try {
+                    if (fileReader != null) {
+                        fileReader.close();
+                    }
+                } catch (Exception e) {
+                    logger.error("FileReader close error", e);
+                }
+            }
+        }
+    }
+
+    // sequence: "1 3 12,5;2 1,7;..."
+    public double[] getConfidence(String sequence) {
+        ArrayList<WorkUnit> workUnits = new ArrayList<>();
+        ArrayList<Boolean> isConstantRHS = new ArrayList<Boolean>();
+        ArrayList<Predicate> rhss = new ArrayList<Predicate>();
+        for (String seq_rule : sequence.split(";")) {
+            String[] lhs_ids = seq_rule.split(",")[0].split(" ");
+            String rhs_id = seq_rule.split(",")[1];
+
+            WorkUnit workunit = new WorkUnit();
+            Predicate rhs = this.allExistPredicates.get(Integer.parseInt(rhs_id));
+            rhss.add(rhs);
+            workunit.addRHS(rhs);
+            if (rhs.isConstant()) {
+                isConstantRHS.add(true);
+            } else {
+                isConstantRHS.add(false);
+            }
+
+            for (String lhs_id : lhs_ids) {
+                workunit.addCurrent(this.allExistPredicates.get(Integer.parseInt(lhs_id)));
+            }
+            workunit.setTransferData();
+            workUnits.add(workunit);
+        }
+
+        ParallelRuleDiscoverySampling parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling();
+
+        List<Message> messages = parallelRuleDiscoverySampling.runLocal(workUnits);
+        double[] confidences = new double[messages.size()];
+        for (int i = 0; i < messages.size(); i++) {
+            long lhs_supp = 0;
+            Message message = messages.get(i);
+            if (isConstantRHS.get(i)) {
+                lhs_supp = message.getCurrentSuppCP0();
+            } else {
+                lhs_supp = message.getCurrentSupp();
+            }
+            long rule_supp = message.getAllCurrentRHSsSupport().get(rhss.get(i));
+            confidences[i] = rule_supp * 1.0 / lhs_supp;
+        }
+        return confidences;
+    }
+}

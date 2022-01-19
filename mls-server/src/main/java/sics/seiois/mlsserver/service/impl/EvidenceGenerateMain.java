@@ -648,7 +648,7 @@ public class EvidenceGenerateMain {
             if (ree == null) {
                 continue;
             }
-            timeInfo.append("Rule : ").append(ree.toString()).append("\n");
+            timeInfo.append("Rule : ").append(ree.toString()).append(", supp: ").append(ree.getSupport()).append(", conf:").append(ree.getConfidence()).append("\n");
         }
 
         String outTxtPath = PredicateConfig.MLS_TMP_HOME + taskId + "/rule_all/" +  outputResultFile; //"experiment_results";
