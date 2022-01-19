@@ -658,6 +658,7 @@ public class MultiTuplesRuleMiningOpt {
         }
 
         PredicateSet currrentPs = unitSet.getCurrrent();
+        // currentSet does not contain constant predicates and same Set
         ArrayList<Predicate> currentSet = new ArrayList<>();
         Map<String, ArrayList<Predicate>> constantPs = new HashMap<>();
         for (Predicate p : currrentPs) {
@@ -694,6 +695,7 @@ public class MultiTuplesRuleMiningOpt {
         }
 
         TIntArrayList _list = pBegin.getOperand1().getColumnLight().getValueIntList(unitSet.getPids()[pBegin.getIndex1()]);
+        // Key is the values of attributes, List<Integer> is the tuple IDs that satisfy the "key"
         Map<TIntArrayList, List<Integer>> leftMap = createHashMap(_list, samePs, unitSet.getPids()[pBegin.getIndex1()], true);
         if(pids[pBegin.getIndex1()] == pids[pBegin.getIndex2()]) {
             for (Map.Entry<TIntArrayList, List<Integer>> entry : leftMap.entrySet()) {
@@ -739,6 +741,7 @@ public class MultiTuplesRuleMiningOpt {
 
         return messages;
     }
+
     private List<HyperCube> updateHyperCubeMap1(List<HyperCube> hyperCubes, WorkUnits unitSet, ArrayList<Predicate> currentSetB,
                                                 List<Integer> lines, Map<String, ArrayList<Predicate>> constantPs, int[] pids,
                                                 TIntArrayList key, int indexUsed) {
@@ -747,6 +750,7 @@ public class MultiTuplesRuleMiningOpt {
         List<ArrayList<Predicate>> unitRhs = new ArrayList<>();
         boolean [] ifConst = new boolean[unitSet.getUnits().size()];
 
+        // initialize all work units
         for (int index = 0; index < unitSet.getUnits().size(); index++) {
             WorkUnit unit = unitSet.getUnits().get(index);
             ArrayList<Predicate> rhs = new ArrayList<>();
@@ -770,7 +774,8 @@ public class MultiTuplesRuleMiningOpt {
 //        log.info(">>>> line count : {}", lines.size());
 //        finish:
         int countLine = 0;
-        for (int line = 0; line < lines.size(); line++) {
+        for (int lid = 0; lid < lines.size(); lid++) {
+            int line = lines.get(lid);
             //遍历常数谓词
             for (Map.Entry<String, ArrayList<Predicate>> entry : constantPs.entrySet()) {
                 Predicate currp = entry.getValue().get(0);
@@ -785,6 +790,7 @@ public class MultiTuplesRuleMiningOpt {
 
                     for (Predicate curr : entry.getValue()) {
                         if (c != curr.getConstantInt()) {
+                            // index is the script of work units
                             for (Integer index : prdMap.get(curr.toString())) {
 //                            log.info(">>>>error index: {}", index);
                                 ifConst[index.intValue()] = false;
@@ -829,6 +835,7 @@ public class MultiTuplesRuleMiningOpt {
 //                }
 //            }
 
+            // extract the value of a tuple 'line'
             for (int ppid = 0; ppid < currentSetB.size(); ppid++) {
                 // 遍历所有谓词
                 Predicate currp = currentSetB.get(ppid);
@@ -843,6 +850,7 @@ public class MultiTuplesRuleMiningOpt {
                 }
             }
 
+            // insert into the hypercube
             for (int index = 0; index < unitSet.getUnits().size(); index++) {
                 WorkUnit unit = unitSet.getUnits().get(index);
                 if(ifConst[index]) {
