@@ -111,7 +111,7 @@ class PAssoc(object):
         # reward function
         reward = None
         if self.if_interactive == 1:
-            lhs_indices = np.nonzero(next_state)
+            lhs_indices = np.nonzero(next_state)[0]
             sequence = " ".join(str(idx) for idx in lhs_indices)
             sequence += ","
             sequence += str(select_rhs)

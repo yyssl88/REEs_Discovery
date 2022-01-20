@@ -31,7 +31,14 @@ public class CalculateRuleSuppConf {
 
     private ArrayList<Predicate> allPredicates;
     private ArrayList<Predicate> allExistPredicates;
+    private Input input;
     private int maxTupleNum;
+    private int maxOneRelationNum;
+    private int allCount;
+    private long support;
+    private double confidence = 0.9;
+
+    private ParallelRuleDiscoverySampling parallelRuleDiscoverySampling;
 
 
     private void prepareAllPredicatesMultiTuples() {
@@ -106,6 +113,7 @@ public class CalculateRuleSuppConf {
     }
 
     public void preparePredicates(String args[]) {
+        logger.info("### begin to prepare predicates...");
         Map<String, String> argsMap = convert(args);
         String directory_path = argsMap.get("directory_path");
         String constant_file = argsMap.get("constant_file");
@@ -116,11 +124,11 @@ public class CalculateRuleSuppConf {
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
         double rowLimit = 1.0;
-        double errorThreshold = 0.9;
         double relation_num_ratio = 1.0;
         String mlsel_file = null;
         String ml_config_file = null;
         String type_attr_file = null;
+        double support_ratio = 0.0001;
 
         Dir directory = new Dir(directory_path, relation_num_ratio);
 
@@ -138,23 +146,23 @@ public class CalculateRuleSuppConf {
                 relations.add(new FileIterator(rname, fileReader,
                         new ConfigurationSettingFileInput(rpath)));
             }
-            Input input = new Input(relations, rowLimit, type_attr_file);
-            int maxOneRelationNum = input.getMaxTupleOneRelation();
-            int allCount = input.getAllCount();
+            this.input = new Input(relations, rowLimit, type_attr_file);
+            this.maxOneRelationNum = this.input.getMaxTupleOneRelation();
+            this.allCount = this.input.getAllCount();
 
-            PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue, ml_config_file);
-            ConstantPredicateBuilder cpredicates = new ConstantPredicateBuilder(input, constant_file);
+            PredicateBuilder predicates = new PredicateBuilder(this.input, noCrossColumn, minimumSharedValue, maximumSharedValue, ml_config_file);
+            ConstantPredicateBuilder cpredicates = new ConstantPredicateBuilder(this.input, constant_file);
             logger.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
 
             // construct PLI index
-            input.buildPLIs_col_OnSpark(chunkLength);
+            this.input.buildPLIs_col_OnSpark(chunkLength);
 
             // load ML Selection
             MLSelection mlsel = new MLSelection();
             mlsel.configure(mlsel_file);
 
             // calculate support
-            long rsize = input.getLineCount();
+            this.support = (long) (this.allCount * (this.allCount - 1) * support_ratio);
 
             this.allPredicates = new ArrayList<>();
             for (Predicate p : predicates.getPredicates()) {
@@ -168,12 +176,20 @@ public class CalculateRuleSuppConf {
             for (Predicate cp : cpredicates.getPredicates()) {
                 constantPs.add(cp);
             }
-            input.transformConstantPredicates(constantPs);
+            this.input.transformConstantPredicates(constantPs);
 
             // add constant predicates
             for (Predicate p : constantPs) {
+                if (p.getConstant().equals("")) {
+                    logger.info("empty value for predicate: {}", p);
+                    continue;
+                }
                 this.allPredicates.add(p);
             }
+
+            this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
+                    this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
+                    0, 0, 0, 0, 0, 0, 0, 0, 0);
 
             prepareAllPredicatesMultiTuples();
 
@@ -190,17 +206,24 @@ public class CalculateRuleSuppConf {
                 }
             }
         }
+        logger.info("### finish preparing predicates!");
     }
 
     public int getAllPredicatesNum() {
+        logger.info("allExistPredicates size: {}", this.allExistPredicates.size());
         return this.allExistPredicates.size();
     }
 
     // sequence: "1 3 12,5;2 1,7;..."
     public double[] getConfidence(String sequence) {
+        logger.info("### begin to calculate confidence for sequence: {}", sequence);
+
+        for (int i = 0; i < this.allExistPredicates.size(); i++) {
+            logger.info("{} : {}", i, this.allExistPredicates.get(i).toString());
+        }
         ArrayList<WorkUnit> workUnits = new ArrayList<>();
-        ArrayList<Boolean> isConstantRHS = new ArrayList<Boolean>();
-        ArrayList<Predicate> rhss = new ArrayList<Predicate>();
+        ArrayList<Boolean> isConstantRHS = new ArrayList<>();
+        ArrayList<Predicate> rhss = new ArrayList<>();
         for (String seq_rule : sequence.split(";")) {
             String[] lhs_ids = seq_rule.split(",")[0].split(" ");
             String rhs_id = seq_rule.split(",")[1];
@@ -222,9 +245,8 @@ public class CalculateRuleSuppConf {
             workUnits.add(workunit);
         }
 
-        ParallelRuleDiscoverySampling parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling();
-
         List<Message> messages = parallelRuleDiscoverySampling.runLocal_new(workUnits);
+        logger.info("messages size: {}", messages.size());
         double[] confidences = new double[messages.size()];
         for (int i = 0; i < messages.size(); i++) {
             long lhs_supp = 0;
@@ -236,11 +258,18 @@ public class CalculateRuleSuppConf {
             }
             long rule_supp = message.getAllCurrentRHSsSupport().get(rhss.get(i));
             confidences[i] = rule_supp * 1.0 / lhs_supp;
+            logger.info("rule: {} -> {}, lhs_supp: {}, supp: {}, conf: {}", workUnits.get(i).getCurrrent().toString(), rhss.get(i).toString(), lhs_supp, rule_supp, confidences[i]);
         }
         return confidences;
     }
 
     public static void main(String[] args) {
-
+        String args_[] = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+                "chunkLength=200000", "maxTupleNum=2"};
+        CalculateRuleSuppConf calculateRuleSuppConf = new CalculateRuleSuppConf();
+        calculateRuleSuppConf.preparePredicates(args_);
+        calculateRuleSuppConf.getAllPredicatesNum();
+        calculateRuleSuppConf.getConfidence("1 11,5");
+        logger.info("Given a rule, calculate its support and confidence");
     }
 }

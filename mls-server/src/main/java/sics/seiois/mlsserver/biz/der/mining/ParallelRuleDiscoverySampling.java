@@ -3489,9 +3489,9 @@ public class ParallelRuleDiscoverySampling {
 
 //             if (test2(task)) {
             if (true) {
-                if (! test3(unitSet.getUnits().get(0))) {
-                    continue;
-                }
+//                if (! test3(unitSet.getUnits().get(0))) {
+//                    continue;
+//                }
                 // test 1: user_info.t0.city == user_info.t1.city  user_info.t0.sn == user_info.t1.sn  user_info.t0.gender == user_info.t1.gender ]
                 //                         -> {  user_info.t0.name == user_info.t1.name }
 

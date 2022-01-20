@@ -77,6 +77,8 @@ def main():
     parser.add_argument('-maxTupleNum', '--maxTupleNum', type=int, default=2)
     parser.add_argument('-conf_thr', '--conf_thr', type=int, default=0.9)
 
+    parser.add_argument('-classpath', '--classpath', type=str, default="")
+
 
     args = parser.parse_args()
     arg_dict = args.__dict__
@@ -85,10 +87,9 @@ def main():
         print("k:", k, ", v:", v)
 
     # start Java
-    jarpath = ""  ######
-    ext_dirs = "" ######
-    classpath = jarpath + ";" + ext_dirs ######
-    jpype.startJVM(jpype.getDefaultJVMPath(), "-ea", "-Djava.class.path={}".format(classpath))
+    classpath = arg_dict["classpath"].replace(":", ";")
+    print("classpath: ", classpath)
+    jpype.startJVM(jpype.getDefaultJVMPath(), "-ea", "-Djava.classpath={}".format(classpath))
     args_ = ["directory_path={}".format(arg_dict["directory_path"]), "constant_file={}".format(arg_dict["constant_file"]),
              "chunkLength={}".format(arg_dict["chunkLength"]), "maxTupleNum={}".format(arg_dict["maxTupleNum"])]
     java_validator = jpype.JClass('sics.seiois.mlsserver.biz.der.mining.validation.CalculateRuleSuppConf')
@@ -99,8 +100,9 @@ def main():
     p_num = None
     if arg_dict["if_interactive"] == 1:
         p_num = validator.getAllPredicatesNum()
+    print("p_num: ", p_num)
     pAssoc = PAssoc(arg_dict["if_interactive"], p_num, arg_dict["supp_thr"], arg_dict["conf_thr"], arg_dict["data_dir"])
-    model = DeepQNetwork(arg_dict["predicate_num"], arg_dict["predicate_num"],
+    model = DeepQNetwork(p_num, p_num,
                          learning_rate=arg_dict["learning_rate"],
                          reward_decay=arg_dict["reward_decay"],
                          e_greedy=arg_dict["e_greedy"],
