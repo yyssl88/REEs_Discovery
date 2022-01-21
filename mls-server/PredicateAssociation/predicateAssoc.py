@@ -34,8 +34,10 @@ class PAssoc(object):
         # return observation with zero predicate
         self.current_state = np.zeros(self.state_num)
 
-    def initialAction(self, random_seed):
+    def initialAction(self, random_seed, select_rhs):
         action = np.random.randint(0, self.state_num)
+        while action == select_rhs:
+            action = np.random.randint(0, self.state_num)
         self.current_state[action] = 1.0
         return copy.deepcopy(self.current_state)
 

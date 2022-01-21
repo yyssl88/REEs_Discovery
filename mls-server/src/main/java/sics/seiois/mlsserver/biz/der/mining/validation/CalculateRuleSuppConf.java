@@ -5,6 +5,7 @@ import de.metanome.algorithm_integration.configuration.ConfigurationSettingFileI
 import de.metanome.algorithm_integration.input.InputIterationException;
 import de.metanome.algorithm_integration.input.RelationalInput;
 import de.metanome.backend.input.file.FileIterator;
+import io.swagger.models.auth.In;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sics.seiois.mlsserver.biz.der.metanome.input.Dir;
@@ -39,6 +40,8 @@ public class CalculateRuleSuppConf {
     private double confidence = 0.9;
 
     private ParallelRuleDiscoverySampling parallelRuleDiscoverySampling;
+    private int nonConsPredicatesNum;
+    private int[] nonConsPredicates;
 
 
     private void prepareAllPredicatesMultiTuples() {
@@ -96,8 +99,12 @@ public class CalculateRuleSuppConf {
         }
 
         this.allExistPredicates = new ArrayList<>();
+        this.nonConsPredicatesNum = 0;
         for (Predicate p : ps) {
             this.allExistPredicates.add(p);
+            if (!p.isConstant()) {
+                this.nonConsPredicatesNum = this.nonConsPredicatesNum + 1;
+            }
         }
     }
 
@@ -187,7 +194,7 @@ public class CalculateRuleSuppConf {
                 this.allPredicates.add(p);
             }
 
-            this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
+            this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(this.allPredicates, 10000, this.maxTupleNum,
                     this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
                     0, 0, 0, 0, 0, 0, 0, 0, 0);
 
@@ -211,16 +218,28 @@ public class CalculateRuleSuppConf {
 
     public int getAllPredicatesNum() {
         logger.info("allExistPredicates size: {}", this.allExistPredicates.size());
+        for (int i = 0; i < this.allExistPredicates.size(); i++) {
+            logger.info("{} : {}", i, this.allExistPredicates.get(i).toString());
+        }
         return this.allExistPredicates.size();
+    }
+
+    public int[] getNonConstantPredicateIDs() {
+        this.nonConsPredicates = new int[this.nonConsPredicatesNum];
+        int k = 0;
+        for (int i = 0; i < this.allExistPredicates.size(); i++) {
+            if (!this.allExistPredicates.get(i).isConstant()) {
+                this.nonConsPredicates[k] = i;
+                k = k + 1;
+            }
+        }
+        return this.nonConsPredicates;
     }
 
     // sequence: "1 3 12,5;2 1,7;..."
     public double[] getConfidence(String sequence) {
         logger.info("### begin to calculate confidence for sequence: {}", sequence);
 
-        for (int i = 0; i < this.allExistPredicates.size(); i++) {
-            logger.info("{} : {}", i, this.allExistPredicates.get(i).toString());
-        }
         ArrayList<WorkUnit> workUnits = new ArrayList<>();
         ArrayList<Boolean> isConstantRHS = new ArrayList<>();
         ArrayList<Predicate> rhss = new ArrayList<>();
@@ -245,7 +264,10 @@ public class CalculateRuleSuppConf {
             workUnits.add(workunit);
         }
 
-        List<Message> messages = parallelRuleDiscoverySampling.runLocal_new(workUnits);
+        ArrayList<WorkUnit> workUnits_new = new ArrayList<>();
+        this.parallelRuleDiscoverySampling.solveSkewness(workUnits, workUnits_new);
+
+        List<Message> messages = this.parallelRuleDiscoverySampling.runLocal_new(workUnits_new);
         logger.info("messages size: {}", messages.size());
         double[] confidences = new double[messages.size()];
         for (int i = 0; i < messages.size(); i++) {
@@ -257,19 +279,25 @@ public class CalculateRuleSuppConf {
                 lhs_supp = message.getCurrentSupp();
             }
             long rule_supp = message.getAllCurrentRHSsSupport().get(rhss.get(i));
-            confidences[i] = rule_supp * 1.0 / lhs_supp;
+            if (lhs_supp == 0) {
+                confidences[i] = 0.0;
+            } else {
+                confidences[i] = rule_supp * 1.0 / lhs_supp;
+            }
             logger.info("rule: {} -> {}, lhs_supp: {}, supp: {}, conf: {}", workUnits.get(i).getCurrrent().toString(), rhss.get(i).toString(), lhs_supp, rule_supp, confidences[i]);
         }
         return confidences;
     }
 
     public static void main(String[] args) {
-        String args_[] = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+        logger.info("Given a rule, calculate its support and confidence");
+        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
                 "chunkLength=200000", "maxTupleNum=2"};
         CalculateRuleSuppConf calculateRuleSuppConf = new CalculateRuleSuppConf();
         calculateRuleSuppConf.preparePredicates(args_);
         calculateRuleSuppConf.getAllPredicatesNum();
         calculateRuleSuppConf.getConfidence("1 11,5");
-        logger.info("Given a rule, calculate its support and confidence");
+        calculateRuleSuppConf.getConfidence("5 6 11 12 18 19,5");
+        calculateRuleSuppConf.getConfidence("1 3 7 16,5");
     }
 }

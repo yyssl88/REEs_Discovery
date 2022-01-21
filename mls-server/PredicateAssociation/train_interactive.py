@@ -13,20 +13,20 @@ tf.disable_v2_behavior()
 MAX_LHS_PREDICATES = 5
 
 
-def run(pComb, model, validator, epoch, model_path):
+def run(pComb, model, nonConstantPredicateIDs, validator, epoch, model_path):
     select_rhs = np.random.randint(0, pComb.state_num)
 
     step = 0
     for episode in range(epoch):
         # initial observation
         pComb.reset()
-        observation = pComb.initialAction(episode * 777)
+        observation = pComb.initialAction(episode * 777, select_rhs)
 
         print(observation)
 
         while True:
             # find action
-            action = model.choose_action(observation)
+            action = model.choose_action(observation, nonConstantPredicateIDs, select_rhs)
             if action == -1:
                 break
             # take action and get next observation and reward
@@ -98,9 +98,12 @@ def main():
 
     # run
     p_num = None
+    nonConstantPredicateIDs = None
     if arg_dict["if_interactive"] == 1:
         p_num = validator.getAllPredicatesNum()
+        nonConstantPredicateIDs = validator.getNonConstantPredicateIDs()
     print("p_num: ", p_num)
+    print("nonConstantPredicateIDs: ", nonConstantPredicateIDs)
     pAssoc = PAssoc(arg_dict["if_interactive"], p_num, arg_dict["supp_thr"], arg_dict["conf_thr"], arg_dict["data_dir"])
     model = DeepQNetwork(p_num, p_num,
                          learning_rate=arg_dict["learning_rate"],
@@ -112,7 +115,7 @@ def main():
                          # output_graph=True
                          )
 
-    run(pAssoc, model, validator, arg_dict["epoch"], arg_dict["model_path"])
+    run(pAssoc, model, nonConstantPredicateIDs, validator, arg_dict["epoch"], arg_dict["model_path"])
 
     end = time.time()
     print("finish training, using time: ", str(end - start), arg_dict["model_path"])
