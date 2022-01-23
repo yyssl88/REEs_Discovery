@@ -452,7 +452,7 @@ public class ParallelRuleDiscoverySampling {
     private void removePropertyFeatureCPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.isConstant() && p.getOperand1().getColumn().getTableName().equals("Property_Features")) {
+            if (p.isConstant() && p.getOperand1().getColumn().getTableName().contains("Property_Features")) {
                 removePredicates.add(p);
             }
         }

@@ -112,7 +112,7 @@ public class CalculateRuleSuppConf {
     private void removePropertyFeatureCPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.isConstant() && p.getOperand1().getColumn().getTableName().equals("Property_Features")) {
+            if (p.isConstant() && p.getOperand1().getColumn().getTableName().contains("Property_Features")) {
                 removePredicates.add(p);
             }
         }
@@ -214,6 +214,7 @@ public class CalculateRuleSuppConf {
                     0, 0, 0, 0, 0, 0, 0, 0, 0);
 
             removePropertyFeatureCPredicates(this.allPredicates);
+            logger.info("After remove Property_Feature constant predicates, allPredicates size: {}", this.allPredicates.size());
 
             prepareAllPredicatesMultiTuples();
 
