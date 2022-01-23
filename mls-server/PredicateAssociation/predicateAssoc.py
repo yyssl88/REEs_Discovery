@@ -34,9 +34,9 @@ class PAssoc(object):
         # return observation with zero predicate
         self.current_state = np.zeros(self.state_num)
 
-    def initialAction(self, random_seed, select_rhs):
+    def initialAction(self, random_seed, rhs_id):
         action = np.random.randint(0, self.state_num)
-        while action == select_rhs:
+        while action == rhs_id:
             action = np.random.randint(0, self.state_num)
         self.current_state[action] = 1.0
         return copy.deepcopy(self.current_state)
@@ -103,7 +103,7 @@ class PAssoc(object):
             state[e] = 1.0
         return state
 
-    def step(self, action, select_rhs, validator):
+    def step(self, action, rhs_id, validator):
         base_action = np.zeros(self.state_num)
         base_action[action] = 1.0
         # next state
@@ -116,7 +116,7 @@ class PAssoc(object):
             lhs_indices = np.nonzero(next_state)[0]
             sequence = " ".join(str(idx) for idx in lhs_indices)
             sequence += ","
-            sequence += str(select_rhs)
+            sequence += str(rhs_id)
             reward = validator.getConfidence(sequence)[0] - self.conf_taus
         else:
             attr_arr = self.transformAttr(next_state)

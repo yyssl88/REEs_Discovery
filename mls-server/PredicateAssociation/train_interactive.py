@@ -14,23 +14,28 @@ MAX_LHS_PREDICATES = 5
 
 
 def run(pComb, model, nonConstantPredicateIDs, validator, epoch, model_path):
-    select_rhs = np.random.randint(0, pComb.state_num)
-
     step = 0
     for episode in range(epoch):
         # initial observation
         pComb.reset()
-        observation = pComb.initialAction(episode * 777, select_rhs)
+        rhs_id = np.random.randint(0, pComb.state_num)
+        observation = pComb.initialAction(episode * 777, rhs_id)
 
-        print(observation)
+        rhs = np.zeros(pComb.state_num)
+        rhs[rhs_id] = 1.0
+        observation = np.concatenate([observation, rhs])
+
+        print("rhs_id: {}".format(rhs_id))
+        print("observation: {}".format(observation))
 
         while True:
             # find action
-            action = model.choose_action(observation, nonConstantPredicateIDs, select_rhs)
+            action = model.choose_action(observation, nonConstantPredicateIDs, rhs_id)
             if action == -1:
                 break
             # take action and get next observation and reward
-            observation_, reward, done = pComb.step(action, select_rhs, validator)
+            observation_, reward, done = pComb.step(action, rhs_id, validator)
+            observation_ = np.concatenate([observation_, rhs])
 
             print("Epoch {} : {}, {}, {}, {}".format(episode, observation_, reward, done, action))
 
@@ -105,7 +110,7 @@ def main():
     print("p_num: ", p_num)
     print("nonConstantPredicateIDs: ", nonConstantPredicateIDs)
     pAssoc = PAssoc(arg_dict["if_interactive"], p_num, arg_dict["supp_thr"], arg_dict["conf_thr"], arg_dict["data_dir"])
-    model = DeepQNetwork(p_num, p_num,
+    model = DeepQNetwork(p_num, p_num * 2,
                          learning_rate=arg_dict["learning_rate"],
                          reward_decay=arg_dict["reward_decay"],
                          e_greedy=arg_dict["e_greedy"],

@@ -194,6 +194,8 @@ public class CalculateRuleSuppConf {
                 this.allPredicates.add(p);
             }
 
+            logger.info("allPredicates size: {}", allPredicates.size());
+
             this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(this.allPredicates, 10000, this.maxTupleNum,
                     this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
                     0, 0, 0, 0, 0, 0, 0, 0, 0);
@@ -291,13 +293,27 @@ public class CalculateRuleSuppConf {
 
     public static void main(String[] args) {
         logger.info("Given a rule, calculate its support and confidence");
-        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+
+//        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+//                "chunkLength=200000", "maxTupleNum=2"};
+
+//        String[] args_ = {"directory_path=D:\\REE\\tmp\\property", "constant_file=D:\\REE\\tmp\\constant_property.txt",
+//                "chunkLength=200000", "maxTupleNum=2"};
+
+        String[] args_ = {"directory_path=D:\\REE\\tmp\\aminer_test", "constant_file=D:\\REE\\tmp\\constant_aminer.txt",
                 "chunkLength=200000", "maxTupleNum=2"};
+
         CalculateRuleSuppConf calculateRuleSuppConf = new CalculateRuleSuppConf();
         calculateRuleSuppConf.preparePredicates(args_);
         calculateRuleSuppConf.getAllPredicatesNum();
-        calculateRuleSuppConf.getConfidence("1 11,5");
-        calculateRuleSuppConf.getConfidence("5 6 11 12 18 19,5");
-        calculateRuleSuppConf.getConfidence("1 3 7 16,5");
+
+//        calculateRuleSuppConf.getConfidence("1 11,5");
+//        calculateRuleSuppConf.getConfidence("5 6 11 12 18 19,5");
+//        calculateRuleSuppConf.getConfidence("1 3 7 16,5");
+
+//        calculateRuleSuppConf.getConfidence("144 203,236");
+
+        calculateRuleSuppConf.getConfidence("16 43,37");
+
     }
 }

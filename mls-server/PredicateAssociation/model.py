@@ -119,6 +119,8 @@ class DeepQNetwork:
         unselected = []
         containNonCPredicate = False
         for sc, e in enumerate(observation):
+            if sc >= observation.shape[0] / 2:
+                break
             if e == 0.0:
                 unselected.append(sc)
             elif sc in nonConstantPredicateIDs:

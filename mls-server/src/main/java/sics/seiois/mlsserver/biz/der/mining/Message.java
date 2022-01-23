@@ -130,7 +130,7 @@ public class Message implements Serializable {
                     this.addInValidRHS(rhs);
                 } else {
                     double conf = supportXRHS * 1.0 / this.currentSuppCP0;
-                    logger.info(">>>> {} conf : {} | {}", rhs, conf, confidence);
+//                    logger.info(">>>> {} conf : {} | {}", rhs, conf, confidence);
                     if (conf >= confidence) {
                         this.addValidRHS(rhs, supportXRHS * maxTupleRelation, conf);
                     }
