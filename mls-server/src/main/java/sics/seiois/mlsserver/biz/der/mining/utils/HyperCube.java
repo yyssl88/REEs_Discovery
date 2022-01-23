@@ -181,6 +181,7 @@ public class HyperCube {
                 long count = value;
                 this.supportX += (long) (count * (count - 1));
                 this.supportXCP0 += (long)(count);
+                this.supportXCP1 += (long)(count);
             }
         } else {
             for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
@@ -188,7 +189,8 @@ public class HyperCube {
                     long count = entry.getValue();
                     long count1 = lhsSupportMap1.get(entry.getKey());
                     this.supportX += (long) (count * count1);
-                    this.supportXCP1 += (long) (count);
+                    this.supportXCP0 += (long)(count);
+                    this.supportXCP1 += (long) (count1);
                 }
             }
         }

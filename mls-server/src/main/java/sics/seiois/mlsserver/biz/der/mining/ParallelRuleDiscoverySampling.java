@@ -225,26 +225,26 @@ public class ParallelRuleDiscoverySampling {
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
         ArrayList<Predicate> applicationRHSs = new ArrayList<>();
         // 1 - choose the first few rhss
-        int NUM_rhs = 4;
-        logger.info("#### choose the first {} rhss", NUM_rhs);
-        int count = 0;
-        HashMap<String, Predicate> temp = new HashMap<>();
-        for (Predicate p : predicates) {
-            if (p.isConstant()) {
-                continue;
-            }
-            if (!temp.containsKey(p.toString())) {
-                temp.put(p.toString(), p);
-            }
-        }
-
-        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
-            applicationRHSs.add(entry.getValue());
-            count++;
-            if (count == NUM_rhs) {
-                break;
-            }
-        }
+//        int NUM_rhs = 4;
+//        logger.info("#### choose the first {} rhss", NUM_rhs);
+//        int count = 0;
+//        HashMap<String, Predicate> temp = new HashMap<>();
+//        for (Predicate p : predicates) {
+//            if (p.isConstant()) {
+//                continue;
+//            }
+//            if (!temp.containsKey(p.toString())) {
+//                temp.put(p.toString(), p);
+//            }
+//        }
+//
+//        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
+//            applicationRHSs.add(entry.getValue());
+//            count++;
+//            if (count == NUM_rhs) {
+//                break;
+//            }
+//        }
 
 
         // 2 - choose some rhss with minimum support value
@@ -393,10 +393,10 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 8. use all predicates as RHSs
-//        logger.info("#### choose all RHSs");
-//        for (Predicate p : predicates) {
-//            applicationRHSs.add(p);
-//        }
+        logger.info("#### choose all RHSs");
+        for (Predicate p : predicates) {
+            applicationRHSs.add(p);
+        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -3338,7 +3338,7 @@ public class ParallelRuleDiscoverySampling {
         PredicateSet Y = task.getRHSs();
 
         HashSet<String> X_dict = new HashSet<>();
-        X_dict.add("ncvoter.t0.party == ncvoter.t1.party");
+        X_dict.add("School.t0.name == School.t1.name");
 
         if (X.size() != 1) {
             return false;
