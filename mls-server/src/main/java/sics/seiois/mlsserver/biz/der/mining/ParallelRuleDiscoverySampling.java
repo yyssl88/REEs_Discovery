@@ -491,21 +491,6 @@ public class ParallelRuleDiscoverySampling {
     public void levelwiseRuleDiscovery(String taskId, SparkSession spark, SparkContextConfig sparkContextConfig) {
         // 1. initialize the 1st level combinations
 
-        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
-
-//        if (this.maxTupleNum <= 2) {
-//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
-//            logger.info("After filtering irrelevant predicates, allPredicates size: {}", this.allPredicates.size());
-//            for (Predicate p : this.allPredicates) {
-//                logger.info("allPredicates: {}", p);
-//            }
-//        }
-
-        removePropertyFeatureCPredicates(applicationRHSs, this.allPredicates);
-        logger.info("After removing Property_Feature Constant Predicates, allPredicates size: {}", this.allPredicates.size());
-
-        this.prepareAllPredicatesMultiTuples();
-
         this.table_name = "";
         HashMap<String, Long> tupleNumberRelations = new HashMap<>();
         for (int i = 0; i < inputLight.getNames().size(); i++) {
@@ -515,6 +500,19 @@ public class ParallelRuleDiscoverySampling {
         }
         this.table_name = this.table_name.substring(0, this.table_name.length() - 1); // remove last "_"
         logger.info("#### table_name: {}", this.table_name);
+
+
+        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
+
+//        if (this.maxTupleNum <= 2) {
+//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+//        }
+
+        if (table_name.contains("Property_Features")) {
+            removePropertyFeatureCPredicates(applicationRHSs, this.allPredicates);
+        }
+
+        this.prepareAllPredicatesMultiTuples();
 
         logger.info("Parallel Mining with Predicate size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
 
