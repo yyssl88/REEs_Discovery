@@ -326,7 +326,10 @@ public class Lattice implements KryoSerializable {
                         continue;
                     }
                     if (!this.latticeLevel.get(key).getPredicates().containsPredicate(cand)) {
-                        this.latticeLevel.get(key).getRHSs().remove(cand);
+                        // check!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        if (this.latticeLevel.get(key).getRHSs().containsPredicate(cand)) {
+                            this.latticeLevel.get(key).getRHSs().remove(cand);
+                        }
                     }
                 }
             }

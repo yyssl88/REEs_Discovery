@@ -48,7 +48,7 @@ public class ParallelRuleDiscoverySampling {
     public static int BATCH_SIZE = 500;
 
     // max number of partition of Lattice
-    public static int NUM_LATTICE = 80;
+    public static int NUM_LATTICE = 200;
     public static int MAX_CURRENT_PREDICTES = 5;
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
@@ -414,6 +414,54 @@ public class ParallelRuleDiscoverySampling {
     }
 
     /**
+     * if RHS only contain non-constant predicates, then filter the irrelevant predicates
+     * */
+    private void filterIrrelevantPredicates(ArrayList<Predicate> applicationRHSs, List<Predicate> allPredicates) {
+        // filter the predicates that are irrelevant to rhs
+        boolean allNonConstant = true;
+        HashSet<String> relationRHS = new HashSet<>();
+        for (Predicate p : applicationRHSs) {
+            if (p.isConstant()) {
+                allNonConstant = false;
+                break;
+            }
+            relationRHS.add(p.getOperand1().getColumn().getTableName());
+            relationRHS.add(p.getOperand2().getColumn().getTableName());
+        }
+//        for (String name : relationRHS) {
+//            logger.info("Table name: {}", name);
+//        }
+        if (allNonConstant) {
+            ArrayList<Predicate> removePredicates = new ArrayList<>();
+            for (Predicate p : allPredicates) {
+                String name_1 = p.getOperand1().getColumn().getTableName();
+                String name_2 = p.getOperand2().getColumn().getTableName();
+//                logger.info("currPredicate: {}, name_1: {}, name_2: {}", p, name_1, name_2);
+                if (!relationRHS.contains(name_1) || !relationRHS.contains(name_2)) {
+                    removePredicates.add(p);
+                }
+            }
+            for (Predicate p : removePredicates) {
+//                logger.info("remove predicate: {}", p);
+                allPredicates.remove(p);
+            }
+        }
+    }
+
+    // remove the constant predicates related to Property_Feature dataset
+    private void removePropertyFeatureCPredicates(ArrayList<Predicate> applicationRHSs, List<Predicate> allPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            if (p.isConstant() && p.getOperand1().getColumn().getTableName().equals("Property_Features")) {
+                removePredicates.add(p);
+            }
+        }
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
+        }
+    }
+
+    /**
      * merge work units by X
      */
     private ArrayList<WorkUnit> mergeWorkUnits(ArrayList<WorkUnit> workUnits) {
@@ -443,6 +491,19 @@ public class ParallelRuleDiscoverySampling {
     public void levelwiseRuleDiscovery(String taskId, SparkSession spark, SparkContextConfig sparkContextConfig) {
         // 1. initialize the 1st level combinations
 
+        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
+
+//        if (this.maxTupleNum <= 2) {
+//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+//            logger.info("After filtering irrelevant predicates, allPredicates size: {}", this.allPredicates.size());
+//            for (Predicate p : this.allPredicates) {
+//                logger.info("allPredicates: {}", p);
+//            }
+//        }
+
+        removePropertyFeatureCPredicates(applicationRHSs, this.allPredicates);
+        logger.info("After removing Property_Feature Constant Predicates, allPredicates size: {}", this.allPredicates.size());
+
         this.prepareAllPredicatesMultiTuples();
 
         this.table_name = "";
@@ -460,7 +521,6 @@ public class ParallelRuleDiscoverySampling {
         Lattice lattice = new Lattice(this.maxTupleNum);
 //        lattice.initialize(this.allPredicates, this.maxTupleNum);
 
-        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
 
         // only for test application-driven methods
         // RHSs predicate: <t_0>, <t_0, t_1>, <t_0, t_2>

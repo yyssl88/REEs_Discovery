@@ -127,7 +127,7 @@ public class CalculateRuleSuppConf {
         int chunkLength = Integer.parseInt(argsMap.get("chunkLength"));
         this.maxTupleNum = Integer.parseInt(argsMap.get("maxTupleNum"));
 
-        Boolean noCrossColumn = false;
+        Boolean noCrossColumn = true;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
         double rowLimit = 1.0;
@@ -297,11 +297,11 @@ public class CalculateRuleSuppConf {
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
 //                "chunkLength=200000", "maxTupleNum=2"};
 
-//        String[] args_ = {"directory_path=D:\\REE\\tmp\\property", "constant_file=D:\\REE\\tmp\\constant_property.txt",
-//                "chunkLength=200000", "maxTupleNum=2"};
-
-        String[] args_ = {"directory_path=D:\\REE\\tmp\\aminer_test", "constant_file=D:\\REE\\tmp\\constant_aminer.txt",
+        String[] args_ = {"directory_path=D:\\REE\\tmp\\property", "constant_file=D:\\REE\\tmp\\constant_property.txt",
                 "chunkLength=200000", "maxTupleNum=2"};
+
+//        String[] args_ = {"directory_path=D:\\REE\\tmp\\aminer_test", "constant_file=D:\\REE\\tmp\\constant_aminer.txt",
+//                "chunkLength=200000", "maxTupleNum=2"};
 
         CalculateRuleSuppConf calculateRuleSuppConf = new CalculateRuleSuppConf();
         calculateRuleSuppConf.preparePredicates(args_);
@@ -311,9 +311,9 @@ public class CalculateRuleSuppConf {
 //        calculateRuleSuppConf.getConfidence("5 6 11 12 18 19,5");
 //        calculateRuleSuppConf.getConfidence("1 3 7 16,5");
 
-//        calculateRuleSuppConf.getConfidence("144 203,236");
+        calculateRuleSuppConf.getConfidence("78 107,37");
 
-        calculateRuleSuppConf.getConfidence("16 43,37");
+//        calculateRuleSuppConf.getConfidence("16 30,37");
 
     }
 }

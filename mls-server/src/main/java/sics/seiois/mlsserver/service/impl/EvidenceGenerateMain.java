@@ -559,11 +559,13 @@ public class EvidenceGenerateMain {
             }
             ccount++;
         }
+        logger.info("#### non-constant predicates size: {}", allPredicates.size());
         for (Predicate p : reeFinderEvidSet.getConstantPredicateBuilder().getPredicates()) {
             if (p.getOperator() == Operator.EQUAL) {
                 allPredicates.add(p);
             }
         }
+        logger.info("#### allPredicates size: {}", allPredicates.size());
 
 //        writeAllPredicatesToFile(allPredicates, reeFinderEvidSet.getInput().getName());
 
