@@ -49,7 +49,7 @@ public class ParallelRuleDiscoverySampling {
 
     // max number of partition of Lattice
     public static int NUM_LATTICE = 80;
-    public static int MAX_CURRENT_PREDICTES = 8; //5;
+    public static int MAX_CURRENT_PREDICTES = 5;
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
 
@@ -224,47 +224,49 @@ public class ParallelRuleDiscoverySampling {
 
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
         ArrayList<Predicate> applicationRHSs = new ArrayList<>();
-        // 1 - choose the first 4 rhss
-//        logger.info("#### choose the first 4 rhss");
-//        int count = 0;
-//        HashMap<String, Predicate> temp = new HashMap<>();
-//        for (Predicate p : predicates) {
-//            if (p.isConstant()) {
-//                continue;
-//            }
-//            if (!temp.containsKey(p.toString())) {
-//                temp.put(p.toString(), p);
-//            }
-//        }
-//
-//        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
-//            applicationRHSs.add(entry.getValue());
-//            count++;
-//            if (count == 4) {
-//                break;
-//            }
-//        }
+        // 1 - choose the first few rhss
+        int NUM_rhs = 4;
+        logger.info("#### choose the first {} rhss", NUM_rhs);
+        int count = 0;
+        HashMap<String, Predicate> temp = new HashMap<>();
+        for (Predicate p : predicates) {
+            if (p.isConstant()) {
+                continue;
+            }
+            if (!temp.containsKey(p.toString())) {
+                temp.put(p.toString(), p);
+            }
+        }
+
+        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
+            applicationRHSs.add(entry.getValue());
+            count++;
+            if (count == NUM_rhs) {
+                break;
+            }
+        }
 
 
-        // 2 - choose 4 rhss with minimum support value
-//        logger.info("#### choose 4 RHSs with minimum support value");
+        // 2 - choose some rhss with minimum support value
+//        int NUM_rhs = 4;
+//        logger.info("#### choose {} RHSs with minimum support value", NUM_rhs);
 //        ArrayList<Long> allSupports = new ArrayList<>();
 //        for (Predicate p : predicates) {
 //            allSupports.add(p.getSupport());
 //        }
 //        allSupports.sort(Comparator.naturalOrder());
-//        Long minSupp = allSupports.get(3);
+//        Long minSupp = allSupports.get(NUM_rhs - 1);
 //        for (Predicate p : predicates) {
 //            if (p.getSupport() <= minSupp) {
 //                applicationRHSs.add(p);
 //            }
 //        }
-//        if (applicationRHSs.size() > 4) { // maybe exist redundant supp value minSupp
-//            applicationRHSs.subList(0, 4);
+//        if (applicationRHSs.size() > NUM_rhs) { // maybe exist redundant supp value minSupp
+//            applicationRHSs.subList(0, NUM_rhs);
 //        }
 
 
-        // 3 - choose one min-supp, one max-supp, and two random rhss
+        // 3 - choose 4 rhss: one min-supp, one max-supp, and two random rhss
 //        logger.info("#### choose 4 RHSs: one min-supp, one max-supp, and two random RHSs");
 //        Collections.sort(predicates, new Comparator<Predicate>() {
 //            @Override
@@ -307,8 +309,9 @@ public class ParallelRuleDiscoverySampling {
 //            }
 //        }
 
-        // 4. randomly choose 5 RHS.
-//        logger.info("#### randomly choose 5 RHSs");
+        // 4. randomly choose some RHS.
+//        int NUM_rhs = 5;
+//        logger.info("#### randomly choose {} RHSs", NUM_rhs);
 //        Collections.sort(predicates, new Comparator<Predicate>() {
 //            @Override
 //            public int compare(Predicate o1, Predicate o2) {
@@ -318,7 +321,7 @@ public class ParallelRuleDiscoverySampling {
 //        Random rand = new Random();
 //        rand.setSeed(1234567);
 //        HashSet<Integer> random_idx = new HashSet<>();
-//        while (random_idx.size() < 5) {
+//        while (random_idx.size() < NUM_rhs) {
 //            int idx = rand.nextInt(predicates.size());
 //            random_idx.add(idx);
 //        }
@@ -326,8 +329,10 @@ public class ParallelRuleDiscoverySampling {
 //            applicationRHSs.add(predicates.get(choose_idx));
 //        }
 
-        // 5. randomly choose 5 RHSs: 2 nonConstant and 3 constant RHSs
-//        logger.info("#### randomly choose 5 RHSs, including 2 nonConstant RHSs and 3 constant RHSs");
+        // 5. randomly choose (n+m) RHSs, including n nonConstant and m constant RHSs
+//        int NUM_Constant = 3;
+//        int NUM_NonConstant = 2;
+//        logger.info("#### randomly choose {} RHSs, including {} nonConstant RHSs and {} constant RHSs", NUM_Constant + NUM_NonConstant, NUM_NonConstant, NUM_Constant);
 //        Collections.sort(predicates, new Comparator<Predicate>() {
 //            @Override
 //            public int compare(Predicate o1, Predicate o2) {
@@ -339,15 +344,15 @@ public class ParallelRuleDiscoverySampling {
 //        HashSet<Integer> random_idx = new HashSet<>();
 //        int constant_num = 0;
 //        int nonConstant_num = 0;
-//        while (random_idx.size() < 5) {
+//        while (random_idx.size() < (NUM_Constant + NUM_NonConstant)) {
 //            int idx = rand.nextInt(predicates.size());
 //            if (predicates.get(idx).isConstant()) {
-//                if (constant_num < 3 && !random_idx.contains(idx)) {
+//                if (constant_num < NUM_Constant && !random_idx.contains(idx)) {
 //                    random_idx.add(idx);
 //                    constant_num = constant_num + 1;
 //                }
 //            } else {
-//                if (nonConstant_num < 2 && !random_idx.contains(idx)) {
+//                if (nonConstant_num < NUM_NonConstant && !random_idx.contains(idx)) {
 //                    random_idx.add(idx);
 //                    nonConstant_num = nonConstant_num + 1;
 //                }
@@ -357,8 +362,9 @@ public class ParallelRuleDiscoverySampling {
 //            applicationRHSs.add(predicates.get(choose_idx));
 //        }
 
-        // 6. randomly choose 4 non-constant RHS.
-//        logger.info("#### randomly choose 4 non-constant RHSs");
+        // 6. randomly choose some non-constant RHS.
+//        int NUM_NonConstant = 4;
+//        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
 //        Collections.sort(predicates, new Comparator<Predicate>() {
 //            @Override
 //            public int compare(Predicate o1, Predicate o2) {
@@ -368,7 +374,7 @@ public class ParallelRuleDiscoverySampling {
 //        Random rand = new Random();
 //        rand.setSeed(1234567);
 //        HashSet<Integer> random_idx = new HashSet<>();
-//        while (random_idx.size() < 4) {
+//        while (random_idx.size() < NUM_NonConstant) {
 //            int idx = rand.nextInt(predicates.size());
 //            if (!predicates.get(idx).isConstant()) {
 //                random_idx.add(idx);
@@ -378,13 +384,21 @@ public class ParallelRuleDiscoverySampling {
 //            applicationRHSs.add(predicates.get(choose_idx));
 //        }
 
-        // 7. use all predicates as RHSs
-        logger.info("#### choose all RHSs");
-        for (Predicate p : predicates) {
-            applicationRHSs.add(p);
-        }
+        // 7. use all non-constant predicates as RHSs
+//        logger.info("#### choose all non-constant RHSs");
+//        for (Predicate p : predicates) {
+//            if (!p.isConstant()) {
+//                applicationRHSs.add(p);
+//            }
+//        }
 
-//        // 8. test NCVoter
+        // 8. use all predicates as RHSs
+//        logger.info("#### choose all RHSs");
+//        for (Predicate p : predicates) {
+//            applicationRHSs.add(p);
+//        }
+
+        // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
 //        for (Predicate p : predicates) {
 //            if (p.getOperand1().toString(0).equals("t0.voting_intention")) {
@@ -3210,27 +3224,12 @@ public class ParallelRuleDiscoverySampling {
 //                lattice.pruneXInterestingnessUB(interestingness, this.getKthInterestingnessScore(), currentSupports, null);
 //            }
 
-            // lattice.test();
 
             lattice.setAllLatticeVertexBits(lattice.getLatticeLevel());
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
                     this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
                     this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
-
-            /*
-            lattice.removeMoreConstantPredicatesHeuristic();
-            ArrayList<IBitSet> IBitSets1 = new ArrayList<>();
-            for (IBitSet bs : lattice.getLatticeLevel().keySet()) {
-                IBitSets1.add(bs);
-            }
-            ArrayList<IBitSet> IBitSets2 = IBitSets1;
-            Lattice nextLattice = lattice.generateNextLatticeLevelFast(IBitSets1, IBitSets2, this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs,
-                    this.validXRHSs, interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
-                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
-                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
-
-             */
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);
             if (nextLattice == null || nextLattice.size() == 0) {
@@ -3281,22 +3280,17 @@ public class ParallelRuleDiscoverySampling {
         PredicateSet Y = task.getRHSs();
 
         HashSet<String> X_dict = new HashSet<>();
-        // X_dict.add("ncvoter.t0.party == ncvoter.t1.party");
-        // X_dict.add("ncvoter.t0.county_desc == BUNCOMBE");
-        // X_dict.add("ncvoter.t1.county_desc == BUNCOMBE");
-        //X_dict.add("ncvoter.t1.date == 11/04/2008");
-        X_dict.add("ncvoter.t0.voting_intention == ncvoter.t1.voting_intention");
-        X_dict.add("ncvoter.t1.party == DEMOCRATIC");
+        X_dict.add("ncvoter.t0.party == ncvoter.t1.party");
 
-        if (X.size() != 2) {
+        if (X.size() != 1) {
             return false;
         }
         for (Predicate p : X) {
-            if (! X_dict.contains(p.toString().trim())) {
-                return false; //true;
+            if (!X_dict.contains(p.toString().trim())) {
+                return false;
             }
         }
-        return true; //false;
+        return true;
     }
 
 
@@ -3411,7 +3405,6 @@ public class ParallelRuleDiscoverySampling {
             // validate candidate rules in workers
 //             logger.info("Work Unit : {}".format(task.toString()));
 
-
             Map<PredicateSet, List<Predicate>> validConsRuleMap = validConstantRule;
             Map<PredicateSet, Map<String, Predicate>> constantXMap = new HashMap<>();
             PredicateSet sameSet = unitSet.getSameSet();
@@ -3496,8 +3489,7 @@ public class ParallelRuleDiscoverySampling {
 
 //             if (test2(task)) {
             if (true) {
-//                if (!test3(unitSet.getUnits().get(0))) {
-//                    logger.info("Special work units ......");
+//                if (! test3(unitSet.getUnits().get(0))) {
 //                    continue;
 //                }
                 // test 1: user_info.t0.city == user_info.t1.city  user_info.t0.sn == user_info.t1.sn  user_info.t0.gender == user_info.t1.gender ]

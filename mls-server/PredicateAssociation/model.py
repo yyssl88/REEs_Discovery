@@ -115,13 +115,25 @@ class DeepQNetwork:
 
         self.memory_counter += 1
 
-    def choose_action(self, observation):
+    def choose_action(self, observation, nonConstantPredicateIDs, select_rhs):
         unselected = []
+        containNonCPredicate = False
         for sc, e in enumerate(observation):
             if e == 0.0:
                 unselected.append(sc)
+            elif sc in nonConstantPredicateIDs:
+                containNonCPredicate = True
+
+        # make sure {Psel, next_action} contains at least one non-constant predicate
+        if containNonCPredicate is False:
+            unselected = list(set(unselected).intersection(set(nonConstantPredicateIDs)))
+
+        if select_rhs in unselected:
+            unselected.remove(select_rhs)
+
         if len(unselected) <= 0:
             return -1
+
         # to have batch dimension when feed into tf placeholder
         observation = observation[np.newaxis, :]
 
