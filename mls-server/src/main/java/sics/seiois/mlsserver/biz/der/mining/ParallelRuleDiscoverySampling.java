@@ -49,7 +49,7 @@ public class ParallelRuleDiscoverySampling {
 
     // max number of partition of Lattice
     public static int NUM_LATTICE = 80;
-    public static int MAX_CURRENT_PREDICTES = 5;
+    public static int MAX_CURRENT_PREDICTES = 8; //5;
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
 
@@ -379,18 +379,18 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 7. use all predicates as RHSs
-//        logger.info("#### choose all RHSs");
-//        for (Predicate p : predicates) {
-//            applicationRHSs.add(p);
-//        }
-
-        // 8. test NCVoter
-        logger.info("#### choose voting_intention as RHS");
+        logger.info("#### choose all RHSs");
         for (Predicate p : predicates) {
-            if (p.getOperand1().toString(0).equals("t0.voting_intention")) {
-                applicationRHSs.add(p);
-            }
+            applicationRHSs.add(p);
         }
+
+//        // 8. test NCVoter
+//        logger.info("#### choose voting_intention as RHS");
+//        for (Predicate p : predicates) {
+//            if (p.getOperand1().toString(0).equals("t0.voting_intention")) {
+//                applicationRHSs.add(p);
+//            }
+//        }
 
         logger.info("applicationRHSs size : {}", applicationRHSs.size());
         for (Predicate p : applicationRHSs) {
@@ -3210,12 +3210,27 @@ public class ParallelRuleDiscoverySampling {
 //                lattice.pruneXInterestingnessUB(interestingness, this.getKthInterestingnessScore(), currentSupports, null);
 //            }
 
+            // lattice.test();
 
             lattice.setAllLatticeVertexBits(lattice.getLatticeLevel());
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
                     this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
                     this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
+
+            /*
+            lattice.removeMoreConstantPredicatesHeuristic();
+            ArrayList<IBitSet> IBitSets1 = new ArrayList<>();
+            for (IBitSet bs : lattice.getLatticeLevel().keySet()) {
+                IBitSets1.add(bs);
+            }
+            ArrayList<IBitSet> IBitSets2 = IBitSets1;
+            Lattice nextLattice = lattice.generateNextLatticeLevelFast(IBitSets1, IBitSets2, this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs,
+                    this.validXRHSs, interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
+                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
+                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
+
+             */
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);
             if (nextLattice == null || nextLattice.size() == 0) {
@@ -3266,17 +3281,22 @@ public class ParallelRuleDiscoverySampling {
         PredicateSet Y = task.getRHSs();
 
         HashSet<String> X_dict = new HashSet<>();
-        X_dict.add("ncvoter.t0.party == ncvoter.t1.party");
+        // X_dict.add("ncvoter.t0.party == ncvoter.t1.party");
+        // X_dict.add("ncvoter.t0.county_desc == BUNCOMBE");
+        // X_dict.add("ncvoter.t1.county_desc == BUNCOMBE");
+        //X_dict.add("ncvoter.t1.date == 11/04/2008");
+        X_dict.add("ncvoter.t0.voting_intention == ncvoter.t1.voting_intention");
+        X_dict.add("ncvoter.t1.party == DEMOCRATIC");
 
-        if (X.size() != 1) {
+        if (X.size() != 2) {
             return false;
         }
         for (Predicate p : X) {
-            if (!X_dict.contains(p.toString().trim())) {
-                return false;
+            if (! X_dict.contains(p.toString().trim())) {
+                return false; //true;
             }
         }
-        return true;
+        return true; //false;
     }
 
 
@@ -3391,6 +3411,7 @@ public class ParallelRuleDiscoverySampling {
             // validate candidate rules in workers
 //             logger.info("Work Unit : {}".format(task.toString()));
 
+
             Map<PredicateSet, List<Predicate>> validConsRuleMap = validConstantRule;
             Map<PredicateSet, Map<String, Predicate>> constantXMap = new HashMap<>();
             PredicateSet sameSet = unitSet.getSameSet();
@@ -3475,9 +3496,10 @@ public class ParallelRuleDiscoverySampling {
 
 //             if (test2(task)) {
             if (true) {
-                if (! test3(unitSet.getUnits().get(0))) {
-                    continue;
-                }
+//                if (!test3(unitSet.getUnits().get(0))) {
+//                    logger.info("Special work units ......");
+//                    continue;
+//                }
                 // test 1: user_info.t0.city == user_info.t1.city  user_info.t0.sn == user_info.t1.sn  user_info.t0.gender == user_info.t1.gender ]
                 //                         -> {  user_info.t0.name == user_info.t1.name }
 

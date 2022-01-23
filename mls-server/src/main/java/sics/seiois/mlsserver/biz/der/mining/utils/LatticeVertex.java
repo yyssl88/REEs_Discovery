@@ -34,7 +34,6 @@ public class LatticeVertex implements KryoSerializable {
         return predicates.toString() + "   ->  " + rhss.toString();
     }
 
-
     public void copyWithOutRHSs(LatticeVertex lv) {
         for (Predicate p : lv.getPredicates()) {
             this.predicates.add(p);
@@ -236,7 +235,7 @@ public class LatticeVertex implements KryoSerializable {
                 continue;
             }
 
-            // only consider RHSs of <t_0>, <t_0, t_1> and <t_0, t_2>
+            // only consider RHSs of <t_0> and <t_0, t_1>; // and <t_0, t_2>
             if (! this.validRHS(p)) {
                 continue;
             }
@@ -250,6 +249,7 @@ public class LatticeVertex implements KryoSerializable {
                 if (x.equals(p)) {
                     continue;
                 }
+                // X -> Y: X must contain at least one non-constant predicate
                 if (x.getIndex1() == 0 && x.getIndex2() == 1) {
                     containT0T1 = true;
                 }

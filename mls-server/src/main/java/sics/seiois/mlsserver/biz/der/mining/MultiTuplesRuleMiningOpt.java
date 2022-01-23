@@ -725,15 +725,17 @@ public class MultiTuplesRuleMiningOpt {
             }
             HyperCube hyperCube = hyperCubes.get(index);
             if (pids[pBegin.getIndex1()] < pids[pBegin.getIndex2()]) {
-                hyperCube.getStatistic(false);
+                // hyperCube.getStatistic(false);
+                hyperCube.getStatistic_new(false);
             } else if (pids[pBegin.getIndex1()] == pids[pBegin.getIndex2()]) {
-                hyperCube.getStatistic(true);
+                // hyperCube.getStatistic(true);
+                hyperCube.getStatistic_new(true);
             }
 
 //            log.info(">>>>show hyperCube support : {} | rhs support: {} ", hyperCube.getSupportX(), hyperCube.getSuppRHSs());
             // collect message
-            Message message = new Message(currentList, hyperCube.getSupportX(), 0, 0);
-//        Message message = new Message(currentSet, 10, 0, 0);
+            // Message message = new Message(currentList, hyperCube.getSupportX(), 0, 0);
+            Message message = new Message(currentList, hyperCube.getSupportX(), hyperCube.getSupportXCP0(), hyperCube.getSupportXCP1());
             message.updateAllCurrentRHSsSupport(hyperCube.getSuppRHSs() , rhsList);
 //            log.info(">>>>show message support : {} | rhs support: {} ", message.getCurrentSupp(), message.getAllCurrentRHSsSupport());
             messages.add(message);
@@ -742,6 +744,9 @@ public class MultiTuplesRuleMiningOpt {
         return messages;
     }
 
+    /*
+        constantPs: key [operand1().to_string()] -> [list]
+     */
     private List<HyperCube> updateHyperCubeMap1(List<HyperCube> hyperCubes, WorkUnits unitSet, ArrayList<Predicate> currentSetB,
                                                 List<Integer> lines, Map<String, ArrayList<Predicate>> constantPs, int[] pids,
                                                 TIntArrayList key, int indexUsed) {
@@ -781,15 +786,16 @@ public class MultiTuplesRuleMiningOpt {
                 Predicate currp = entry.getValue().get(0);
                 int c = 0;
                 // consider t_0.A = c
-                if (currp.getIndex1() == indexUsed) {
+                //if (currp.getIndex1() == indexUsed) {
+                if (true) {
                     if (indexUsed == 0) {
                         c = currp.getOperand1().getColumnLight().getValueInt(pids[currp.getIndex1()], line);
                     } else {
-                        c = currp.getOperand2().getColumnLight().getValueInt(pids[currp.getIndex2()], line);
+                        c = currp.getOperand2().getColumnLight().getValueInt(pids[currp.getIndex1()], line);
                     }
 
                     for (Predicate curr : entry.getValue()) {
-                        if (c != curr.getConstantInt()) {
+                        if (c != curr.getConstantInt().intValue()) {
                             // index is the script of work units
                             for (Integer index : prdMap.get(curr.toString())) {
 //                            log.info(">>>>error index: {}", index);
@@ -862,8 +868,15 @@ public class MultiTuplesRuleMiningOpt {
                     ArrayList<Predicate> pset = unitRhs.get(index);
                     for (int rhsID = 0; rhsID < pset.size(); rhsID++) {
                         Predicate rhs_ = pset.get(rhsID);
+//                        if (rhs_.toString().trim().equals("ncvoter.t0.party == DEMOCRATIC")) {
+//                            System.out.println();
+//                        }
+
                         if (indexUsed == 0) {
                             int v = rhs_.getOperand1().getColumnLight().getValueInt(pids[rhs_.getIndex1()], line);
+//                            if (rhs_.toString().trim().equals("ncvoter.t0.party == DEMOCRATIC") && rhs_.isConstant() && v == rhs_.getConstantInt()) {
+//                                System.out.println("Test Constants ... ");
+//                            }
                             hyperCubes.get(index).addTupleT0(xValues[index], v, rhsID, line);
                         } else {
                             int v = rhs_.getOperand2().getColumnLight().getValueInt(pids[rhs_.getIndex2()], line);

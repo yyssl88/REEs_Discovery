@@ -18,9 +18,14 @@ public class HyperCube {
     private HashMap<TIntArrayList, HashMap<Integer, Cube>> cubeInstances;
 
     // Ys
-    // private ArrayList<Predicate> rhss;
+    private ArrayList<Predicate> rhss;
 
+    // the support of <t0, t1>
     private long supportX;
+    // the support of t0
+    private long supportXCP0;
+    // the support of t1
+    private long supportXCP1;
 
     // length = this.rhss.size()
     private Long[] suppRHSs;
@@ -43,8 +48,10 @@ public class HyperCube {
             }
         }
          */
-        // this.rhss = rhss_arr;
+        this.rhss = rhss_arr;
         this.supportX = 0;
+        this.supportXCP0 = 0;
+        this.supportXCP1 = 0;
         this.suppRHSs = new Long[rhss_arr.size()];
         for (int i = 0; i < this.suppRHSs.length; i++) {
             this.suppRHSs[i] = 0L;
@@ -168,8 +175,72 @@ public class HyperCube {
         }
     }
 
+    public void getStatistic_new(boolean ifSame) {
+        if (ifSame) {
+            for (Integer value : this.lhsSupportMap0.values()) {
+                long count = value;
+                this.supportX += (long) (count * (count - 1));
+                this.supportXCP0 += (long)(count);
+            }
+        } else {
+            for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
+                if (this.lhsSupportMap1.containsKey(entry.getKey())) {
+                    long count = entry.getValue();
+                    long count1 = lhsSupportMap1.get(entry.getKey());
+                    this.supportX += (long) (count * count1);
+                    this.supportXCP1 += (long) (count);
+                }
+            }
+        }
+
+        for (Map.Entry<TIntArrayList, HashMap<Integer, Cube>> entry : this.cubeInstances.entrySet()) {
+            HashMap<Integer, Cube> tt = entry.getValue();
+            for (Map.Entry<Integer, Cube> entry_ : tt.entrySet()) {
+                Cube cube = entry_.getValue();
+                // handle constant predicates as RHSs
+                for (int rhsID = 0; rhsID < this.suppRHSs.length; rhsID++) {
+                    Predicate p = this.rhss.get(rhsID);
+                    // evaluate constant predicates and check whether these values equal to the constant
+                    if (p.isConstant() && p.getConstantInt().intValue() == entry_.getKey().intValue()) {
+                        if (p.getIndex1() == 0) {
+                            this.suppRHSs[rhsID] += (long) (cube.getTupleNumT0(rhsID));
+                        } else if (p.getIndex1() == 1) {
+                            this.suppRHSs[rhsID] += (long) (cube.getTupleNumT1(rhsID));
+                        }
+                    }
+                }
+
+                if (!ifSame) {
+                    for (int rhsId = 0; rhsId < this.suppRHSs.length; rhsId++) {
+                        if (rhss.get(rhsId).isConstant()) {
+                            continue;
+                        } else {
+                            this.suppRHSs[rhsId] += (long) (cube.getTupleNumT0(rhsId) * cube.getTupleNumT1(rhsId));
+                        }
+                    }
+                } else {
+                    for (int rhsId = 0; rhsId < this.suppRHSs.length; rhsId++) {
+//                        this.suppRHSs[cube.getRhsID()] += (long) (cube.getTupleNumT0() * (cube.getTupleNumT0() - 1) / 2);
+                        if (rhss.get(rhsId).isConstant()) {
+                            continue;
+                        }
+                        this.suppRHSs[rhsId] += (long) (cube.getTupleNumT0(rhsId) * (cube.getTupleNumT0(rhsId) - 1));
+                    }
+                }
+            }
+        }
+    }
+
     public long getSupportX() {
         return this.supportX;
+    }
+
+    public long getSupportXCP0() {
+        return this.supportXCP0;
+    }
+
+    public long getSupportXCP1() {
+        return this.supportXCP1;
     }
 
     public Long[] getSuppRHSs() {

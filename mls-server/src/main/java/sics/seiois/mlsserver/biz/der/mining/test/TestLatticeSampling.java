@@ -41,18 +41,18 @@ public class TestLatticeSampling {
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
         String directory_path =  "D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
-        String constant_file = ""; //""D:/REE/tmp/airports/constant_airports.txt";
+        String constant_file = "D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //""D:/REE/tmp/airports/constant_airports.txt";
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
         noCrossColumn = false;
-        double support_ratio = 0.001;
+        double support_ratio = 0.00001;
         String fk_file = null;
         String mlsel_file = null;
         double relation_num_ratio = 1.0;
         double support_pre_ratio = support_ratio;
         String ml_config_file = null;
         String type_attr_file = null;
-        int maxTupleNum = 3;
+        int maxTupleNum = 2;
         int K = 10000;
         float w_supp = 0.4f;
         float w_conf = 0.2f;
@@ -166,7 +166,7 @@ public class TestLatticeSampling {
                 if (ree == null) {
                     continue;
                 }
-                System.out.println(ree.toString());
+                System.out.printf("REE: %s, supp=%d, conf=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence());
                 c_ree++;
             }
 

@@ -35,6 +35,19 @@ public class Lattice implements KryoSerializable {
         return this.latticeLevel;
     }
 
+
+    // only for test
+    public void test() {
+        for (Map.Entry<IBitSet, LatticeVertex> entry : this.latticeLevel.entrySet()) {
+            PredicateSet ps = entry.getValue().getPredicates();
+            if (ps.toString().contains("ncvoter.t0.voting_intention == ncvoter.t1.voting_intention") &&
+                    (ps.toString().contains("ncvoter.t0.party == DEMOCRATIC") || ps.toString().contains("ncvoter.t1.party == DEMOCRATIC"))) {
+                logger.info("Check ncvoters information ---> {}", entry.getValue().printCurrent());
+            }
+        }
+    }
+
+
     public void setAllLatticeVertexBits(HashMap<IBitSet, LatticeVertex> ll) {
         this.allLatticeVertexBits = new HashSet<>();
         for (IBitSet key : ll.keySet()) {
@@ -507,6 +520,19 @@ public class Lattice implements KryoSerializable {
             PredicateSet ps = new PredicateSet(lv.getPredicates());
             ps.remove(rp);
             ps.add(newP);
+
+            // if ps contains all constant predicates, continue
+            boolean allConstants = true;
+            for (Predicate p : ps) {
+                if (!p.isConstant()) {
+                    allConstants = false;
+                }
+            }
+            if (allConstants) {
+                continue;
+            }
+
+
             if (!this.allLatticeVertexBits.contains(ps.getBitset())) {
                 return false;
             }
@@ -545,12 +571,25 @@ public class Lattice implements KryoSerializable {
         check whether current predicateset ONLY contains all constant predicates
      */
     private boolean ifAllConstantPredicates(PredicateSet ps) {
+//        for (Predicate p : ps) {
+//            if (!p.isConstant()) {
+//                return false;
+//            }
+//        }
+//        return true;
+
+        int countConstants = 0;
         for (Predicate p : ps) {
-            if (!p.isConstant()) {
-                return false;
+            if (p.isConstant()) {
+                countConstants ++;
             }
         }
-        return true;
+        if (countConstants > 1) {
+            return true;
+        } else {
+            return false;
+        }
+
     }
 
     /*
@@ -560,6 +599,17 @@ public class Lattice implements KryoSerializable {
         ifOnlineTrainRL: 1-online; 0-offline
         ifOfflineTrainStage: 1-offline training stage-to get sequence for RL offline training; 0-offline prediction stage
      */
+
+    public boolean testEntry(LatticeVertex lv) {
+        // boolean f = true;
+        PredicateSet p = lv.getPredicates();
+            if (p.toString().trim().contains("ncvoter.t0.voting_intention == ncvoter.t1.voting_intention") &&
+                    (p.toString().trim().contains("ncvoter.t0.party == DEMOCRATIC") || p.toString().trim().contains("ncvoter.t1.party == DEMOCRATIC"))) {
+                return true;
+            }
+            return false;
+    }
+
     public Lattice generateNextLatticeLevel(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates, HashSet<IBitSet> invalidX,
                                             HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
                                             HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
@@ -606,6 +656,11 @@ public class Lattice implements KryoSerializable {
         for (Map.Entry<IBitSet, LatticeVertex> entry : this.latticeLevel.entrySet()) {
             // expand each vertex with a new predicate
             // IBitSet k = entry.getKey();
+
+            // test
+//            if(testEntry(entry.getValue())) {
+//                logger.info("test LV node");
+//            }
             LatticeVertex lv = entry.getValue();
             if (this.ifAllConstantPredicates(lv.getPredicates())) {
                 continue;
@@ -864,6 +919,143 @@ public class Lattice implements KryoSerializable {
 
         return nextLevel;
     }
+
+
+    /*
+        2022/1/22: fast version of expanding lattice
+     */
+    public void removeMoreConstantPredicatesHeuristic() {
+        HashSet<IBitSet> removedKeys = new HashSet<>();
+        for (Map.Entry<IBitSet, LatticeVertex> entry : this.latticeLevel.entrySet()) {
+            LatticeVertex lv = entry.getValue();
+            int countConstants = 0;
+            for (Predicate p : lv.getPredicates()) {
+                if (p.isConstant()) {
+                    countConstants ++;
+                }
+            }
+            if (countConstants > 1) {
+                removedKeys.add(entry.getKey());
+            }
+        }
+        for (IBitSet bs : removedKeys) {
+            this.latticeLevel.remove(bs);
+        }
+    }
+
+    public Lattice generateNextLatticeLevelFast(ArrayList<IBitSet> IBitSet1, ArrayList<IBitSet> IBitSet2, List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates, HashSet<IBitSet> invalidX,
+                                            HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
+                                            HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
+                                            Interestingness interestingness, double KthScore, HashMap<PredicateSet, Double> suppRatios,
+                                            PredicateProviderIndex predicateProviderIndex,
+                                            String option, ArrayList<LatticeVertex> partialRules,
+                                            int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage, boolean ifExistModel,
+                                            String python_path, String RL_code_path,
+                                            float lr, float rd, float eg, int rtr, int ms, int bs,
+                                            String table_name, int N_num) {
+        logger.info("#####generate Next Lattice level! {}", this.latticeLevel.size());
+
+        Lattice nextLevel = new Lattice(this.maxTupleNumPerRule);
+
+        //this.removeMoreConstantPredicatesHeuristic();
+        // check whether size 1
+        if (this.latticeLevel.get(IBitSet1.get(0)).getPredicates().size() <= 1) {
+            for (int e1 = 0; e1 < IBitSet1.size(); e1++) {
+                for (int e2 = 0; e2 < IBitSet2.size(); e2++) {
+                    if (IBitSet1.equals(IBitSet2) && e1 >= e2) continue;
+                    Predicate newP = null;
+                    for (Predicate p : this.latticeLevel.get(IBitSet2.get(e2)).getPredicates()) {
+                        newP = p;
+                    }
+                    LatticeVertex lv_child = new LatticeVertex(this.latticeLevel.get(IBitSet1.get(e1)), newP);
+                    nextLevel.addLatticeVertex(lv_child);
+                }
+            }
+            return nextLevel;
+        }
+
+        logger.info("#####start constructing inverted index!");
+        // 1. construct index
+        HashMap<Predicate, ArrayList<Integer>> invertedIndex1 = new HashMap<>();
+        for (int iid = 0; iid < IBitSet1.size(); iid++) {
+            IBitSet bitSet = IBitSet1.get(iid);
+            LatticeVertex lv = this.latticeLevel.get(bitSet);
+            int count = 0;
+            for (Predicate p : lv.getPredicates()) {
+                if (count >= 2) {
+                    break;
+                }
+                if (invertedIndex1.containsKey(p)) {
+                    invertedIndex1.get(p).add(iid);
+                } else {
+                    ArrayList<Integer> arr = new ArrayList<>();
+                    arr.add(iid);
+                    invertedIndex1.put(p, arr);
+                }
+                count ++;
+            }
+        }
+        HashMap<Predicate, ArrayList<Integer>> invertedIndex2 = new HashMap<>();
+        if (! IBitSet1.equals(IBitSet2)) {
+            for (int iid = 0; iid < IBitSet2.size(); iid++) {
+                IBitSet bitSet = IBitSet2.get(iid);
+                LatticeVertex lv = this.latticeLevel.get(bitSet);
+                int count = 0;
+                for (Predicate p : lv.getPredicates()) {
+                    if (count >= 2) {
+                        break;
+                    }
+                    if (invertedIndex2.containsKey(p)) {
+                        invertedIndex2.get(p).add(iid);
+                    } else {
+                        ArrayList<Integer> arr = new ArrayList<>();
+                        arr.add(iid);
+                        invertedIndex2.put(p, arr);
+                    }
+                    count ++;
+                }
+            }
+        } else {
+            invertedIndex2 = invertedIndex1;
+        }
+        HashSet<ImmutablePair<Integer, Integer>> results = new HashSet<>();
+        logger.info("#####retrieve results!");
+        // 2. retrieve candidates
+        for (Map.Entry<Predicate, ArrayList<Integer>> entry : invertedIndex1.entrySet()) {
+            ArrayList<Integer> arr1 = entry.getValue();
+            if (invertedIndex2.containsKey(entry.getKey())) {
+                ArrayList<Integer> arr2 = invertedIndex2.get(entry.getKey());
+                for (Integer e1 : arr1) {
+                    for (Integer e2 : arr2) {
+                        if (IBitSet1.equals(IBitSet2) && e1.intValue() >= e2.intValue()) continue;
+                        if (results.contains(new ImmutablePair<>(e1, e2)))  {
+                            continue;
+                        }
+                        results.add(new ImmutablePair<>(e1, e2));
+                        PredicateSet ps1 = this.latticeLevel.get(IBitSet1.get(e1)).getPredicates();
+                        PredicateSet ps2 = this.latticeLevel.get(IBitSet2.get(e2)).getPredicates();
+                        int cc = 0;
+                        Predicate newP = null;
+                        for (Predicate pp : ps1) {
+                            if (ps2.containsPredicate(pp)) {
+                                cc += 1;
+                            } else {
+                                newP = pp;
+                            }
+                        }
+                        if (cc == ps1.size() - 1) {
+                            ImmutablePair<Integer, Integer> pair = new ImmutablePair<>(e1, e2);
+                            LatticeVertex lv_child = new LatticeVertex(this.latticeLevel.get(IBitSet2.get(e2)), newP);
+                            nextLevel.addLatticeVertex(lv_child);
+                        }
+                    }
+                }
+            }
+        }
+        logger.info("#####finish the expansion!");
+        return nextLevel;
+    }
+
 
     /*
         invalidX: predicates of lattice vertex whose support < k
