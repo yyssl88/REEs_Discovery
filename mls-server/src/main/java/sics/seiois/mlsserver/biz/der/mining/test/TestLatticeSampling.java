@@ -40,11 +40,11 @@ public class TestLatticeSampling {
         Boolean noCrossColumn = Boolean.TRUE;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
-        String directory_path =  "D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
-        String constant_file = "D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //""D:/REE/tmp/airports/constant_airports.txt";
+        String directory_path =  "D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
+        String constant_file = "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //""D:/REE/tmp/airports/constant_airports.txt";
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
-        noCrossColumn = false;
+        noCrossColumn = true;
         double support_ratio = 0.00001;
         String fk_file = null;
         String mlsel_file = null;
