@@ -449,7 +449,7 @@ public class ParallelRuleDiscoverySampling {
     }
 
     // remove the constant predicates related to Property_Feature dataset
-    private void removePropertyFeatureCPredicates(ArrayList<Predicate> applicationRHSs, List<Predicate> allPredicates) {
+    private void removePropertyFeatureCPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
             if (p.isConstant() && p.getOperand1().getColumn().getTableName().equals("Property_Features")) {
@@ -502,15 +502,15 @@ public class ParallelRuleDiscoverySampling {
         logger.info("#### table_name: {}", this.table_name);
 
 
+        if (table_name.contains("Property_Features")) {
+            removePropertyFeatureCPredicates(this.allPredicates);
+        }
+
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
 
 //        if (this.maxTupleNum <= 2) {
 //            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
 //        }
-
-        if (table_name.contains("Property_Features")) {
-            removePropertyFeatureCPredicates(applicationRHSs, this.allPredicates);
-        }
 
         this.prepareAllPredicatesMultiTuples();
 

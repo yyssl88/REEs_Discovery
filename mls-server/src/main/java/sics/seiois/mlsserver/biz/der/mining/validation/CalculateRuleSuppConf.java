@@ -108,6 +108,19 @@ public class CalculateRuleSuppConf {
         }
     }
 
+    // remove the constant predicates related to Property_Feature dataset
+    private void removePropertyFeatureCPredicates(List<Predicate> allPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            if (p.isConstant() && p.getOperand1().getColumn().getTableName().equals("Property_Features")) {
+                removePredicates.add(p);
+            }
+        }
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
+        }
+    }
+
     public static Map<String, String> convert(String[] args) {
         logger.info("arguments : {}", args);
         Map<String, String> argsMap = new HashMap<>();
@@ -199,6 +212,8 @@ public class CalculateRuleSuppConf {
             this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(this.allPredicates, 10000, this.maxTupleNum,
                     this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
                     0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+            removePropertyFeatureCPredicates(this.allPredicates);
 
             prepareAllPredicatesMultiTuples();
 
