@@ -225,26 +225,26 @@ public class ParallelRuleDiscoverySampling {
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
         ArrayList<Predicate> applicationRHSs = new ArrayList<>();
         // 1 - choose the first few rhss
-//        int NUM_rhs = 4;
-//        logger.info("#### choose the first {} rhss", NUM_rhs);
-//        int count = 0;
-//        HashMap<String, Predicate> temp = new HashMap<>();
-//        for (Predicate p : predicates) {
-//            if (p.isConstant()) {
-//                continue;
-//            }
-//            if (!temp.containsKey(p.toString())) {
-//                temp.put(p.toString(), p);
-//            }
-//        }
-//
-//        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
-//            applicationRHSs.add(entry.getValue());
-//            count++;
-//            if (count == NUM_rhs) {
-//                break;
-//            }
-//        }
+        int NUM_rhs = 4;
+        logger.info("#### choose the first {} rhss", NUM_rhs);
+        int count = 0;
+        HashMap<String, Predicate> temp = new HashMap<>();
+        for (Predicate p : predicates) {
+            if (p.isConstant()) {
+                continue;
+            }
+            if (!temp.containsKey(p.toString())) {
+                temp.put(p.toString(), p);
+            }
+        }
+
+        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
+            applicationRHSs.add(entry.getValue());
+            count++;
+            if (count == NUM_rhs) {
+                break;
+            }
+        }
 
 
         // 2 - choose some rhss with minimum support value
@@ -393,10 +393,10 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 8. use all predicates as RHSs
-        logger.info("#### choose all RHSs");
-        for (Predicate p : predicates) {
-            applicationRHSs.add(p);
-        }
+//        logger.info("#### choose all RHSs");
+//        for (Predicate p : predicates) {
+//            applicationRHSs.add(p);
+//        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -1017,6 +1017,9 @@ public class ParallelRuleDiscoverySampling {
                 break;
             }
 
+            if (level + 1 > MAX_CURRENT_PREDICTES) {
+                break;
+            }
             Lattice nextLattice = runNextLattices(lattice, this.allPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     ifExistModel, interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null, spark);
 
