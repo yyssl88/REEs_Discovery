@@ -310,24 +310,24 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 4. randomly choose some RHS.
-//        int NUM_rhs = 5;
-//        logger.info("#### randomly choose {} RHSs", NUM_rhs);
-//        Collections.sort(predicates, new Comparator<Predicate>() {
-//            @Override
-//            public int compare(Predicate o1, Predicate o2) {
-//                return o1.toString().compareTo(o2.toString());
-//            }
-//        });
-//        Random rand = new Random();
-//        rand.setSeed(1234567);
-//        HashSet<Integer> random_idx = new HashSet<>();
-//        while (random_idx.size() < NUM_rhs) {
-//            int idx = rand.nextInt(predicates.size());
-//            random_idx.add(idx);
-//        }
-//        for (int choose_idx : random_idx) {
-//            applicationRHSs.add(predicates.get(choose_idx));
-//        }
+        int NUM_rhs = 4;
+        logger.info("#### randomly choose {} RHSs", NUM_rhs);
+        Collections.sort(predicates, new Comparator<Predicate>() {
+            @Override
+            public int compare(Predicate o1, Predicate o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Random rand = new Random();
+        rand.setSeed(1234567);
+        HashSet<Integer> random_idx = new HashSet<>();
+        while (random_idx.size() < NUM_rhs) {
+            int idx = rand.nextInt(predicates.size());
+            random_idx.add(idx);
+        }
+        for (int choose_idx : random_idx) {
+            applicationRHSs.add(predicates.get(choose_idx));
+        }
 
         // 5. randomly choose (n+m) RHSs, including n nonConstant and m constant RHSs
 //        int NUM_Constant = 3;
@@ -393,10 +393,10 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 8. use all predicates as RHSs
-        logger.info("#### choose all RHSs");
-        for (Predicate p : predicates) {
-            applicationRHSs.add(p);
-        }
+//        logger.info("#### choose all RHSs");
+//        for (Predicate p : predicates) {
+//            applicationRHSs.add(p);
+//        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -461,6 +461,20 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
+    private void removeEnumConstantPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 3 ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 3) {
+                removePredicates.add(p);
+            }
+        }
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
+            allExistPredicates.remove(p);
+        }
+    }
+
     /**
      * merge work units by X
      */
@@ -508,13 +522,17 @@ public class ParallelRuleDiscoverySampling {
 
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
 
+        // remove predicates that are irrelevant to RHSs
 //        if (this.maxTupleNum <= 2) {
 //            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
 //        }
 
         this.prepareAllPredicatesMultiTuples();
 
-        logger.info("Parallel Mining with Predicate size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
+        // remove constant predicates of enumeration type
+//        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+
+        logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
 
         Lattice lattice = new Lattice(this.maxTupleNum);
 //        lattice.initialize(this.allPredicates, this.maxTupleNum);
@@ -1017,6 +1035,9 @@ public class ParallelRuleDiscoverySampling {
                 break;
             }
 
+            if (level + 1 > MAX_CURRENT_PREDICTES) {
+                break;
+            }
             Lattice nextLattice = runNextLattices(lattice, this.allPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     ifExistModel, interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null, spark);
 
@@ -2838,6 +2859,10 @@ public class ParallelRuleDiscoverySampling {
         this.table_name = this.table_name.substring(0, this.table_name.length() - 1); // remove last "_"
         logger.info("#### table_name: {}", this.table_name);
 
+        if (table_name.contains("Property_Features")) {
+            removePropertyFeatureCPredicates(this.allPredicates);
+        }
+
         // 1. initialize the 1st level combinations
         Lattice lattice = new Lattice(this.maxTupleNum);
         // only for test application-driven methods
@@ -2861,6 +2886,15 @@ public class ParallelRuleDiscoverySampling {
 //                break;
 //            }
 //        }
+
+        // remove predicates that are irrelevant to RHSs
+//        if (this.maxTupleNum <= 2) {
+//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+//        }
+
+        // remove constant predicates of enumeration type
+//        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+
         lattice.initialize(this.allPredicates, this.maxTupleNum, applicationRHSs);
 
         // if there exist trained model. Since Psel could be empty initially, at level 0, leading to no model trained.
