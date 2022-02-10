@@ -1893,7 +1893,11 @@ public class ParallelRuleDiscoverySampling {
         for (int i = 0; i < message.getValidRHSs().size(); i++) {
             Predicate rhs = message.getValidRHSs().get(i);
             long supp = message.getSupports().get(i);
-            double conf = ((double) supp) / lhsSupport; // if rules containing constant for Y, replace lhsSupport to SupportCP0
+            double conf = message.getConfidences().get(i); //((double) supp) / lhsSupport; // if rules containing constant for Y, replace lhsSupport to SupportCP0
+            // check constant rhs
+            if (rhs.isConstant()) {
+                // supp = (long)(supp / this.maxOneRelationNum);
+            }
             PredicateSet ps = new PredicateSet(currentX);
             ps.addRHS(rhs);
             DenialConstraint ree = new DenialConstraint(ps);
@@ -3338,9 +3342,10 @@ public class ParallelRuleDiscoverySampling {
         PredicateSet Y = task.getRHSs();
 
         HashSet<String> X_dict = new HashSet<>();
-        X_dict.add("School.t0.name == School.t1.name");
+        X_dict.add("airports.t0.iso_region == airports.t1.iso_region");
+        X_dict.add("airports.t1.iso_country == US");
 
-        if (X.size() != 1) {
+        if (X.size() != 2) {
             return false;
         }
         for (Predicate p : X) {

@@ -1,12 +1,10 @@
 package sics.seiois.mlsserver.biz.der.mining.utils;
 
+import com.jcraft.jsch.HASH;
 import gnu.trove.list.array.TIntArrayList;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /*
     Now only consider REEs that only contain t_0.A = t_1.A predicates
@@ -176,16 +174,21 @@ public class HyperCube {
     }
 
     public void getStatistic_new(boolean ifSame) {
+        HashSet<TIntArrayList> commonList = new HashSet<>();
         if (ifSame) {
-            for (Integer value : this.lhsSupportMap0.values()) {
+            // for (Integer value : this.lhsSupportMap0.values()) {
+            for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
+                int value = entry.getValue();
                 long count = value;
                 this.supportX += (long) (count * (count - 1));
                 this.supportXCP0 += (long)(count);
                 this.supportXCP1 += (long)(count);
+                commonList.add(entry.getKey());
             }
         } else {
             for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
                 if (this.lhsSupportMap1.containsKey(entry.getKey())) {
+                    commonList.add(entry.getKey());
                     long count = entry.getValue();
                     long count1 = lhsSupportMap1.get(entry.getKey());
                     this.supportX += (long) (count * count1);
@@ -196,6 +199,9 @@ public class HyperCube {
         }
 
         for (Map.Entry<TIntArrayList, HashMap<Integer, Cube>> entry : this.cubeInstances.entrySet()) {
+            if (!commonList.contains(entry.getKey())) {
+                continue;
+            }
             HashMap<Integer, Cube> tt = entry.getValue();
             for (Map.Entry<Integer, Cube> entry_ : tt.entrySet()) {
                 Cube cube = entry_.getValue();

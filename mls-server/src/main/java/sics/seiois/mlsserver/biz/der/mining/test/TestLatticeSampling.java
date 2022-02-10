@@ -17,8 +17,7 @@ import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateBuilder;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
@@ -40,12 +39,15 @@ public class TestLatticeSampling {
         Boolean noCrossColumn = Boolean.TRUE;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
-        String directory_path =  "D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
-        String constant_file = "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //""D:/REE/tmp/airports/constant_airports.txt";
+        String output_file = "D:/REE/tmp/airports/rules/rules_test.txt"; //"D:/REE/tmp/inspection/rules/rules_rs_round8.txt"; //"; //"D:/REE/tmp/airports/rules/rules_round2.txt";
+        String directory_path =  "D:/REE/tmp/airports/airports/datasets/"; // "D:/REE/tmp/inspection/copy/inspection_RS_ROUND8/"; //D:/REE/tmp/airports/airports_RS_ROUND8/"; //"D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
+        // String directory_path =  "D:/REE/tmp/property/samples/property_RS_ROUND3/"; //""D:/REE/tmp/ncvoter/"; //  // "D:/REE/tmp/user_info";
+        String constant_file = "D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
+
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
         noCrossColumn = true;
-        double support_ratio = 0.00001;
+        double support_ratio = 0.0001;
         String fk_file = null;
         String mlsel_file = null;
         double relation_num_ratio = 1.0;
@@ -161,17 +163,23 @@ public class TestLatticeSampling {
 
             System.out.printf("Total running time: %s\n", System.currentTimeMillis() - runTime);
             System.out.printf("# of All REEs %s\n", rees.size());
+            FileOutputStream outputStream = new FileOutputStream(output_file);
+            OutputStreamWriter osw = new OutputStreamWriter(outputStream);
             int c_ree = 1;
             for (DenialConstraint ree : rees) {
                 if (ree == null) {
                     continue;
                 }
                 System.out.printf("REE: %s, supp=%d, conf=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence());
+                String oo = String.format("REE: %s, supp=%d, conf=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence());
+                osw.write(oo);
                 c_ree++;
             }
 
         } catch (FileNotFoundException | InputIterationException e) {
             log.info("Cannot load file\n");
+        } catch (IOException e) {
+            e.printStackTrace();
         } finally {
             for (FileReader fileReader : fileReaders) {
                 try {
