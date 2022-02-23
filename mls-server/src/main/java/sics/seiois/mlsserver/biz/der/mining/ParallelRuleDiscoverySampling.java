@@ -49,7 +49,7 @@ public class ParallelRuleDiscoverySampling {
 
     // max number of partition of Lattice
     public static int NUM_LATTICE = 200;
-    public static int MAX_CURRENT_PREDICTES = 5;
+    public static int MAX_CURRENT_PREDICTES = 8;
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
 
@@ -223,9 +223,22 @@ public class ParallelRuleDiscoverySampling {
     }
 
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
+        int whole_num_nonCons = 0;
+        int whole_num_cons = 0;
+        for (Predicate p : predicates) {
+            if (p.isConstant()) {
+                whole_num_cons++;
+            } else {
+                whole_num_nonCons++;
+            }
+        }
+
         ArrayList<Predicate> applicationRHSs = new ArrayList<>();
-        // 1 - choose the first few rhss
+        // 1 - choose the first few non-constant rhss
 //        int NUM_rhs = 4;
+//        if (NUM_rhs > whole_num_nonCons) {
+//            NUM_rhs = whole_num_nonCons;
+//        }
 //        logger.info("#### choose the first {} rhss", NUM_rhs);
 //        int count = 0;
 //        HashMap<String, Predicate> temp = new HashMap<>();
@@ -249,6 +262,9 @@ public class ParallelRuleDiscoverySampling {
 
         // 2 - choose some rhss with minimum support value
 //        int NUM_rhs = 4;
+//        if (NUM_rhs > predicates.size()) {
+//            NUM_rhs = predicates.size();
+//        }
 //        logger.info("#### choose {} RHSs with minimum support value", NUM_rhs);
 //        ArrayList<Long> allSupports = new ArrayList<>();
 //        for (Predicate p : predicates) {
@@ -310,28 +326,37 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 4. randomly choose some RHS.
-        int NUM_rhs = 4;
-        logger.info("#### randomly choose {} RHSs", NUM_rhs);
-        Collections.sort(predicates, new Comparator<Predicate>() {
-            @Override
-            public int compare(Predicate o1, Predicate o2) {
-                return o1.toString().compareTo(o2.toString());
-            }
-        });
-        Random rand = new Random();
-        rand.setSeed(1234567);
-        HashSet<Integer> random_idx = new HashSet<>();
-        while (random_idx.size() < NUM_rhs) {
-            int idx = rand.nextInt(predicates.size());
-            random_idx.add(idx);
-        }
-        for (int choose_idx : random_idx) {
-            applicationRHSs.add(predicates.get(choose_idx));
-        }
+//        int NUM_rhs = 4;
+//        if (NUM_rhs > predicates.size()) {
+//            NUM_rhs = predicates.size();
+//        }
+//        logger.info("#### randomly choose {} RHSs", NUM_rhs);
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        while (random_idx.size() < NUM_rhs) {
+//            int idx = rand.nextInt(predicates.size());
+//            random_idx.add(idx);
+//        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
 
         // 5. randomly choose (n+m) RHSs, including n nonConstant and m constant RHSs
 //        int NUM_Constant = 3;
 //        int NUM_NonConstant = 2;
+//        if (NUM_Constant > whole_num_cons) {
+//            NUM_Constant = whole_num_cons;
+//        }
+//        if (NUM_NonConstant > whole_num_nonCons) {
+//            NUM_NonConstant = whole_num_nonCons;
+//        }
 //        logger.info("#### randomly choose {} RHSs, including {} nonConstant RHSs and {} constant RHSs", NUM_Constant + NUM_NonConstant, NUM_NonConstant, NUM_Constant);
 //        Collections.sort(predicates, new Comparator<Predicate>() {
 //            @Override
@@ -363,26 +388,29 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 6. randomly choose some non-constant RHS.
-//        int NUM_NonConstant = 4;
-//        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
-//        Collections.sort(predicates, new Comparator<Predicate>() {
-//            @Override
-//            public int compare(Predicate o1, Predicate o2) {
-//                return o1.toString().compareTo(o2.toString());
-//            }
-//        });
-//        Random rand = new Random();
-//        rand.setSeed(1234567);
-//        HashSet<Integer> random_idx = new HashSet<>();
-//        while (random_idx.size() < NUM_NonConstant) {
-//            int idx = rand.nextInt(predicates.size());
-//            if (!predicates.get(idx).isConstant()) {
-//                random_idx.add(idx);
-//            }
-//        }
-//        for (int choose_idx : random_idx) {
-//            applicationRHSs.add(predicates.get(choose_idx));
-//        }
+        int NUM_NonConstant = 4;
+        if (NUM_NonConstant > whole_num_nonCons) {
+            NUM_NonConstant = whole_num_nonCons;
+        }
+        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
+        Collections.sort(predicates, new Comparator<Predicate>() {
+            @Override
+            public int compare(Predicate o1, Predicate o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Random rand = new Random();
+        rand.setSeed(1234567);
+        HashSet<Integer> random_idx = new HashSet<>();
+        while (random_idx.size() < NUM_NonConstant) {
+            int idx = rand.nextInt(predicates.size());
+            if (!predicates.get(idx).isConstant()) {
+                random_idx.add(idx);
+            }
+        }
+        for (int choose_idx : random_idx) {
+            applicationRHSs.add(predicates.get(choose_idx));
+        }
 
         // 7. use all non-constant predicates as RHSs
 //        logger.info("#### choose all non-constant RHSs");
@@ -441,6 +469,7 @@ public class ParallelRuleDiscoverySampling {
                     removePredicates.add(p);
                 }
             }
+            logger.info("#### Filter Irrelevant Predicates size: {}", removePredicates.size());
             for (Predicate p : removePredicates) {
 //                logger.info("remove predicate: {}", p);
                 allPredicates.remove(p);
@@ -464,14 +493,32 @@ public class ParallelRuleDiscoverySampling {
     private void removeEnumConstantPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 3 ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 3) {
+            if (!p.isConstant()) {
+                continue;
+            }
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 5 ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 5) {
                 removePredicates.add(p);
             }
         }
+        logger.info("#### Filter Enum Constant Predicates size for X: {}", removePredicates.size());
         for (Predicate p : removePredicates) {
             allPredicates.remove(p);
-            allExistPredicates.remove(p);
+//            allExistPredicates.remove(p);
+        }
+    }
+
+    private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 5 ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 5) {
+                removePredicates.add(p);
+            }
+        }
+        logger.info("#### Filter Enum Constant Predicates size for RHSs: {}", removePredicates.size());
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
         }
     }
 
@@ -520,17 +567,22 @@ public class ParallelRuleDiscoverySampling {
             removePropertyFeatureCPredicates(this.allPredicates);
         }
 
-        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
-
-        // remove predicates that are irrelevant to RHSs
-//        if (this.maxTupleNum <= 2) {
-//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
-//        }
-
         this.prepareAllPredicatesMultiTuples();
 
+        List<Predicate> tmp_allPredicates = new ArrayList<>();
+        for (Predicate p : this.allPredicates) {
+            tmp_allPredicates.add(p);
+        }
+        removeEnumConstantPredicates(tmp_allPredicates);
+        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
+
+        // remove predicates that are irrelevant to RHSs
+        if (this.maxTupleNum <= 2) {
+            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+        }
+
         // remove constant predicates of enumeration type
-//        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
 
         logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
 
