@@ -43,6 +43,9 @@ public class CalculateRuleSuppConf {
     private int nonConsPredicatesNum;
     private int[] nonConsPredicates;
 
+    private long[] supports;
+    private double[] confidences;
+
 
     private void prepareAllPredicatesMultiTuples() {
         // add to Predicate Set
@@ -254,8 +257,17 @@ public class CalculateRuleSuppConf {
         return this.nonConsPredicates;
     }
 
+    public long[] getSupports() {
+        return this.supports;
+    }
+
+    public double[] getConfidences() {
+        return this.confidences;
+    }
+
     // sequence: "1 3 12,5;2 1,7;..."
-    public double[] getConfidence(String sequence) {
+    // each rule with one rhs
+    public void getSupportConfidence(String sequence) {
         logger.info("### begin to calculate confidence for sequence: {}", sequence);
 
         ArrayList<WorkUnit> workUnits = new ArrayList<>();
@@ -287,7 +299,8 @@ public class CalculateRuleSuppConf {
 
         List<Message> messages = this.parallelRuleDiscoverySampling.runLocal_new(workUnits_new);
         logger.info("messages size: {}", messages.size());
-        double[] confidences = new double[messages.size()];
+        this.supports = new long[messages.size()];
+        this.confidences = new double[messages.size()];
         for (int i = 0; i < messages.size(); i++) {
             long lhs_supp = 0;
             Message message = messages.get(i);
@@ -297,6 +310,7 @@ public class CalculateRuleSuppConf {
                 lhs_supp = message.getCurrentSupp();
             }
             long rule_supp = message.getAllCurrentRHSsSupport().get(rhss.get(i));
+            supports[i] = rule_supp;
             if (lhs_supp == 0) {
                 confidences[i] = 0.0;
             } else {
@@ -304,17 +318,16 @@ public class CalculateRuleSuppConf {
             }
             logger.info("rule: {} -> {}, lhs_supp: {}, supp: {}, conf: {}", workUnits.get(i).getCurrrent().toString(), rhss.get(i).toString(), lhs_supp, rule_supp, confidences[i]);
         }
-        return confidences;
     }
 
     public static void main(String[] args) {
         logger.info("Given a rule, calculate its support and confidence");
 
-//        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
-//                "chunkLength=200000", "maxTupleNum=2"};
-
-        String[] args_ = {"directory_path=D:\\REE\\tmp\\property_bak\\property", "constant_file=D:\\REE\\tmp\\property_bak\\constant_property.txt",
+        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
                 "chunkLength=200000", "maxTupleNum=2"};
+
+//        String[] args_ = {"directory_path=D:\\REE\\tmp\\property_bak\\property", "constant_file=D:\\REE\\tmp\\property_bak\\constant_property.txt",
+//                "chunkLength=200000", "maxTupleNum=2"};
 
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\aminer_test", "constant_file=D:\\REE\\tmp\\constant_aminer.txt",
 //                "chunkLength=200000", "maxTupleNum=2"};
@@ -323,15 +336,17 @@ public class CalculateRuleSuppConf {
         calculateRuleSuppConf.preparePredicates(args_);
         calculateRuleSuppConf.getAllPredicatesNum();
 
-//        calculateRuleSuppConf.getConfidence("1 11,5");
-//        calculateRuleSuppConf.getConfidence("5 6 11 12 18 19,5");
-//        calculateRuleSuppConf.getConfidence("1 3 7 16,5");
+        calculateRuleSuppConf.getSupportConfidence("1 11,5");
+//        calculateRuleSuppConf.getSupportConfidence("5 6 11 12 18 19,5");
+//        calculateRuleSuppConf.getSupportConfidence("1 3 7 16,5");
 
-//        calculateRuleSuppConf.getConfidence("78 107,37");
-        calculateRuleSuppConf.getConfidence("9 140,37");
+//        calculateRuleSuppConf.getSupportConfidence("78 107,37");
+//        calculateRuleSuppConf.getSupportConfidence("9 140,37");
 
 
-//        calculateRuleSuppConf.getConfidence("16 30,37");
+//        calculateRuleSuppConf.getSupportConfidence("16 30,37");
+
+        logger.info("supports: {}, confidences: {}", calculateRuleSuppConf.getSupports(), calculateRuleSuppConf.getConfidences());
 
     }
 }

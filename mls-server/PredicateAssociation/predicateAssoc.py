@@ -117,7 +117,11 @@ class PAssoc(object):
             sequence = " ".join(str(idx) for idx in lhs_indices)
             sequence += ","
             sequence += str(rhs_id)
-            reward = validator.getConfidence(sequence)[0] - self.conf_taus
+            validator.getSupportConfidence(sequence)
+            support = validator.getSupports()[0]
+            confidence = validator.getConfidences()[0]
+            # reward = support - self.supp_taus
+            reward = confidence - self.conf_taus
         else:
             attr_arr = self.transformAttr(next_state)
             if len(attr_arr) == 0:
