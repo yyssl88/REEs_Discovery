@@ -49,7 +49,7 @@ public class ParallelRuleDiscoverySampling {
 
     // max number of partition of Lattice
     public static int NUM_LATTICE = 200;
-    public static int MAX_CURRENT_PREDICTES = 8;
+    public static int MAX_CURRENT_PREDICTES = 7;
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
 
@@ -496,8 +496,8 @@ public class ParallelRuleDiscoverySampling {
             if (!p.isConstant()) {
                 continue;
             }
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 5 ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 5) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
                 removePredicates.add(p);
             }
         }
@@ -511,8 +511,8 @@ public class ParallelRuleDiscoverySampling {
     private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 5 ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 5) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
                 removePredicates.add(p);
             }
         }
