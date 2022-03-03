@@ -319,13 +319,15 @@ public class EvidenceGenerateMain {
 
         int if_cluster_workunits = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifClusterWorkunits"));
 
+        int filter_enum_number = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "filterEnumNumber"));
+
         String outputResultFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "outputResultFile");
 
         ParallelRuleDiscoverySampling parallelRuleDiscoverySampling;
         if (ifRL == 0) {
             parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits);
+                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
         } else {
             int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
             int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
@@ -343,7 +345,7 @@ public class EvidenceGenerateMain {
 
             parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits,
+                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
                     ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
                     learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
         }
@@ -593,6 +595,8 @@ public class EvidenceGenerateMain {
 
         int if_cluster_workunits = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifClusterWorkunits"));
 
+        int filter_enum_number = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "filterEnumNumber"));
+
         String outputResultFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "outputResultFile");
 
 //        ParallelRuleDiscovery parallelRuleDiscovery = new ParallelRuleDiscovery(allPredicates, K, maxTupleNum,
@@ -611,7 +615,7 @@ public class EvidenceGenerateMain {
         if (ifRL == 0) {
             parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits);
+                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
         } else {
             int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
             int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
@@ -629,7 +633,7 @@ public class EvidenceGenerateMain {
 
             parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits,
+                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
                     ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
                     learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
         }

@@ -72,6 +72,7 @@ public class ParallelRuleDiscoverySampling {
     private float conf_filter_thr;
 
     private int if_cluster_workunits;
+    private int filter_enum_number;
 
     // interestingness
     Interestingness interestingness;
@@ -103,7 +104,8 @@ public class ParallelRuleDiscoverySampling {
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
-                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits) {
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits,
+                                         int filter_enum_number) {
         this.allPredicates = predicates;
         this.K = K;
         this.maxTupleNum = maxTupleNum;
@@ -119,6 +121,8 @@ public class ParallelRuleDiscoverySampling {
         this.conf_filter_thr = conf_filter_thr;
 
         this.if_cluster_workunits = if_cluster_workunits;
+
+        this.filter_enum_number = filter_enum_number;
 
         // set support for each predicate;
         HashMap<String, HashMap<Integer, Long>> statistic = new HashMap<>();
@@ -193,14 +197,14 @@ public class ParallelRuleDiscoverySampling {
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
-                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits,
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
                                          int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage,
                                          String PI_path, String RL_code_path, int N, int DeltaL,
                                          float learning_rate, float reward_decay, float e_greedy,
                                          int replace_target_iter, int memory_size, int batch_size) {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
-                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits);
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
         this.MEM = new ArrayList<>();
         this.ifRL = ifRL;
         this.ifOnlineTrainRL = ifOnlineTrainRL;
@@ -496,8 +500,8 @@ public class ParallelRuleDiscoverySampling {
             if (!p.isConstant()) {
                 continue;
             }
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
@@ -511,8 +515,8 @@ public class ParallelRuleDiscoverySampling {
     private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }

@@ -236,6 +236,8 @@ public class RuleFinder {
 
         String if_cluster_workunits = argsMap.get("ifClusterWorkunits");
 
+        String filter_enum_num = argsMap.get("filterEnumNumber");
+
         numOfProcessors = numOfProcessors_;
 
         StringBuffer otherParam = new StringBuffer();
@@ -273,6 +275,7 @@ public class RuleFinder {
         otherParam.append("confFilterThr=" + conf_filter_thr + ";");
 
         otherParam.append("ifClusterWorkunits=" + if_cluster_workunits + ";");
+        otherParam.append("filterEnumNumber=" + filter_enum_num + ";");
 
 //        RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset);
         RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset, taskID);

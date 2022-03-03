@@ -48,6 +48,8 @@ public class CalculateRuleSuppConf {
     private long[] supports;
     private double[] confidences;
 
+    private int filter_enum_number = 10;
+
 
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
         int whole_num_nonCons = 0;
@@ -351,8 +353,8 @@ public class CalculateRuleSuppConf {
             if (!p.isConstant()) {
                 continue;
             }
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
-                    p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
@@ -366,8 +368,8 @@ public class CalculateRuleSuppConf {
     private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
-                    p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
@@ -431,6 +433,7 @@ public class CalculateRuleSuppConf {
         String constant_file = argsMap.get("constant_file");
         int chunkLength = Integer.parseInt(argsMap.get("chunkLength"));
         this.maxTupleNum = Integer.parseInt(argsMap.get("maxTupleNum"));
+        this.filter_enum_number = Integer.parseInt(argsMap.get("filterEnumNumber"));
 
         Boolean noCrossColumn = true;
         double minimumSharedValue = 0.30d;
@@ -503,7 +506,7 @@ public class CalculateRuleSuppConf {
 
             this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(this.allPredicates, 10000, this.maxTupleNum,
                     this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0);
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, filter_enum_number);
 
             this.table_name = "";
             for (String name : this.input.getNames()) {
