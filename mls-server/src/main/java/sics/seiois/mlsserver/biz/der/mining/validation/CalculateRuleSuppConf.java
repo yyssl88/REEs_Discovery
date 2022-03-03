@@ -32,6 +32,8 @@ public class CalculateRuleSuppConf {
 
     private ArrayList<Predicate> allPredicates;
     private ArrayList<Predicate> allExistPredicates;
+    private ArrayList<Predicate> applicationRHSs;
+    private String table_name;
     private Input input;
     private int maxTupleNum;
     private int maxOneRelationNum;
@@ -46,6 +48,225 @@ public class CalculateRuleSuppConf {
     private long[] supports;
     private double[] confidences;
 
+
+    private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
+        int whole_num_nonCons = 0;
+        int whole_num_cons = 0;
+        for (Predicate p : predicates) {
+            if (p.isConstant()) {
+                whole_num_cons++;
+            } else {
+                whole_num_nonCons++;
+            }
+        }
+
+        ArrayList<Predicate> applicationRHSs = new ArrayList<>();
+        // 1 - choose the first few non-constant rhss
+//        int NUM_rhs = 4;
+//        if (NUM_rhs > whole_num_nonCons) {
+//            NUM_rhs = whole_num_nonCons;
+//        }
+//        logger.info("#### choose the first {} rhss", NUM_rhs);
+//        int count = 0;
+//        HashMap<String, Predicate> temp = new HashMap<>();
+//        for (Predicate p : predicates) {
+//            if (p.isConstant()) {
+//                continue;
+//            }
+//            if (!temp.containsKey(p.toString())) {
+//                temp.put(p.toString(), p);
+//            }
+//        }
+//
+//        for (Map.Entry<String, Predicate> entry : temp.entrySet()) {
+//            applicationRHSs.add(entry.getValue());
+//            count++;
+//            if (count == NUM_rhs) {
+//                break;
+//            }
+//        }
+
+
+        // 2 - choose some rhss with minimum support value
+//        int NUM_rhs = 4;
+//        if (NUM_rhs > predicates.size()) {
+//            NUM_rhs = predicates.size();
+//        }
+//        logger.info("#### choose {} RHSs with minimum support value", NUM_rhs);
+//        ArrayList<Long> allSupports = new ArrayList<>();
+//        for (Predicate p : predicates) {
+//            allSupports.add(p.getSupport());
+//        }
+//        allSupports.sort(Comparator.naturalOrder());
+//        Long minSupp = allSupports.get(NUM_rhs - 1);
+//        for (Predicate p : predicates) {
+//            if (p.getSupport() <= minSupp) {
+//                applicationRHSs.add(p);
+//            }
+//        }
+//        if (applicationRHSs.size() > NUM_rhs) { // maybe exist redundant supp value minSupp
+//            applicationRHSs.subList(0, NUM_rhs);
+//        }
+
+
+        // 3 - choose 4 rhss: one min-supp, one max-supp, and two random rhss
+//        logger.info("#### choose 4 RHSs: one min-supp, one max-supp, and two random RHSs");
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        while (random_idx.size() < 2) {
+//            int idx = rand.nextInt(predicates.size());
+//            random_idx.add(idx);
+//        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
+//        ArrayList<Long> allSupports = new ArrayList<>();
+//        for (Predicate p : predicates) {
+//            allSupports.add(p.getSupport());
+//        }
+//        allSupports.sort(Comparator.naturalOrder());
+//        Long minSupp = allSupports.get(0);
+//        Long maxSupp = allSupports.get(allSupports.size() - 1);
+//        if (applicationRHSs.get(0).getSupport() == minSupp || applicationRHSs.get(1).getSupport() == minSupp) {
+//            minSupp = allSupports.get(1);
+//        }
+//        if (applicationRHSs.get(0).getSupport() == maxSupp || applicationRHSs.get(1).getSupport() == maxSupp) {
+//            maxSupp = allSupports.get(allSupports.size() - 2);
+//        }
+//        for (Predicate p : predicates) {
+//            if (applicationRHSs.contains(p)) {
+//                continue;
+//            }
+//            if (p.getSupport() == minSupp || p.getSupport() == maxSupp) {
+//                applicationRHSs.add(p);
+//            }
+//            if (applicationRHSs.size() == 4) {
+//                break;
+//            }
+//        }
+
+        // 4. randomly choose some RHS.
+//        int NUM_rhs = 4;
+//        if (NUM_rhs > predicates.size()) {
+//            NUM_rhs = predicates.size();
+//        }
+//        logger.info("#### randomly choose {} RHSs", NUM_rhs);
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        while (random_idx.size() < NUM_rhs) {
+//            int idx = rand.nextInt(predicates.size());
+//            random_idx.add(idx);
+//        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
+
+        // 5. randomly choose (n+m) RHSs, including n nonConstant and m constant RHSs
+//        int NUM_Constant = 3;
+//        int NUM_NonConstant = 2;
+//        if (NUM_Constant > whole_num_cons) {
+//            NUM_Constant = whole_num_cons;
+//        }
+//        if (NUM_NonConstant > whole_num_nonCons) {
+//            NUM_NonConstant = whole_num_nonCons;
+//        }
+//        logger.info("#### randomly choose {} RHSs, including {} nonConstant RHSs and {} constant RHSs", NUM_Constant + NUM_NonConstant, NUM_NonConstant, NUM_Constant);
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        int constant_num = 0;
+//        int nonConstant_num = 0;
+//        while (random_idx.size() < (NUM_Constant + NUM_NonConstant)) {
+//            int idx = rand.nextInt(predicates.size());
+//            if (predicates.get(idx).isConstant()) {
+//                if (constant_num < NUM_Constant && !random_idx.contains(idx)) {
+//                    random_idx.add(idx);
+//                    constant_num = constant_num + 1;
+//                }
+//            } else {
+//                if (nonConstant_num < NUM_NonConstant && !random_idx.contains(idx)) {
+//                    random_idx.add(idx);
+//                    nonConstant_num = nonConstant_num + 1;
+//                }
+//            }
+//        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
+
+        // 6. randomly choose some non-constant RHS.
+        int NUM_NonConstant = 4;
+        if (NUM_NonConstant > whole_num_nonCons) {
+            NUM_NonConstant = whole_num_nonCons;
+        }
+        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
+        Collections.sort(predicates, new Comparator<Predicate>() {
+            @Override
+            public int compare(Predicate o1, Predicate o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Random rand = new Random();
+        rand.setSeed(1234567);
+        HashSet<Integer> random_idx = new HashSet<>();
+        while (random_idx.size() < NUM_NonConstant) {
+            int idx = rand.nextInt(predicates.size());
+            if (!predicates.get(idx).isConstant()) {
+                random_idx.add(idx);
+            }
+        }
+        for (int choose_idx : random_idx) {
+            applicationRHSs.add(predicates.get(choose_idx));
+        }
+
+        // 7. use all non-constant predicates as RHSs
+//        logger.info("#### choose all non-constant RHSs");
+//        for (Predicate p : predicates) {
+//            if (!p.isConstant()) {
+//                applicationRHSs.add(p);
+//            }
+//        }
+
+        // 8. use all predicates as RHSs
+//        logger.info("#### choose all RHSs");
+//        for (Predicate p : predicates) {
+//            applicationRHSs.add(p);
+//        }
+
+        // 9. test NCVoter
+//        logger.info("#### choose voting_intention as RHS");
+//        for (Predicate p : predicates) {
+//            if (p.getOperand1().toString(0).equals("t0.voting_intention")) {
+//                applicationRHSs.add(p);
+//            }
+//        }
+
+        logger.info("applicationRHSs size : {}", applicationRHSs.size());
+        for (Predicate p : applicationRHSs) {
+            logger.info("applicationRHSs: {}", p.toString());
+        }
+        return applicationRHSs;
+    }
 
     private void prepareAllPredicatesMultiTuples() {
         // add to Predicate Set
@@ -121,6 +342,74 @@ public class CalculateRuleSuppConf {
         }
         for (Predicate p : removePredicates) {
             allPredicates.remove(p);
+        }
+    }
+
+    private void removeEnumConstantPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            if (!p.isConstant()) {
+                continue;
+            }
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
+                    p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
+                removePredicates.add(p);
+            }
+        }
+        logger.info("#### Filter Enum Constant Predicates size for X: {}", removePredicates.size());
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
+            allExistPredicates.remove(p);
+        }
+    }
+
+    private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < 10 ||
+                    p.getOperand2().getColumnLight().getUniqueConstantNumber() < 10) {
+                removePredicates.add(p);
+            }
+        }
+        logger.info("#### Filter Enum Constant Predicates size for RHSs: {}", removePredicates.size());
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
+        }
+    }
+
+    /**
+     * if RHS only contain non-constant predicates, then filter the irrelevant predicates
+     * */
+    private void filterIrrelevantPredicates(ArrayList<Predicate> applicationRHSs, List<Predicate> allPredicates) {
+        // filter the predicates that are irrelevant to rhs
+        boolean allNonConstant = true;
+        HashSet<String> relationRHS = new HashSet<>();
+        for (Predicate p : applicationRHSs) {
+            if (p.isConstant()) {
+                allNonConstant = false;
+                break;
+            }
+            relationRHS.add(p.getOperand1().getColumn().getTableName());
+            relationRHS.add(p.getOperand2().getColumn().getTableName());
+        }
+//        for (String name : relationRHS) {
+//            logger.info("Table name: {}", name);
+//        }
+        if (allNonConstant) {
+            ArrayList<Predicate> removePredicates = new ArrayList<>();
+            for (Predicate p : allPredicates) {
+                String name_1 = p.getOperand1().getColumn().getTableName();
+                String name_2 = p.getOperand2().getColumn().getTableName();
+//                logger.info("currPredicate: {}, name_1: {}, name_2: {}", p, name_1, name_2);
+                if (!relationRHS.contains(name_1) || !relationRHS.contains(name_2)) {
+                    removePredicates.add(p);
+                }
+            }
+            logger.info("#### Filter Irrelevant Predicates size: {}", removePredicates.size());
+            for (Predicate p : removePredicates) {
+//                logger.info("remove predicate: {}", p);
+                allPredicates.remove(p);
+            }
         }
     }
 
@@ -216,10 +505,36 @@ public class CalculateRuleSuppConf {
                     this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
                     0, 0, 0, 0, 0, 0, 0, 0, 0);
 
-            removePropertyFeatureCPredicates(this.allPredicates);
-            logger.info("After remove Property_Feature constant predicates, allPredicates size: {}", this.allPredicates.size());
+            this.table_name = "";
+            for (String name : this.input.getNames()) {
+                this.table_name += name;
+                this.table_name += "_";
+            }
+            this.table_name = this.table_name.substring(0, this.table_name.length() - 1); // remove last "_"
+            logger.info("#### table_name: {}", this.table_name);
 
-            prepareAllPredicatesMultiTuples();
+            if (table_name.contains("Property_Features")) {
+                removePropertyFeatureCPredicates(this.allPredicates);
+            }
+
+            this.prepareAllPredicatesMultiTuples();
+
+            List<Predicate> tmp_allPredicates = new ArrayList<>();
+            for (Predicate p : this.allPredicates) {
+                tmp_allPredicates.add(p);
+            }
+            // remove constant predicates of enumeration type for RHS
+            removeEnumConstantPredicates(tmp_allPredicates);
+            this.applicationRHSs = new ArrayList<>();
+            this.applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
+
+            // remove predicates that are irrelevant to RHSs
+            if (this.maxTupleNum <= 2) {
+                filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+            }
+
+            // remove constant predicates of enumeration type for X
+            removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
 
         } catch (FileNotFoundException | InputIterationException e) {
             logger.info("Cannot load file\n");
@@ -238,11 +553,29 @@ public class CalculateRuleSuppConf {
     }
 
     public int getAllPredicatesNum() {
-        logger.info("allExistPredicates size: {}", this.allExistPredicates.size());
-        for (int i = 0; i < this.allExistPredicates.size(); i++) {
-            logger.info("{} : {}", i, this.allExistPredicates.get(i).toString());
-        }
+//        logger.info("allExistPredicates size: {}", this.allExistPredicates.size());
+//        for (int i = 0; i < this.allExistPredicates.size(); i++) {
+//            logger.info("{} : {}", i, this.allExistPredicates.get(i).toString());
+//        }
         return this.allExistPredicates.size();
+    }
+
+    public String getAllPredicates() {
+        String res = "";
+        for (Predicate p : this.allExistPredicates) {
+            res += p.toString();
+            res += ";";
+        }
+        return res;
+    }
+
+    public String getApplicationRHSs() {
+        String rhs_sequence = "";
+        for (Predicate p : this.applicationRHSs) {
+            rhs_sequence += p.toString();
+            rhs_sequence += ";";
+        }
+        return rhs_sequence;
     }
 
     public int[] getNonConstantPredicateIDs() {
@@ -335,6 +668,9 @@ public class CalculateRuleSuppConf {
         CalculateRuleSuppConf calculateRuleSuppConf = new CalculateRuleSuppConf();
         calculateRuleSuppConf.preparePredicates(args_);
         calculateRuleSuppConf.getAllPredicatesNum();
+
+        logger.info("allPredicates: {}", calculateRuleSuppConf.getAllPredicates());
+        logger.info("all applicationRHSs: {}", calculateRuleSuppConf.getApplicationRHSs());
 
         calculateRuleSuppConf.getSupportConfidence("1 11,5");
 //        calculateRuleSuppConf.getSupportConfidence("5 6 11 12 18 19,5");

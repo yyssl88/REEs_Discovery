@@ -504,7 +504,7 @@ public class ParallelRuleDiscoverySampling {
         logger.info("#### Filter Enum Constant Predicates size for X: {}", removePredicates.size());
         for (Predicate p : removePredicates) {
             allPredicates.remove(p);
-//            allExistPredicates.remove(p);
+            allExistPredicates.remove(p);
         }
     }
 
@@ -1913,7 +1913,7 @@ public class ParallelRuleDiscoverySampling {
             }
         }
 
-        if (this.ifRL == 1) {
+//        if (this.ifRL == 1) {
             this.allExistPredicates = new ArrayList<>();
             this.highSelectivityPredicateIndices = new ArrayList<>();
             long maxCount = maxOneRelationNum * maxOneRelationNum - maxOneRelationNum;
@@ -1925,7 +1925,7 @@ public class ParallelRuleDiscoverySampling {
                 }
                 idx = idx + 1;
             }
-        }
+//        }
 //        PredicateSet ps = new PredicateSet();
 //        for(Predicate p : this.allPredicates) {
 //            p.initialPredicateDataTransfer();
@@ -2899,8 +2899,6 @@ public class ParallelRuleDiscoverySampling {
 
     public void levelwiseRuleDiscoveryLocal() {
 
-        this.prepareAllPredicatesMultiTuples();
-
         this.table_name = "";
         HashMap<String, Long> tupleNumberRelations = new HashMap<>();
         for (int i = 0; i < inputLight.getNames().size(); i++) {
@@ -2915,10 +2913,28 @@ public class ParallelRuleDiscoverySampling {
             removePropertyFeatureCPredicates(this.allPredicates);
         }
 
+        this.prepareAllPredicatesMultiTuples();
+
+        List<Predicate> tmp_allPredicates = new ArrayList<>();
+        for (Predicate p : this.allPredicates) {
+            tmp_allPredicates.add(p);
+        }
+        // remove constant predicates of enumeration type for RHS
+        removeEnumConstantPredicates(tmp_allPredicates);
+        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
+
+        // remove predicates that are irrelevant to RHSs
+        if (this.maxTupleNum <= 2) {
+            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+        }
+
+        // remove constant predicates of enumeration type for X
+        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+
         // 1. initialize the 1st level combinations
         Lattice lattice = new Lattice(this.maxTupleNum);
         // only for test application-driven methods
-        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
+//        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
 //        ArrayList<Predicate> applicationRHSs = new ArrayList<>();
 ////        for (Predicate p : this.allPredicates) {
 ////            // if p is a constant, only consider t_0
