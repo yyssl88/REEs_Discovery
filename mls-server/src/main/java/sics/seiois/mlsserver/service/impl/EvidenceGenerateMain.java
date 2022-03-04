@@ -411,13 +411,15 @@ public class EvidenceGenerateMain {
 
 
     public static DenialConstraint parseOneREE(String rule, REEFinderEvidSet reeFinderEvidSet) {
-        String[] pstrings = rule.split("->");
-        String[] xString = pstrings[0].split("^");
+        String[] pstrings = rule.split(",")[0].split("->");
+        String[] xStrings = pstrings[0].split("\\^");
+        String[] xString = xStrings[xStrings.length - 1].trim().split("  ");
         PredicateSet ps = new PredicateSet();
         for (int i = 0; i < xString.length; i++) {
             ps.add(PredicateBuilder.parsePredicateString(reeFinderEvidSet.getInput(), xString[i].trim()));
         }
-        ps.addRHS(PredicateBuilder.parsePredicateString(reeFinderEvidSet.getInput(), pstrings[pstrings.length - 1].trim()));
+        String rhs = pstrings[pstrings.length - 1].trim();
+        ps.addRHS(PredicateBuilder.parsePredicateString(reeFinderEvidSet.getInput(), rhs.substring(0, rhs.length() - 1)));
         DenialConstraint ree = new DenialConstraint(ps);
         return ree;
     }
@@ -426,21 +428,25 @@ public class EvidenceGenerateMain {
         DenialConstraintSet rees = new DenialConstraintSet();
         String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "constantRecovery/" + taskId + "/rule_all/" +  outputResultFile; //"experiment_results";
         FSDataInputStream inputTxt = hdfs.open(new Path(inputTxtPath));
-        String rees_org = inputTxt.toString();
-        String[] lines = rees_org.split("\n");
+        BufferedInputStream bis = new BufferedInputStream(inputTxt);
+        InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
+        BufferedReader bReader = new BufferedReader(sReader);
+        String line;
         String valid_prefix = "Rule : ";
-        for (String line : lines) {
-            // check whether valid rule
-            if (line.length() <= valid_prefix.length() || (!line.substring(0, valid_prefix.length()).equals(valid_prefix))) {
+        while ((line = bReader.readLine()) != null) {
+            if (line.length() <= valid_prefix.length() || (!line.startsWith(valid_prefix))) {
                 continue;
             } else {
-
                 DenialConstraint ree = parseOneREE(line.trim(), reeFinderEvidSet);
                 if (ree != null) {
                     rees.add(ree);
                 }
             }
         }
+//        logger.info("#### load {} rees", rees.size());
+//        for (DenialConstraint ree : rees) {
+//            logger.info(ree.toString());
+//        }
         return rees;
     }
 

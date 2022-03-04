@@ -494,7 +494,7 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
-    private void removeEnumConstantPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
+    private void removeEnumPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
             if (!p.isConstant()) {
@@ -512,7 +512,7 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
-    private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
+    private void removeEnumPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
             if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
@@ -577,7 +577,7 @@ public class ParallelRuleDiscoverySampling {
         for (Predicate p : this.allPredicates) {
             tmp_allPredicates.add(p);
         }
-        removeEnumConstantPredicates(tmp_allPredicates);
+        removeEnumPredicates(tmp_allPredicates);
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
 
         // remove predicates that are irrelevant to RHSs
@@ -586,7 +586,7 @@ public class ParallelRuleDiscoverySampling {
         }
 
         // remove constant predicates of enumeration type
-        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+        removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
 
@@ -2924,7 +2924,7 @@ public class ParallelRuleDiscoverySampling {
             tmp_allPredicates.add(p);
         }
         // remove constant predicates of enumeration type for RHS
-        removeEnumConstantPredicates(tmp_allPredicates);
+        removeEnumPredicates(tmp_allPredicates);
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
 
         // remove predicates that are irrelevant to RHSs
@@ -2933,7 +2933,7 @@ public class ParallelRuleDiscoverySampling {
         }
 
         // remove constant predicates of enumeration type for X
-        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+        removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         // 1. initialize the 1st level combinations
         Lattice lattice = new Lattice(this.maxTupleNum);
@@ -2958,14 +2958,6 @@ public class ParallelRuleDiscoverySampling {
 //                break;
 //            }
 //        }
-
-        // remove predicates that are irrelevant to RHSs
-//        if (this.maxTupleNum <= 2) {
-//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
-//        }
-
-        // remove constant predicates of enumeration type
-//        removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
 
         lattice.initialize(this.allPredicates, this.maxTupleNum, applicationRHSs);
 
