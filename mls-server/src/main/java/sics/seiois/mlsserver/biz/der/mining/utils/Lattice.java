@@ -574,24 +574,24 @@ public class Lattice implements KryoSerializable {
         check whether current predicateset ONLY contains all constant predicates
      */
     private boolean ifAllConstantPredicates(PredicateSet ps) {
-//        for (Predicate p : ps) {
-//            if (!p.isConstant()) {
-//                return false;
-//            }
-//        }
-//        return true;
-
-        int countConstants = 0;
         for (Predicate p : ps) {
-            if (p.isConstant()) {
-                countConstants ++;
+            if (!p.isConstant()) {
+                return false;
             }
         }
-        if (countConstants > 1) {
-            return true;
-        } else {
-            return false;
-        }
+        return true;
+
+//        int countConstants = 0;
+//        for (Predicate p : ps) {
+//            if (p.isConstant()) {
+//                countConstants ++;
+//            }
+//        }
+//        if (countConstants > 1) {
+//            return true;
+//        } else {
+//            return false;
+//        }
 
     }
 
