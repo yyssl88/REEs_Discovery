@@ -347,7 +347,7 @@ public class CalculateRuleSuppConf {
         }
     }
 
-    private void removeEnumConstantPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
+    private void removeEnumPredicates(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
             if (!p.isConstant()) {
@@ -365,7 +365,7 @@ public class CalculateRuleSuppConf {
         }
     }
 
-    private void removeEnumConstantPredicates(List<Predicate> allPredicates) {
+    private void removeEnumPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
             if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
@@ -527,7 +527,7 @@ public class CalculateRuleSuppConf {
                 tmp_allPredicates.add(p);
             }
             // remove constant predicates of enumeration type for RHS
-            removeEnumConstantPredicates(tmp_allPredicates);
+            removeEnumPredicates(tmp_allPredicates);
             this.applicationRHSs = new ArrayList<>();
             this.applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
 
@@ -537,7 +537,7 @@ public class CalculateRuleSuppConf {
             }
 
             // remove constant predicates of enumeration type for X
-            removeEnumConstantPredicates(this.allPredicates, this.allExistPredicates);
+            removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         } catch (FileNotFoundException | InputIterationException e) {
             logger.info("Cannot load file\n");
