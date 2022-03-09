@@ -165,6 +165,7 @@ public class ConstantRecovery {
             p.getOperand1().getColumn().cleanValueIntBeforeBroadCast();
             p.getOperand2().getColumn().cleanValueIntBeforeBroadCast();
         }
+        Set<Predicate> allRealConstantPredicates = new HashSet<>();
         // insert parsedColumnLight for each predicate
         PredicateSet ps = new PredicateSet();
         for (Predicate p : this.allPredicates) {
@@ -195,7 +196,8 @@ public class ConstantRecovery {
                     k = p_new.getOperand2().getColumn().toStringData();
                     p_new.getOperand2().setColumnLight(colsMap.get(k));
                     ps.add(p_new);
-                    this.realConstantPredicates.add(p_new);
+                    // this.realConstantPredicates.add(p_new); // duplication
+                    allRealConstantPredicates.add(p_new);
 
                     // add the constant template
                     Predicate p_newT = predicateProviderIndex.getPredicate(p, p.getIndex1(), p.getIndex2(),
@@ -218,6 +220,10 @@ public class ConstantRecovery {
                     ps.add(p_new);
                 }
             }
+        }
+
+        for (Predicate p : allRealConstantPredicates) {
+            this.realConstantPredicates.add(p);
         }
 
     }
@@ -260,7 +266,11 @@ public class ConstantRecovery {
     private ArrayList<WorkUnit> generateWorkUnits() {
         ArrayList<WorkUnit> workUnits = new ArrayList<>();
         for (REETemplate reeTemplate : this.reeTemplates) {
-            workUnits.addAll(reeTemplate.generateWorkUnits(this.realConstantPredicates));
+            ArrayList<WorkUnit> workunits = reeTemplate.generateWorkUnits(this.realConstantPredicates);
+            if (workunits == null) {
+                continue;
+            }
+            workUnits.addAll(workunits);
         }
         return workUnits;
     }

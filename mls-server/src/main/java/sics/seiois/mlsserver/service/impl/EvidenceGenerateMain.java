@@ -256,9 +256,9 @@ public class EvidenceGenerateMain {
         String outputResultFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "outputResultFile");
 
         //打印规则
-        for(RuleResult rule : allRules) {
-            logger.info("####[输出规则]:" + rule.getPrintString());
-        }
+//        for(RuleResult rule : allRules) {
+//            logger.info("####[输出规则]:" + rule.getPrintString());
+//        }
 
         long runningTime = System.currentTimeMillis() - startTime;
         timeInfo.append("total running time: ").append(runningTime).append("\n");
@@ -421,6 +421,7 @@ public class EvidenceGenerateMain {
         String rhs = pstrings[pstrings.length - 1].trim();
         ps.addRHS(PredicateBuilder.parsePredicateString(reeFinderEvidSet.getInput(), rhs.substring(0, rhs.length() - 1)));
         DenialConstraint ree = new DenialConstraint(ps);
+        ree.removeRHS();
         return ree;
     }
 
