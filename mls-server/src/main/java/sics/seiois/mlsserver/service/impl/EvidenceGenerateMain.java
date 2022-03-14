@@ -444,7 +444,7 @@ public class EvidenceGenerateMain {
                 }
             }
         }
-//        logger.info("#### load {} rees", rees.size());
+        logger.info("#### load {} rees", rees.size());
 //        for (DenialConstraint ree : rees) {
 //            logger.info(ree.toString());
 //        }
@@ -482,6 +482,7 @@ public class EvidenceGenerateMain {
         int maxOneRelationNum = reeFinderEvidSet.getInput().getMaxTupleOneRelation();
         int allCount = reeFinderEvidSet.getInput().getAllCount();
         int maxTupleNum = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"maxTuplePerREE"));
+        int if_cluster_workunits = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifClusterWorkunits"));
 //        int K = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "topK"));
         long support = (long)(sparkContextConfig.getCr() * allCount * allCount);
         double confidence = sparkContextConfig.getFtr();
@@ -493,7 +494,7 @@ public class EvidenceGenerateMain {
 
         InputLight inputLight = new InputLight(reeFinderEvidSet.getInput());
         ConstantRecovery constantRecovery = new ConstantRecovery(reesStart, allPredicates, maxTupleNum, inputLight,
-                support, (float)confidence, maxOneRelationNum, allCount);
+                support, (float)confidence, maxOneRelationNum, allCount, if_cluster_workunits);
         String taskId = request.getTaskId();
         long startMineTime = System.currentTimeMillis();
         constantRecovery.recovery(taskId, spark, sparkContextConfig);

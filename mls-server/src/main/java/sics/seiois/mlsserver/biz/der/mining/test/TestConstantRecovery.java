@@ -73,6 +73,7 @@ public class TestConstantRecovery {
         String rhs = pstrings[pstrings.length - 1].trim();
         ps.addRHS(PredicateBuilder.parsePredicateString(input, rhs.substring(0, rhs.length() - 1)));
         DenialConstraint ree = new DenialConstraint(ps);
+        ree.removeRHS();
         return ree;
     }
 
@@ -118,6 +119,7 @@ public class TestConstantRecovery {
         int replace_target_iter = 300;
         int memory_size = 500;
         int batch_size = 32;
+        int if_cluster_workunits = 0;
 
         Dir directory = new Dir(directory_path, relation_num_ratio);
 
@@ -184,7 +186,7 @@ public class TestConstantRecovery {
             DenialConstraintSet reesStart = loadREEs(ree_sample_file, input);
 
             ConstantRecovery constantRecovery = new ConstantRecovery(reesStart, allPredicates, maxTupleNum, new InputLight(input),
-                    support, (float)errorThreshold, maxOneRelationNum, allCount);
+                    support, (float)errorThreshold, maxOneRelationNum, allCount, if_cluster_workunits);
             constantRecovery.recoveryLocal();
             // Get rules
             DenialConstraintSet rees = constantRecovery.getREEsResults();

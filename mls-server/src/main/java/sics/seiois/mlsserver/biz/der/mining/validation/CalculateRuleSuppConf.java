@@ -660,7 +660,7 @@ public class CalculateRuleSuppConf {
         logger.info("Given a rule, calculate its support and confidence");
 
         String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
-                "chunkLength=200000", "maxTupleNum=2"};
+                "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
 
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\property_bak\\property", "constant_file=D:\\REE\\tmp\\property_bak\\constant_property.txt",
 //                "chunkLength=200000", "maxTupleNum=2"};
@@ -675,7 +675,8 @@ public class CalculateRuleSuppConf {
         logger.info("allPredicates: {}", calculateRuleSuppConf.getAllPredicates());
         logger.info("all applicationRHSs: {}", calculateRuleSuppConf.getApplicationRHSs());
 
-        calculateRuleSuppConf.getSupportConfidence("1 11,5");
+//        calculateRuleSuppConf.getSupportConfidence("1 11,5");
+        calculateRuleSuppConf.getSupportConfidence("16 8 19 20,5");
 //        calculateRuleSuppConf.getSupportConfidence("5 6 11 12 18 19,5");
 //        calculateRuleSuppConf.getSupportConfidence("1 3 7 16,5");
 

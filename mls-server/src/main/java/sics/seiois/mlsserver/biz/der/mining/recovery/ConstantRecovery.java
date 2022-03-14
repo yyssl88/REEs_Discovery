@@ -14,6 +14,7 @@ import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
 import sics.seiois.mlsserver.biz.der.mining.Message;
 import sics.seiois.mlsserver.biz.der.mining.MultiTuplesRuleMining;
+import sics.seiois.mlsserver.biz.der.mining.MultiTuplesRuleMiningOpt;
 import sics.seiois.mlsserver.biz.der.mining.utils.*;
 import sics.seiois.mlsserver.model.SparkContextConfig;
 import sics.seiois.mlsserver.service.impl.PredicateSetAssist;
@@ -42,6 +43,10 @@ public class ConstantRecovery {
 
     private HashMap<IBitSet, ArrayList<Predicate>> validXRHSs;
 
+    private Map<PredicateSet, List<Predicate>> validConstantRule = new HashMap<>();
+
+    private int if_cluster_workunits;
+
 
     public DenialConstraintSet getREEsResults() {
         return this.REEsResults;
@@ -49,7 +54,7 @@ public class ConstantRecovery {
 
     public ConstantRecovery(DenialConstraintSet rees, ArrayList<Predicate> allRealPredicates,
                             int maxTupleNum, InputLight inputLight, long support, float confidence,
-                            long maxOneRelationNum, long allCount) {
+                            long maxOneRelationNum, long allCount, int if_cluster_workunits) {
         this.REEsResults = new DenialConstraintSet();
         this.reeTemplates = new ArrayList<>();
         this.transformREETemplates(rees, this.REEsResults);
@@ -61,6 +66,7 @@ public class ConstantRecovery {
         this.confidence = confidence;
         this.maxOneRelationNum = maxOneRelationNum;
         this.allCount = allCount;
+        this.if_cluster_workunits = if_cluster_workunits;
 
         // invalid predicate combinations
         this.invalidX = new HashSet<>();
@@ -260,6 +266,7 @@ public class ConstantRecovery {
                 dups.add(key);
             }
         }
+        logger.info("#### nonConstant REEs num: {}", reesFinal.size());
     }
 
 
@@ -391,6 +398,7 @@ public class ConstantRecovery {
             // set support and confidence
             ree.setSupport(supp);
             ree.setConfidence(conf);
+            ree.removeRHS();
 //            logger.info("Transform rule {} with support {} and confidence {}", ree, supp, conf);
             // compute the interestingness score of each REE rule
             rees.add(ree);
@@ -532,7 +540,7 @@ public class ConstantRecovery {
             // validate all work units
             List<Message> messages = null;
             if (workUnits.size() > 0) {
-                messages = this.run(workUnits, taskId, spark, sparkContextConfig, tupleNumberRelations);
+                messages = this.run_new(workUnits, taskId, spark, sparkContextConfig, tupleNumberRelations);
                 logger.info("Integrate messages ...");
                 messages = this.integrateMessages(messages);
             }
@@ -546,6 +554,8 @@ public class ConstantRecovery {
                     for (DenialConstraint ree : rees) {
                         if (ree != null) {
                             this.REEsResults.add(ree);
+                            validConstantRule.putIfAbsent(message.getCurrentSet(), new ArrayList<>());
+                            validConstantRule.get(message.getCurrentSet()).add(ree.getRHS());
                             logger.info("Valid REE values ###### are : {}", ree.toString());
                         }
                     }
@@ -676,6 +686,473 @@ public class ConstantRecovery {
 
     }
 
+    public List<Message> run_new(ArrayList<WorkUnit> workUnits, String taskId,
+                             SparkSession spark, SparkContextConfig sparkContextConfig, HashMap<String, Long> tupleNumberRelations) {
+        JavaSparkContext sc = new JavaSparkContext(spark.sparkContext());
+        BroadcastObj broadcastObj = new BroadcastObj(this.maxTupleNum, this.inputLight, this.support, this.confidence,
+                this.maxOneRelationNum, tupleNumberRelations);
+        // broadcast data
+        // ... left for future
+
+        broadcastObj.setValidConstantRule(validConstantRule);
+        Broadcast<BroadcastObj> scInputLight = sc.broadcast(broadcastObj);
+
+        PredicateSetAssist psAssist = new PredicateSetAssist();
+        psAssist.setIndexProvider(PredicateSet.indexProvider);//在这里设置，这个值肯定是确定了的
+        psAssist.setBf(PredicateSet.bf);
+        psAssist.setTaskId(taskId);
+        Broadcast<PredicateSetAssist> bcpsAssist = sc.broadcast(psAssist);
+
+        // broadcast provideIndex, i.e., all predicates
+//        PredicateSetAssist psAssist = new PredicateSetAssist();
+//        psAssist.setIndexProvider(PredicateSet.indexProvider);//在这里设置，这个值肯定是确定了的
+//        psAssist.setBf(PredicateSet.bf);
+//        psAssist.setTaskId(taskId);
+//        Broadcast<PredicateSetAssist> bcpsAssist = sc.broadcast(psAssist);
+//        logger.info("####level:{}, Before dig indexProvider size:{}, list:{}", 0,
+//                PredicateSet.indexProvider.size(), PredicateSet.indexProvider.toString());
+
+
+        // print all work units
+//        for (WorkUnit task : workUnits) {
+//            logger.info("### Work Unit : {}", task);
+//        }
+
+
+        //增加聚类方法聚合Unit
+        logger.info(">>>>begin cluster");
+        ArrayList<WorkUnits> unitSets;
+        if (this.if_cluster_workunits == 1) {
+            unitSets = clusterByPredicate(workUnits, 2);
+        } else {
+            unitSets = new ArrayList<>();
+            for (WorkUnit workUnit : workUnits) {
+                WorkUnits cluster = new WorkUnits();
+                cluster.addUnit(workUnit);
+                unitSets.add(cluster);
+            }
+        }
+        logger.info(">>>>end cluster");
+
+        // set allCount of each work unit
+        for (WorkUnit task : workUnits) {
+            task.clearData();
+        }
+        List<Message> ruleMessages = new ArrayList<>();
+        logger.info("running by MultiTuplesRuleMiningOpt!!");
+
+        for(WorkUnits set : unitSets) {
+            set.setAllCount(this.allCount);
+        }
+
+//        JavaRDD<WorkUnits> rdd = sc.parallelize(unitSets);
+        List<Message> ruleMessagesSub = sc.parallelize(unitSets, unitSets.size()).map(unitSet -> {
+            if (unitSet.getCurrrent().size() == 0) {
+                return null;
+            }
+
+            PredicateSetAssist assist = bcpsAssist.getValue();
+            PredicateSet.indexProvider = assist.getIndexProvider();
+            PredicateSet.bf = assist.getBf();
+            String taskid = assist.getTaskId();
+
+            BroadcastObj bobj = scInputLight.getValue();
+            Map<PredicateSet, List<Predicate>> validConsRuleMap = bobj.getValidConstantRule();
+            Map<PredicateSet, Map<String, Predicate>> constantXMap = new HashMap<>();
+            PredicateSet sameSet = unitSet.getSameSet();
+            for (PredicateSet set : validConsRuleMap.keySet()) {
+                PredicateSet tupleX = new PredicateSet();
+                Map<String, Predicate> constantX = new HashMap<>();
+                for (Predicate p : set) {
+                    if (p.isConstant()) {
+                        constantX.put(p.getOperand1().toString_(0), p);
+                    } else {
+                        tupleX.add(p);
+                    }
+                }
+
+                if(tupleX.size() > 0) {
+                    constantXMap.putIfAbsent(tupleX, constantX);
+                }
+            }
+
+            List<WorkUnit> units = unitSet.getUnits();
+//            WorkUnits newTask = new WorkUnits();
+            for(PredicateSet tuplePs : constantXMap.keySet()) {
+                if(sameSet.size() > 0) {
+                    if(!tuplePs.containsPS(sameSet)) {
+                        continue;
+                    }
+                }
+                for (WorkUnit unit : units) {
+                    PredicateSet tupleX = new PredicateSet();
+                    PredicateSet constantX = new PredicateSet();
+                    for (Predicate p : unit.getCurrrent()) {
+                        if (p.isConstant()) {
+                            constantX.add(p);
+                        } else {
+                            tupleX.add(p);
+                        }
+                    }
+
+
+                    if (tupleX.containsPS(tuplePs)) {
+                        Map<String, Predicate> constantsMap = constantXMap.get(tuplePs);
+                        boolean iscont = true;
+                        for (Predicate p : constantX) {
+                            if (!constantsMap.containsKey(p.getOperand1().toString_(0))) {
+                                iscont = false;
+                                break;
+                            }
+                        }
+
+                        if (iscont) {
+                            PredicateSet lhs = new PredicateSet();
+                            lhs.addAll(tuplePs);
+                            for (Predicate p : constantsMap.values()) {
+                                lhs.add(p);
+                            }
+                            List<Predicate> rhs = validConsRuleMap.get(lhs);
+
+                            for (Predicate p : rhs) {
+                                if (unit.getRHSs().containsPredicate(p)) {
+                                    unit.getRHSs().remove(p);
+                                    logger.info(">>>> test cut: {}", p);
+                                }
+                            }
+                        }
+                    }
+                }
+
+//                if(unit.getRHSs().size() > 0) {
+//                    newTask.addUnit(unit);
+//                }
+            }
+//            newTask.setAllCount(unitSet.getAllCount());
+
+
+//            Map<TIntArrayList, List<Integer>> leftMap = new HashMap<>();
+//            Map<TIntArrayList, List<Integer>> rightMap = new HashMap<>();
+
+            Predicate pBegin = null;
+//            PredicateSet sameSet = newTask.getSameSet();
+//            ArrayList<Predicate> samePs = new ArrayList<>();
+//            if (sameSet.size() > 0) {
+//                for (Predicate p : sameSet) {
+//                    samePs.add(p);
+//                }
+//            }
+//            ArrayList<Predicate> currentList = new ArrayList<>();
+            for (Predicate p : unitSet.getSameSet()) {
+//                if (!sameSet.containsPredicate(p)) {
+//                    currentList.add(p);
+//                }
+                if (!p.isML() && !p.isConstant()) {
+                    pBegin = p;
+                    break;
+                }
+            }
+
+//            ArrayList<Predicate> rhsList = new ArrayList<>();
+//            for (Predicate p : newTask.getRHSs()) {
+//                rhsList.add(p);
+//            }
+
+//            logger.info(">>>Will do multiTuplesRuleMining! {} | {}", currentList, rhsList);
+            MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(bobj.getMax_num_tuples(),
+                    bobj.getInputLight(), bobj.getSupport(), bobj.getConfidence(), bobj.getMaxOneRelationNum(),
+                    unitSet.getAllCount(), bobj.getTupleNumberRelations());
+
+//            TIntArrayList _list1 = pBegin.getOperand1().getColumnLight().getValueIntList(unitSet.getPids()[pBegin.getIndex1()]);
+//            TIntArrayList _list2 = pBegin.getOperand2().getColumnLight().getValueIntList(unitSet.getPids()[pBegin.getIndex2()]);
+//            leftMap = multiTuplesRuleMining.createHashMap(_list1, samePs, unitSet.getPids(), true);
+//            rightMap = multiTuplesRuleMining.createHashMap(_list2, samePs, unitSet.getPids(), false);
+
+//            logger.info(">>>Will do multiTuple valid! {} | {}", currentList, rhsList);
+//            List<Message> messages = multiTuplesRuleMining.validation(current, rhs, task.getPids());
+
+//            List<Message> messages = multiTuplesRuleMining.validationMap(currentList, unitSet, leftMap, rightMap);
+            List<Message> messages = multiTuplesRuleMining.validationMap1(unitSet, pBegin);
+
+//            logger.info(">>>Finish multiTuple valid! {} | {}", currentList, rhsList);
+            return messages;
+//            List<Message> messages = new ArrayList();
+//            return messages;
+        }).aggregate(null, new IMessageAggFunction(), new IMessageAggFunction());
+
+
+
+//        List<Message> ruleMessagesSub = sc.parallelize(workUnits, workUnits.size()).map(task -> {
+//
+//            // share PredicateSet static instance, i.e., providerIndex
+//
+////            logger.info("####level:{}, In workers XXXXXX indexProvider size:{}, list:{}", 0,
+////                    PredicateSet.indexProvider.size(), PredicateSet.indexProvider.toString());
+//
+//            //synchronized (BroadcastObj.class) {
+//            PredicateSetAssist assist = bcpsAssist.getValue();
+//            PredicateSet.indexProvider = assist.getIndexProvider();
+//            PredicateSet.bf = assist.getBf();
+//            String taskid = assist.getTaskId();
+//            //}
+//
+////            logger.info("####level:{}, In workers indexProvider size:{}, list:{}", 0,
+////                    PredicateSet.indexProvider.size(), PredicateSet.indexProvider.toString());
+////
+////                // print
+////                logger.info("***** Work Unit, {}", task);
+//
+//            if (task.getCurrrent().size() == 0) {
+//                return null;
+//            }
+//
+//            // retrieve data
+//            task.retrieveTransferData();
+//
+//            BroadcastObj bobj = scInputLight.getValue();
+//            // validate candidate rules in workers
+//
+////                MultiTuplesRuleMining multiTuplesRuleMining = new MultiTuplesRuleMining(bobj.getMax_num_tuples(),
+////                        bobj.getInputLight(), bobj.getSupport(), bobj.getConfidence(), bobj.getMaxOneRelationNum(),
+////                        task.getAllCount(), bobj.getTupleNumberRelations());
+////
+////                ArrayList<Predicate> current = new ArrayList<>();
+////                for (Predicate p : task.getCurrrent()) {
+////                    current.add(p);
+////                }
+////                // List<Message> messages = multiTuplesRuleMining.validation(current, task.getRHSs());
+////                List<Message> messages = multiTuplesRuleMining.validation_new(current, task.getRHSs(), task.getPids());
+//
+//            MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(bobj.getMax_num_tuples(),
+//                    bobj.getInputLight(), bobj.getSupport(), bobj.getConfidence(), bobj.getMaxOneRelationNum(),
+//                    task.getAllCount(), bobj.getTupleNumberRelations());
+//
+//            ArrayList<Predicate> current = new ArrayList<>();
+//            for (Predicate p : task.getCurrrent()) {
+//                current.add(p);
+//            }
+//            List<Message> messages = multiTuplesRuleMining.validation(current, task.getRHSs(), task.getPids());
+//
+//            return messages;
+//        }).aggregate(null, new IMessageAggFunction(), new IMessageAggFunction());
+
+//        for (int wid = 0; wid < workUnits.size(); wid += BATCH_SIZE) {
+//            int begin = wid;
+//            int end = Math.min(wid + BATCH_SIZE, workUnits.size());
+//            ArrayList<WorkUnit> subTasks = new ArrayList<>();
+//            for (int z = begin; z < end; z++) {
+//                subTasks.add(workUnits.get(z));
+//            }
+//        List<Message> ruleMessages = sc.parallelize(workUnits, workUnits.size()).map(task -> {
+
+//        Collections.shuffle(workUnits); // 解决数据倾斜
+//        List<Message> ruleMessagesSub1 = sc.parallelize(workUnits).mapPartitions(tasks -> {
+//            List<WorkUnit> taskList = new ArrayList<>();
+//            while (tasks.hasNext()) {
+//                WorkUnit next = tasks.next();
+//                if (next.getCurrrent().size() == 0) {
+//                    continue;
+//                }
+//                taskList.add(next);
+//            }
+//
+//            PredicateSetAssist assist = bcpsAssist.getValue();
+//            PredicateSet.indexProvider = assist.getIndexProvider();
+//            PredicateSet.bf = assist.getBf();
+//            String taskid = assist.getTaskId();
+//
+//            BroadcastObj bobj = scInputLight.getValue();
+//
+//            // 内部并行利用 18 核心
+//            return taskList.stream()/*.parallel()*/.map(task -> {
+//
+//                // share PredicateSet static instance, i.e., providerIndex
+//
+////            logger.info("####level:{}, In workers XXXXXX indexProvider size:{}, list:{}", 0,
+////                    PredicateSet.indexProvider.size(), PredicateSet.indexProvider.toString());
+//
+//                //synchronized (BroadcastObj.class) {
+//
+//                //}
+//
+////            logger.info("####level:{}, In workers indexProvider size:{}, list:{}", 0,
+////                    PredicateSet.indexProvider.size(), PredicateSet.indexProvider.toString());
+////
+////                // print
+////                logger.info("***** Work Unit, {}", task);
+//                // retrieve data
+////                task.retrieveTransferData();
+////                List<Predicate> predicatesList = broadAllPredicate.getValue();
+////                task.setTransferData(predicatesList);
+////                if (task.getCurrrent().size() == 0) {
+////                    return null;
+////                }
+////                if (task.getCurrentIndexs().size() == 0) {
+////                    return null;
+////                }
+//
+//
+//                // validate candidate rules in workers
+//
+////                MultiTuplesRuleMining multiTuplesRuleMining = new MultiTuplesRuleMining(bobj.getMax_num_tuples(),
+////                        bobj.getInputLight(), bobj.getSupport(), bobj.getConfidence(), bobj.getMaxOneRelationNum(),
+////                        task.getAllCount(), bobj.getTupleNumberRelations());
+////
+//                ArrayList<Predicate> current = new ArrayList<>();
+//                for (Predicate p : task.getCurrrent()) {
+//                    current.add(p);
+//                }
+//                ArrayList<Predicate> rhs = new ArrayList<>();
+//                for (Predicate p : task.getRHSs()) {
+//                    rhs.add(p);
+//                }
+////                // List<Message> messages = multiTuplesRuleMining.validation(current, task.getRHSs());
+////                List<Message> messages = multiTuplesRuleMining.validation_new(current, task.getRHSs(), task.getPids());
+//                logger.info(">>>Will do multiTuplesRuleMining!");
+//                MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(bobj.getMax_num_tuples(),
+//                        bobj.getInputLight(), bobj.getSupport(), bobj.getConfidence(), bobj.getMaxOneRelationNum(),
+//                        task.getAllCount(), bobj.getTupleNumberRelations());
+//
+////                for (int index : task.getCurrentIndexs()) {
+////                    Predicate p = predicatesList.get(index);
+////                    current.add(p);
+////                }
+////                PredicateSet rhss = new PredicateSet();
+////                for (int index : task.getRHSIndexs()) {
+////                    Predicate p = predicatesList.get(index);
+////                    rhss.add(p);
+////                }
+//                logger.info(">>>Will do multiTuple valid!");
+//                List<Message> messages1 = multiTuplesRuleMining.validation(current, rhs, task.getPids());
+//
+////                List<Message> messages = multiTuplesRuleMining.validation(current, rhss, task.getPids());
+//                logger.info(">>>Finish multiTuple valid!");
+//                return messages1;
+//
+//            })
+//                    .collect(Collectors.toList()).iterator();
+//
+//        }).aggregate(null, new IMessageAggFunction(), new IMessageAggFunction());
+
+
+        ruleMessages.addAll(ruleMessagesSub);
+//        for (int index = 0; index < ruleMessages.size(); index++) {
+//            Message message = ruleMessages.get(index);
+//            Message message1 = ruleMessagesSub1.get(index);
+//            logger.info(">>>>current: {} support :{}, rhs supp: {}", message.getCurrentSet(), message.getCurrentSupp(),
+//                    message.getAllCurrentRHSsSupport());
+//            logger.info(">>>>current1: {} support1 :{}, rhs supp1: {}", message1.getCurrentSet(), message1.getCurrentSupp(),
+//                    message1.getAllCurrentRHSsSupport());
+//        }
+        return ruleMessages;
+    }
+
+
+    public ArrayList<WorkUnits> clusterByPredicate(List<WorkUnit> units, int clusterSize) {
+        List<WorkUnits> clusters = new ArrayList<>();
+        List<WorkUnit> workUnits = new ArrayList<>();
+        int minSize = 0;
+        Map<String, List<WorkUnit>> workUnitMap = new HashMap<>();
+        Map<IBitSet, List<WorkUnit>> sameUnitMap = new HashMap<>();
+        for (WorkUnit unit : units) {
+            workUnitMap.putIfAbsent(unit.getPidString(), new ArrayList<>());
+            workUnitMap.get(unit.getPidString()).add(unit);
+            minSize = Math.max(unit.getCurrrent().size(), minSize);
+
+            sameUnitMap.putIfAbsent(unit.getKey(), new ArrayList<>());
+            sameUnitMap.get(unit.getKey()).add(unit);
+        }
+
+        for (List<WorkUnit> list : sameUnitMap.values()) {
+            list.sort(new Comparator<WorkUnit>() {
+                @Override
+                public int compare(WorkUnit o1, WorkUnit o2) {
+                    int[] pids1 = o1.getPids();
+                    int[] pids2 = o2.getPids();
+                    for (int index = 0; index < pids1.length; index++) {
+                        if (pids1[index] != pids2[index]) {
+                            return pids1[index] - pids2[index];
+                        }
+                    }
+                    return 0;
+                }
+            });
+        }
+
+        minSize = Math.max(minSize + 1, 0);
+//        minSize = Math.max((minSize * 2) - 3, 1);
+//        for(Predicate p : this.allPredicates) {
+//            WorkUnits cluster = new WorkUnits();
+//            cluster.addSameSet(p);
+//            size++;
+//            if (size == clusterSize) {
+//                break;
+//            }
+//        }
+
+        for (List<WorkUnit> sameUnit : workUnitMap.values()) {
+            workUnits.addAll(sameUnit);
+
+            int totalSize = Math.min(clusterSize, units.size());
+            for (int size = 0; size < totalSize; size++) {
+                WorkUnits cluster = new WorkUnits();
+                cluster.addUnit(units.get(size));
+                clusters.add(cluster);
+                workUnits.remove(units.get(size));
+            }
+
+            for (WorkUnit unit : workUnits) {
+                int max = minSize;
+                int current = -1;
+                for (int index = 0; index < clusters.size(); index++) {
+                    WorkUnits cluster = clusters.get(index);
+                    int sameNum = cluster.calDistance(unit);
+                    if (sameNum > max) {
+                        max = sameNum;
+                        current = index;
+                    }
+                }
+
+                if (current > -1) {
+                    WorkUnits cluster = clusters.get(current);
+                    cluster.addUnit(unit);
+                } else {
+                    WorkUnits cluster = new WorkUnits();
+                    cluster.addUnit(unit);
+                    clusters.add(cluster);
+                }
+            }
+
+            workUnits.clear();
+            break;
+        }
+        ArrayList<WorkUnits> result = new ArrayList<>();
+        for (WorkUnits cluster : clusters) {
+            if (cluster.getUnits().size() > 0) {
+
+                List<WorkUnits> list = new ArrayList<>();
+                for (WorkUnit unit : cluster.getUnits()) {
+                    int count = 0;
+                    for (WorkUnit allUnit : sameUnitMap.get(unit.getKey())) {
+                        if (list.size() == count) {
+                            WorkUnits newCluster = new WorkUnits();
+                            newCluster.addUnit(allUnit);
+                            list.add(newCluster);
+                        } else {
+                            list.get(count).addUnit(allUnit);
+                        }
+                        count++;
+                    }
+                }
+                result.addAll(list);
+            }
+        }
+
+//        for (WorkUnits cluster : result) {
+//            logger.info(">>>>show unit size : {} | same set: {}", cluster.getUnits().size(), cluster.getSameSet());
+//        }
+        return result;
+    }
 
     public void recoveryLocal() {
 //        this.prepareAllPredicatesMultiTuples();
@@ -703,7 +1180,7 @@ public class ConstantRecovery {
             // validate all work units
             List<Message> messages = null;
             if (workUnits.size() > 0) {
-                messages = this.runLocal(workUnits, tupleNumberRelations);
+                messages = this.runLocal_new(workUnits);
                 logger.info("Integrate messages ...");
                 messages = this.integrateMessages(messages);
             }
@@ -816,6 +1293,151 @@ public class ConstantRecovery {
             } // ).aggregate(null, new IMessageAggFunction(), new IMessageAggFunction());
 
         }
+        return ruleMessages;
+
+    }
+
+    public List<Message> runLocal_new(ArrayList<WorkUnit> workUnits) {
+
+        HashMap<String, Long> tupleNumberRelations = new HashMap<>();
+        for (int i = 0; i < inputLight.getNames().size(); i++) {
+            tupleNumberRelations.put(inputLight.getNames().get(i), (long) inputLight.getLineCounts()[i]);
+        }
+
+        List<Message> ruleMessages = new ArrayList<>();
+
+        ArrayList<WorkUnits> unitSets = new ArrayList<>();
+        for (WorkUnit workUnit : workUnits) {
+            WorkUnits cluster = new WorkUnits();
+            cluster.addUnit(workUnit);
+            unitSets.add(cluster);
+        }
+
+        // set AllCount of each work unit
+        for (WorkUnit task : workUnits) {
+            task.clearData();
+        }
+        for (WorkUnits set : unitSets) {
+            set.setAllCount(this.allCount);
+        }
+
+        for (WorkUnits unitSet : unitSets) {
+            // validate candidate rules in workers
+//             logger.info("Work Unit : {}".format(task.toString()));
+
+            Map<PredicateSet, List<Predicate>> validConsRuleMap = validConstantRule;
+            Map<PredicateSet, Map<String, Predicate>> constantXMap = new HashMap<>();
+            PredicateSet sameSet = unitSet.getSameSet();
+            for (PredicateSet set : validConsRuleMap.keySet()) {
+                PredicateSet tupleX = new PredicateSet();
+                Map<String, Predicate> constantX = new HashMap<>();
+                for (Predicate p : set) {
+                    if (p.isConstant()) {
+                        constantX.put(p.getOperand1().toString_(0), p);
+                    } else {
+                        tupleX.add(p);
+                    }
+                }
+
+                if (tupleX.size() > 0) {
+                    constantXMap.putIfAbsent(tupleX, constantX);
+                }
+
+            }
+
+
+            List<WorkUnit> units = unitSet.getUnits();
+//            WorkUnits newTask = new WorkUnits();
+            for(PredicateSet tuplePs : constantXMap.keySet()) {
+                if(sameSet.size() > 0) {
+                    if(!tuplePs.containsPS(sameSet)) {
+                        continue;
+                    }
+                }
+                for (WorkUnit unit : units) {
+                    PredicateSet tupleX = new PredicateSet();
+                    PredicateSet constantX = new PredicateSet();
+                    for (Predicate p : unit.getCurrrent()) {
+                        if (p.isConstant()) {
+                            constantX.add(p);
+                        } else {
+                            tupleX.add(p);
+                        }
+                    }
+
+
+                    if (tupleX.containsPS(tuplePs)) {
+                        Map<String, Predicate> constantsMap = constantXMap.get(tuplePs);
+                        boolean iscont = true;
+                        for (Predicate p : constantX) {
+                            if (!constantsMap.containsKey(p.getOperand1().toString_(0))) {
+                                iscont = false;
+                                break;
+                            }
+                        }
+
+                        if (iscont) {
+                            PredicateSet lhs = new PredicateSet();
+                            lhs.addAll(tuplePs);
+                            for (Predicate p : constantsMap.values()) {
+                                lhs.add(p);
+                            }
+                            List<Predicate> rhs = validConsRuleMap.get(lhs);
+
+                            for (Predicate p : rhs) {
+                                if (unit.getRHSs().containsPredicate(p)) {
+                                    unit.getRHSs().remove(p);
+                                    logger.info(">>>> test cut: {}", p);
+                                }
+                            }
+                        }
+                    }
+                }
+
+//                if(unit.getRHSs().size() > 0) {
+//                    newTask.addUnit(unit);
+//                }
+            }
+
+            Predicate pBegin = null;
+            for (Predicate p : unitSet.getSameSet()) {
+                if (!p.isML() && !p.isConstant()) {
+                    pBegin = p;
+                    break;
+                }
+            }
+
+//             if (test2(task)) {
+            if (true) {
+//                if (! test3(unitSet.getUnits().get(0))) {
+//                    continue;
+//                }
+                // test 1: user_info.t0.city == user_info.t1.city  user_info.t0.sn == user_info.t1.sn  user_info.t0.gender == user_info.t1.gender ]
+                //                         -> {  user_info.t0.name == user_info.t1.name }
+
+//                logger.info("Work Unit : {}".format(task.toString()));
+
+//                 MultiTuplesRuleMining multiTuplesRuleMining = new MultiTuplesRuleMining(this.maxTupleNum,
+//                         this.inputLight, this.support, this.confidence, maxOneRelationNum, allCount, tupleNumberRelations);
+//
+//                 ArrayList<Predicate> current = new ArrayList<>();
+//                 for (Predicate p : task.getCurrrent()) {
+//                     current.add(p);
+//                 }
+//                 List<Message> messages = multiTuplesRuleMining.validation_new(current, task.getRHSs(), task.getPids());
+
+
+                MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(this.maxTupleNum,
+                        this.inputLight, this.support, this.confidence, maxOneRelationNum, allCount, tupleNumberRelations);
+
+                List<Message> messages = multiTuplesRuleMining.validationMap1(unitSet, pBegin);
+
+
+                ruleMessages.addAll(messages);
+
+            }
+        }
+
         return ruleMessages;
 
     }
