@@ -259,6 +259,7 @@ public class ConstantRecovery {
                 reesFinal.add(ree);
                 continue;
             }
+            reesFinal.add(ree); // keep all rules from sample data.
             String key = ps.toString() + " -> " + ree.getRHS().toString();
             if (! dups.contains(key)) {
                 REETemplate reeTemplate = new REETemplate(cTemplates, nonCPredicates, ree.getRHS());

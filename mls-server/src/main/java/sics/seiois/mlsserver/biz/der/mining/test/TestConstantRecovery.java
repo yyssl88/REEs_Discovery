@@ -40,7 +40,7 @@ public class TestConstantRecovery {
     public static final String CHUNK_LENGTH = "CHUNK_LENGTH";
     public static final String BUFFER_LENGTH = "BUFFER_LENGTH";
     public static final String INPUT = "INPUT";
-    private static Logger log = LoggerFactory.getLogger(TestConstantRecovery.class);
+    private static Logger logger = LoggerFactory.getLogger(TestConstantRecovery.class);
 
     private static DenialConstraintSet loadREEs(String rees_path, Input input) throws Exception {
         DenialConstraintSet rees = new DenialConstraintSet();
@@ -58,6 +58,10 @@ public class TestConstantRecovery {
                     rees.add(ree);
                 }
             }
+        }
+        logger.info("#### load {} rees", rees.size());
+        for (DenialConstraint ree : rees) {
+            logger.info(ree.toString());
         }
         return rees;
     }
@@ -82,9 +86,12 @@ public class TestConstantRecovery {
         Boolean noCrossColumn = Boolean.TRUE;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
-        String directory_path = "D:\\REE\\tmp\\airports";
-        String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
-        String ree_sample_file = "D:\\REE\\tmp\\outputResult_airports__RW__SRatio0.1__ROUND1_PREEMiner_NORM_vary_sr_Figa__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
+//        String directory_path = "D:\\REE\\tmp\\airports";
+//        String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
+//        String ree_sample_file = "D:\\REE\\tmp\\outputResult_airports__RW__SRatio0.1__ROUND1_PREEMiner_NORM_vary_sr_Figa__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
+        String directory_path = "D:\\REE\\tmp\\property";
+        String constant_file = "D:\\REE\\tmp\\constant_property.txt";
+        String ree_sample_file = "D:\\REE\\tmp\\outputResult_property__RW__SRatio0.1__ROUND7_PREEMiner_NORM_vary_round_Figc__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
         noCrossColumn = false;
@@ -145,7 +152,7 @@ public class TestConstantRecovery {
             //PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue);
             PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue, ml_config_file);
             ConstantPredicateBuilder cpredicates = new ConstantPredicateBuilder(input, constant_file);
-            log.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
+            logger.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
 
             // construct PLI index
             // input.buildPLIs_col();
@@ -159,7 +166,7 @@ public class TestConstantRecovery {
             long rsize = input.getLineCount();
             long support = (long) (rsize * (rsize - 1) * support_ratio);
 
-            log.info("Support is " + support);
+            logger.info("Support is " + support);
 
             ArrayList<Predicate> allPredicates = new ArrayList<>();
             for (Predicate p : predicates.getPredicates()) {
@@ -203,7 +210,7 @@ public class TestConstantRecovery {
             }
 
         } catch (FileNotFoundException | InputIterationException e) {
-            log.info("Cannot load file\n");
+            logger.info("Cannot load file\n");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -213,7 +220,7 @@ public class TestConstantRecovery {
                         fileReader.close();
                     }
                 } catch (Exception e) {
-                    log.error("FileReader close error", e);
+                    logger.error("FileReader close error", e);
                 }
             }
         }

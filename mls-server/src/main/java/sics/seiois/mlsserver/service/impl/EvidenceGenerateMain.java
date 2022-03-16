@@ -445,9 +445,9 @@ public class EvidenceGenerateMain {
             }
         }
         logger.info("#### load {} rees", rees.size());
-//        for (DenialConstraint ree : rees) {
-//            logger.info(ree.toString());
-//        }
+        for (DenialConstraint ree : rees) {
+            logger.info(ree.toString());
+        }
         return rees;
     }
 
@@ -467,15 +467,15 @@ public class EvidenceGenerateMain {
             }
             ccount++;
         }
-        int countConstantUB = 2;
-        int countC = 0;
+//        int countConstantUB = 2;
+//        int countC = 0;
         for (Predicate p : reeFinderEvidSet.getConstantPredicateBuilder().getPredicates()) {
             if (p.getOperator() == Operator.EQUAL) {
                 allPredicates.add(p);
-                countC ++;
-                if (countC >= countConstantUB) {
-                    break;
-                }
+//                countC ++;
+//                if (countC >= countConstantUB) {
+//                    break;
+//                }
             }
         }
 
