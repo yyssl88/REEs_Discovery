@@ -148,6 +148,7 @@ public class TestLatticeSampling {
 
             long runTime = System.currentTimeMillis();
             ParallelRuleDiscoverySampling parallelRuleDiscoverySampling;
+            log.info("filter_enum_number: {}", filter_enum_number);
             if (ifRL == 0) {
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float) errorThreshold, maxOneRelationNum, input, allCount,

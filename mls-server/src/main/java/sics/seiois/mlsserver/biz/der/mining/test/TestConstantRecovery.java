@@ -40,7 +40,7 @@ public class TestConstantRecovery {
     public static final String CHUNK_LENGTH = "CHUNK_LENGTH";
     public static final String BUFFER_LENGTH = "BUFFER_LENGTH";
     public static final String INPUT = "INPUT";
-    private static Logger log = LoggerFactory.getLogger(TestConstantRecovery.class);
+    private static Logger logger = LoggerFactory.getLogger(TestConstantRecovery.class);
 
     private static DenialConstraintSet loadREEs(String rees_path, Input input) throws Exception {
         DenialConstraintSet rees = new DenialConstraintSet();
@@ -48,17 +48,23 @@ public class TestConstantRecovery {
         InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
         BufferedReader bReader = new BufferedReader(sReader);
         String line;
-        String valid_prefix = "Rule : ";
+        String valid_prefix1 = "Rule : ";
+        String valid_prefix2 = "REE: ";
         while ((line = bReader.readLine()) != null) {
-            if (line.length() <= valid_prefix.length() || (!line.startsWith(valid_prefix))) {
+            if (!line.startsWith(valid_prefix1) && !line.startsWith(valid_prefix2)) {
                 continue;
-            } else {
-                DenialConstraint ree = parseOneREE(line.trim(), input);
-                if (ree != null) {
-                    rees.add(ree);
-                }
+            } if (line.length() <= valid_prefix1.length() && line.length() <= valid_prefix2.length()) {
+                continue;
+            }
+            DenialConstraint ree = parseOneREE(line.trim(), input);
+            if (ree != null) {
+                rees.add(ree);
             }
         }
+        logger.info("#### load {} rees", rees.size());
+//        for (DenialConstraint ree : rees) {
+//            logger.info(ree.toString());
+//        }
         return rees;
     }
 
@@ -73,6 +79,7 @@ public class TestConstantRecovery {
         String rhs = pstrings[pstrings.length - 1].trim();
         ps.addRHS(PredicateBuilder.parsePredicateString(input, rhs.substring(0, rhs.length() - 1)));
         DenialConstraint ree = new DenialConstraint(ps);
+        ree.removeRHS();
         return ree;
     }
 
@@ -81,9 +88,19 @@ public class TestConstantRecovery {
         Boolean noCrossColumn = Boolean.TRUE;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
-        String directory_path = "D:\\REE\\tmp\\airports";
+//        String directory_path = "D:\\REE\\tmp\\airports";
+//        String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
+//        String ree_sample_file = "D:\\REE\\tmp\\outputResult_airports__RW__SRatio0.1__ROUND1_PREEMiner_NORM_vary_sr_Figa__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
+        String directory_path = "D:\\REE\\tmp\\airports\\dataset";
         String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
-        String ree_sample_file = "D:\\REE\\tmp\\outputResult_airports__RW__SRatio0.1__ROUND1_PREEMiner_NORM_vary_sr_Figa__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
+        String ree_sample_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8.txt";
+        String output_recovery_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8_CR.txt";;
+
+//        String directory_path = args[0];
+//        String constant_file = args[1];
+//        String ree_sample_file = args[2];
+//        String output_recovery_file = args[3];
+
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
         noCrossColumn = false;
@@ -118,6 +135,7 @@ public class TestConstantRecovery {
         int replace_target_iter = 300;
         int memory_size = 500;
         int batch_size = 32;
+        int if_cluster_workunits = 0;
 
         Dir directory = new Dir(directory_path, relation_num_ratio);
 
@@ -143,7 +161,7 @@ public class TestConstantRecovery {
             //PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue);
             PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue, ml_config_file);
             ConstantPredicateBuilder cpredicates = new ConstantPredicateBuilder(input, constant_file);
-            log.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
+            logger.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
 
             // construct PLI index
             // input.buildPLIs_col();
@@ -157,7 +175,7 @@ public class TestConstantRecovery {
             long rsize = input.getLineCount();
             long support = (long) (rsize * (rsize - 1) * support_ratio);
 
-            log.info("Support is " + support);
+            logger.info("Support is " + support);
 
             ArrayList<Predicate> allPredicates = new ArrayList<>();
             for (Predicate p : predicates.getPredicates()) {
@@ -184,12 +202,14 @@ public class TestConstantRecovery {
             DenialConstraintSet reesStart = loadREEs(ree_sample_file, input);
 
             ConstantRecovery constantRecovery = new ConstantRecovery(reesStart, allPredicates, maxTupleNum, new InputLight(input),
-                    support, (float)errorThreshold, maxOneRelationNum, allCount);
+                    support, (float)errorThreshold, maxOneRelationNum, allCount, if_cluster_workunits);
             constantRecovery.recoveryLocal();
             // Get rules
             DenialConstraintSet rees = constantRecovery.getREEsResults();
 
             System.out.printf("Total running time: %s\n", System.currentTimeMillis() - runTime);
+            FileOutputStream outputStream = new FileOutputStream(output_recovery_file);
+            OutputStreamWriter osw = new OutputStreamWriter(outputStream);
             System.out.printf("# of All REEs %s\n", rees.size());
             int c_ree = 1;
             for (DenialConstraint ree : rees) {
@@ -197,11 +217,14 @@ public class TestConstantRecovery {
                     continue;
                 }
                 System.out.println(ree.toString());
+                osw.write(ree.toString());
+                osw.write("\n");
                 c_ree++;
             }
+            osw.close();
 
         } catch (FileNotFoundException | InputIterationException e) {
-            log.info("Cannot load file\n");
+            logger.info("Cannot load file\n");
         } catch (Exception e) {
             e.printStackTrace();
         } finally {
@@ -211,7 +234,7 @@ public class TestConstantRecovery {
                         fileReader.close();
                     }
                 } catch (Exception e) {
-                    log.error("FileReader close error", e);
+                    logger.error("FileReader close error", e);
                 }
             }
         }

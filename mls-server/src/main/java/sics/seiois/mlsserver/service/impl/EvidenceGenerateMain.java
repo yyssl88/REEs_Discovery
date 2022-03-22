@@ -259,9 +259,9 @@ public class EvidenceGenerateMain {
         String outputResultFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "outputResultFile");
 
         //打印规则
-        for(RuleResult rule : allRules) {
-            logger.info("####[输出规则]:" + rule.getPrintString());
-        }
+//        for(RuleResult rule : allRules) {
+//            logger.info("####[输出规则]:" + rule.getPrintString());
+//        }
 
         long runningTime = System.currentTimeMillis() - startTime;
         timeInfo.append("total running time: ").append(runningTime).append("\n");
@@ -423,6 +423,7 @@ public class EvidenceGenerateMain {
         String rhs = pstrings[pstrings.length - 1].trim();
         ps.addRHS(PredicateBuilder.parsePredicateString(reeFinderEvidSet.getInput(), rhs.substring(0, rhs.length() - 1)));
         DenialConstraint ree = new DenialConstraint(ps);
+        ree.removeRHS();
         return ree;
     }
 
@@ -445,10 +446,10 @@ public class EvidenceGenerateMain {
                 }
             }
         }
-//        logger.info("#### load {} rees", rees.size());
-//        for (DenialConstraint ree : rees) {
-//            logger.info(ree.toString());
-//        }
+        logger.info("#### load {} rees", rees.size());
+        for (DenialConstraint ree : rees) {
+            logger.info(ree.toString());
+        }
         return rees;
     }
 
@@ -468,21 +469,22 @@ public class EvidenceGenerateMain {
             }
             ccount++;
         }
-        int countConstantUB = 2;
-        int countC = 0;
+//        int countConstantUB = 2;
+//        int countC = 0;
         for (Predicate p : reeFinderEvidSet.getConstantPredicateBuilder().getPredicates()) {
             if (p.getOperator() == Operator.EQUAL) {
                 allPredicates.add(p);
-                countC ++;
-                if (countC >= countConstantUB) {
-                    break;
-                }
+//                countC ++;
+//                if (countC >= countConstantUB) {
+//                    break;
+//                }
             }
         }
 
         int maxOneRelationNum = reeFinderEvidSet.getInput().getMaxTupleOneRelation();
         int allCount = reeFinderEvidSet.getInput().getAllCount();
         int maxTupleNum = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"maxTuplePerREE"));
+        int if_cluster_workunits = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifClusterWorkunits"));
 //        int K = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "topK"));
         long support = (long)(sparkContextConfig.getCr() * allCount * allCount);
         double confidence = sparkContextConfig.getFtr();
@@ -494,7 +496,7 @@ public class EvidenceGenerateMain {
 
         InputLight inputLight = new InputLight(reeFinderEvidSet.getInput());
         ConstantRecovery constantRecovery = new ConstantRecovery(reesStart, allPredicates, maxTupleNum, inputLight,
-                support, (float)confidence, maxOneRelationNum, allCount);
+                support, (float)confidence, maxOneRelationNum, allCount, if_cluster_workunits);
         String taskId = request.getTaskId();
         long startMineTime = System.currentTimeMillis();
         constantRecovery.recovery(taskId, spark, sparkContextConfig);

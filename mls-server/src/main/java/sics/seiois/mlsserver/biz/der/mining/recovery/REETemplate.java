@@ -77,7 +77,11 @@ public class REETemplate {
         ArrayList<WorkUnit> workUnits = new ArrayList<>();
         ArrayList<ArrayList<Predicate>> cps = new ArrayList<>();
         for (int i = 0; i < this.constantTemplatesX.size(); i++) {
-            cps.add(stat.get(this.genKeyConstantPredicate(this.constantTemplatesX.get(i))));
+            ArrayList<Predicate> candConstantPredicates = stat.get(this.genKeyConstantPredicate(this.constantTemplatesX.get(i)));
+            if (candConstantPredicates == null) {
+                return null;
+            }
+            cps.add(candConstantPredicates);
         }
 
         ArrayList<Predicate[]> cpCombs = new ArrayList<>();
