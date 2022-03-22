@@ -1,6 +1,8 @@
 package sics.seiois.mlsserver.biz.der.mining.model;
 
 import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.ejml.simple.SimpleMatrix;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -8,21 +10,17 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 
 
 /*
     two-hidden layers MLP
  */
-public class DQNMLP implements Serializable {
+public class MLPFilterClassifier implements Serializable {
 
-    private static final long serialVersionUID = 2940011947771912022L;
+    private static final long serialVersionUID = 1200011947771949282L;
 
     private int feature_num;
     private int action_num;
-
-    private double threshold;
 
     public int getFeature_num() {
         return this.feature_num;
@@ -37,12 +35,11 @@ public class DQNMLP implements Serializable {
     //private SimpleMatrix matrix_2;
     private List<SimpleMatrix> matrices;
 
-    public DQNMLP() {
+    public MLPFilterClassifier() {
 
     }
 
-    public DQNMLP(int feature_num, int action_num, List<double[][]> hiddenMatrices, double threshold) {
-        this.threshold = threshold;
+    public MLPFilterClassifier(int feature_num, int action_num, List<double[][]> hiddenMatrices) {
         this.feature_num = feature_num;
         this.action_num = action_num;
         this.matrices = new ArrayList<>();
@@ -53,8 +50,7 @@ public class DQNMLP implements Serializable {
         }
     }
 
-    public DQNMLP(String model_path, FileSystem hdfs, double threshold) throws Exception {
-        this.threshold = threshold;
+    public MLPFilterClassifier(String model_path, FileSystem hdfs) throws Exception {
         this.matrices = new ArrayList<>();
         FSDataInputStream inputTxt = hdfs.open(new Path(model_path));
         BufferedInputStream bis = new BufferedInputStream(inputTxt);
@@ -90,8 +86,7 @@ public class DQNMLP implements Serializable {
         this.action_num = this.matrices.get(this.matrices.size() - 1).numCols();
     }
 
-    public DQNMLP(String model_path, double threshold) {
-        this.threshold = threshold;
+    public MLPFilterClassifier(String model_path) {
         this.matrices = new ArrayList<>();
         FileReader fr = null;
         BufferedReader br = null;
@@ -132,8 +127,7 @@ public class DQNMLP implements Serializable {
         }
     }
 
-    public DQNMLP(int feature_num, int action_num, String model_path, double threshold) {
-        this.threshold = threshold;
+    public MLPFilterClassifier(int feature_num, int action_num, String model_path) {
         this.feature_num = feature_num;
         this.action_num = action_num;
         this.matrices = new ArrayList<>();
@@ -184,10 +178,11 @@ public class DQNMLP implements Serializable {
     }
 
     /*
-        input: [num_of_input, feature_num (2 * num_of_predicates)]
-        output: [num_of_input, num_action], each element is the Q-value of P_next
+        input: [1, feature_num (2 * num_of_predicates)]
+        output: True (possible solution) or False (impossible solution)
      */
-    public double[][] run(double[][] features) {
+    public boolean run(double[][] features) {
+
         SimpleMatrix input = new SimpleMatrix(features);
         SimpleMatrix temp = input;
         for(int i = 0; i < this.matrices.size() - 2; i+=2) {
@@ -199,42 +194,13 @@ public class DQNMLP implements Serializable {
         }
         temp = temp.mult(this.matrices.get(this.matrices.size() - 2));
         temp = temp.plus(this.matrices.get(this.matrices.size() - 1));
-
-        double[][] Qvalues = new double[temp.numRows()][temp.numCols()];
-        for (int r = 0; r < temp.numRows(); r++) {
-            for (int c = 0; c < temp.numCols(); c++) {
-                Qvalues[r][c] = temp.get(r, c);
-            }
-        }
-        return Qvalues;
-    }
-
-
-    public boolean run(double[][] features, int newP) {
-        SimpleMatrix input = new SimpleMatrix(features);
-        SimpleMatrix temp = input;
-        for(int i = 0; i < this.matrices.size() - 2; i+=2) {
-            temp = temp.mult(this.matrices.get(i));
-            //logger.info("The dimension 1 of temp is {} X {}", temp.numRows(), temp.numCols());
-            temp = temp.plus(this.matrices.get(i+1));
-            //logger.info("The dimension 2 of temp is {} X {}", temp.numRows(), temp.numCols());
-            temp = this.ReLU(temp);
-        }
-        temp = temp.mult(this.matrices.get(this.matrices.size() - 2));
-        temp = temp.plus(this.matrices.get(this.matrices.size() - 1));
-
-        double[][] Qvalues = new double[temp.numRows()][temp.numCols()];
-        for (int r = 0; r < temp.numRows(); r++) {
-            for (int c = 0; c < temp.numCols(); c++) {
-                Qvalues[r][c] = temp.get(r, c);
-            }
-        }
-        if (Qvalues[0][newP] > this.threshold) {
+        // temp shape (1 * 2)
+        if (temp.get(0, 0) > temp.get(0, 1)) {
+            return false;
+        } else{
             return true;
         }
-        return false;
     }
 
-
-    private static final Logger logger = LoggerFactory.getLogger(DQNMLP.class);
+    private static final Logger logger = LoggerFactory.getLogger(MLPFilterClassifier.class);
 }

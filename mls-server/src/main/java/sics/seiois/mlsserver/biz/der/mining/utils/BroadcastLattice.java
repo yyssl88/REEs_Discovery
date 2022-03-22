@@ -1,12 +1,15 @@
 package sics.seiois.mlsserver.biz.der.mining.utils;
 
 
+import org.apache.hadoop.util.MachineList;
 import org.apache.hadoop.util.hash.Hash;
 import shapeless.ops.nat;
 import sics.seiois.mlsserver.biz.der.bitset.IBitSet;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateProvider;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
+import sics.seiois.mlsserver.biz.der.mining.model.DQNMLP;
+import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -50,6 +53,9 @@ public class BroadcastLattice implements Serializable {
     private String table_name;
     private int N;
 
+    private MLPFilterClassifier dqnmlp;
+    private boolean ifDQN;
+    private HashMap<String, Integer> predicatesHashIDs;
 
     public BroadcastLattice(List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
                             HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
@@ -66,6 +72,20 @@ public class BroadcastLattice implements Serializable {
         this.suppRatios = suppRatios;
         this.predicateProviderIndex = predicateProviderIndex;
         this.option = option;
+    }
+
+
+    public BroadcastLattice(List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
+                            HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
+                            HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
+                            Interestingness interestingness, double KthScore,
+                            HashMap<PredicateSet, Double> suppRatios, PredicateProviderIndex predicateProviderIndex,
+                            String option, MLPFilterClassifier dqnmlp, boolean ifDQN, HashMap<String, Integer> predicatesHashIDs) {
+        this(allPredicates, invalidX, invalidXRHSs, validXRHSs, interestingness, KthScore, suppRatios, predicateProviderIndex, option);
+
+        this.dqnmlp = dqnmlp;
+        this.ifDQN = ifDQN;
+        this.predicatesHashIDs = predicatesHashIDs;
     }
 
     public BroadcastLattice(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates, HashSet<IBitSet> invalidX,
@@ -189,6 +209,18 @@ public class BroadcastLattice implements Serializable {
 
     public int getN() {
         return this.N;
+    }
+
+    public MLPFilterClassifier getDqnmlp() {
+        return this.dqnmlp;
+    }
+
+    public boolean getIfDQN() {
+        return this.ifDQN;
+    }
+
+    public HashMap<String, Integer> getPredicatesHashIDs() {
+        return this.predicatesHashIDs;
     }
 
 }

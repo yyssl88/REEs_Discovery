@@ -238,6 +238,11 @@ public class RuleFinder {
 
         String filter_enum_num = argsMap.get("filterEnumNumber");
 
+        // for DQN
+        String ifDQN = argsMap.get("ifDQN");
+        String DQNModelFile = argsMap.get("DQNModelFile");
+        String DQNThreshold = argsMap.get("DQNThreshold");
+
         numOfProcessors = numOfProcessors_;
 
         StringBuffer otherParam = new StringBuffer();
@@ -276,6 +281,10 @@ public class RuleFinder {
 
         otherParam.append("ifClusterWorkunits=" + if_cluster_workunits + ";");
         otherParam.append("filterEnumNumber=" + filter_enum_num + ";");
+
+        otherParam.append("ifDQN=" + ifDQN + ";");
+        otherParam.append("DQNModelFile=" + DQNModelFile + ";");
+        otherParam.append("DQNThreshold=" + DQNThreshold + ";");
 
 //        RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset);
         RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset, taskID);

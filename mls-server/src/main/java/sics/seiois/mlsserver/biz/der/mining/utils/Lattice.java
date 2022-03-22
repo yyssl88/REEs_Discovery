@@ -7,6 +7,7 @@ import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.hadoop.util.hash.Hash;
+import org.apache.hadoop.yarn.webapp.hamlet2.Hamlet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import shapeless.ops.nat;
@@ -15,6 +16,8 @@ import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscovery;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
+import sics.seiois.mlsserver.biz.der.mining.model.DQNMLP;
+import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
 
 import java.io.Serializable;
 import java.util.*;
@@ -613,6 +616,39 @@ public class Lattice implements KryoSerializable {
             return false;
     }
 
+    public LatticeVertex expandLatticeByDQN(LatticeVertex lv, Predicate newP, List<Predicate> allPredicates, MLPFilterClassifier mlpFilterClassifier, HashMap<String, Integer> predicatesHashIDs, boolean ifDQN) {
+        if (ifDQN == false) {
+            return new LatticeVertex(lv, newP);
+        }
+        ArrayList<Predicate> validRHSs = new ArrayList<>();
+        int numPredicates = allPredicates.size();
+        double[][] feature_vectors = new double[1][numPredicates * 2];
+        // add P_sel
+        for (Predicate p : lv.getPredicates()) {
+            feature_vectors[0][predicatesHashIDs.get(p.toString())] = 1.0;
+        }
+        // feature_vectors[0][predicatesHashIDs.get(newP.toString())] = 1.0;
+        for (Predicate rhs : lv.getRHSs()) {
+            // remove RHS
+            feature_vectors[0][predicatesHashIDs.get(rhs.toString())] = 0.0;
+            // add RHS
+            feature_vectors[0][numPredicates + predicatesHashIDs.get(rhs.toString())] = 1.0;
+            // add the new predicate
+            feature_vectors[0][predicatesHashIDs.get(newP)] = 1.0;
+            if (mlpFilterClassifier.run(feature_vectors)) {
+                validRHSs.add(rhs);
+            }
+        }
+        // adjust RHSs, such that only keep valid RHSs predicted by DQN
+        if (validRHSs.size() == 0) {
+            return null;
+        }
+        LatticeVertex lv_new = new LatticeVertex(lv, newP);
+        lv_new.adjustRHSs(validRHSs);
+        return  lv_new;
+    }
+
+
     public Lattice generateNextLatticeLevel(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates, HashSet<IBitSet> invalidX,
                                             HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
                                             HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
@@ -622,7 +658,7 @@ public class Lattice implements KryoSerializable {
                                             int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage, boolean ifExistModel,
                                             String python_path, String RL_code_path,
                                             float lr, float rd, float eg, int rtr, int ms, int bs,
-                                            String table_name, int N_num) {
+                                            String table_name, int N_num, MLPFilterClassifier dqnmlp, HashMap<String, Integer> predicatesHashIDs, boolean ifDQN) {
         logger.info("#####generate Next Lattice level!");
         // for RL
         ArrayList<PredicateSet> currPsel = new ArrayList<>();
@@ -695,8 +731,11 @@ public class Lattice implements KryoSerializable {
                     if (!this.checkValidExtension(lv, newP)) {
                         continue;
                     }
-//               logger.info("Add new predicate {}", newP);
-                    LatticeVertex lv_child = new LatticeVertex(lv, newP);
+                    // LatticeVertex lv_child = new LatticeVertex(lv, newP);
+                    LatticeVertex lv_child = this.expandLatticeByDQN(lv, newP, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                    if (lv_child == null) {
+                        continue;
+                    }
                     // check support k
 //                    boolean valid = this.checkValidSubSetX(lv_child, invalidX);
 //                    if (valid && (!invalidX.contains(lv_child.getPredicates().getBitset()))) {
@@ -721,7 +760,11 @@ public class Lattice implements KryoSerializable {
                             continue;
                         }
 
-                        LatticeVertex lv_child = new LatticeVertex(lv, cp1);
+                        // LatticeVertex lv_child = new LatticeVertex(lv, cp1);
+                        LatticeVertex lv_child = this.expandLatticeByDQN(lv, cp1, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                        if (lv_child == null) {
+                            continue;
+                        }
 //                        boolean valid = this.checkValidSubSetX(lv_child, invalidX);
 //                        if (valid && (!invalidX.contains(lv_child.getPredicates().getBitset()))) {
                             nextLevel.addLatticeVertex(lv_child);
@@ -745,7 +788,11 @@ public class Lattice implements KryoSerializable {
                         if (!this.checkValidConstantPredicateExtension(lv, cp2)) {
                             continue;
                         }
-                        LatticeVertex lv_child_ = new LatticeVertex(lv, cp2);
+                        // LatticeVertex lv_child_ = new LatticeVertex(lv, cp2);
+                        LatticeVertex lv_child_ = this.expandLatticeByDQN(lv, cp2, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                        if (lv_child_ == null) {
+                            continue;
+                        }
 //                        boolean valid = this.checkValidSubSetX(lv_child_, invalidX);
 //                        if (valid && (!invalidX.contains(lv_child_.getPredicates().getBitset()))) {
                             nextLevel.addLatticeVertex(lv_child_);
@@ -807,7 +854,11 @@ public class Lattice implements KryoSerializable {
                     if (!this.checkValidExtension(lv, newP)) {
                         continue;
                     }
-                    LatticeVertex lv_child = new LatticeVertex(lv, newP);
+                    // LatticeVertex lv_child = new LatticeVertex(lv, newP);
+                    LatticeVertex lv_child = this.expandLatticeByDQN(lv, newP, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                    if (lv_child == null) {
+                        continue;
+                    }
                     // set new tid indices
                     lv_child.updateLatestTupleIDs(tid, new_tid);
                     // update latest relation names

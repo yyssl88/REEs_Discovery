@@ -17,6 +17,8 @@ import sics.seiois.mlsserver.biz.der.metanome.input.InputLight;
 import sics.seiois.mlsserver.biz.der.metanome.input.ParsedColumn;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
+import sics.seiois.mlsserver.biz.der.mining.model.DQNMLP;
+import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
 import sics.seiois.mlsserver.biz.der.mining.utils.*;
 import sics.seiois.mlsserver.model.PredicateExpressionModel;
 import sics.seiois.mlsserver.model.SparkContextConfig;
@@ -97,6 +99,23 @@ public class ParallelRuleDiscoverySampling {
     // for RL
     private ArrayList<Predicate> allExistPredicates; // whole predicates, of which indices are rather than 0 and 1
     private ArrayList<Integer> highSelectivityPredicateIndices; // the indices of predicates with supports less than 0.1 * (maxOneRelationNum * maxOneRelationNum - maxOneRelationNum)
+
+    // set the DQNMLP model
+    private MLPFilterClassifier dqnmlp;
+    private HashMap<String, Integer> predicateDQNHashIDs;
+    private boolean ifDQN;
+    // set the DQNMLP
+    void loadDQNModel(MLPFilterClassifier dqnmlp) {
+        if (dqnmlp == null) {
+            dqnmlp = new MLPFilterClassifier();
+        } else {
+            this.dqnmlp = dqnmlp;
+        }
+        for (int pid = 0; pid < this.allPredicates.size(); pid++) {
+            this.predicateDQNHashIDs.put(this.allPredicates.get(pid).toString(), pid);
+        }
+    }
+
 
     public ParallelRuleDiscoverySampling() {
     }
@@ -192,6 +211,19 @@ public class ParallelRuleDiscoverySampling {
         for (Predicate p : this.allPredicates) {
             predicateProviderIndex.addPredicate(p);
         }
+    }
+
+    public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
+                                         float confidence, long maxOneRelationNum, Input input, long allCount,
+                                         float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
+                                         boolean ifDQN, MLPFilterClassifier dqnmlp) {
+        this(predicates, K, maxTupleNum, support,
+                confidence, maxOneRelationNum, input, allCount,
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+
+        this.ifDQN = ifDQN;
+        this.loadDQNModel(dqnmlp);
     }
 
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
@@ -392,29 +424,29 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 6. randomly choose some non-constant RHS.
-        int NUM_NonConstant = 4;
-        if (NUM_NonConstant > whole_num_nonCons) {
-            NUM_NonConstant = whole_num_nonCons;
-        }
-        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
-        Collections.sort(predicates, new Comparator<Predicate>() {
-            @Override
-            public int compare(Predicate o1, Predicate o2) {
-                return o1.toString().compareTo(o2.toString());
-            }
-        });
-        Random rand = new Random();
-        rand.setSeed(1234567);
-        HashSet<Integer> random_idx = new HashSet<>();
-        while (random_idx.size() < NUM_NonConstant) {
-            int idx = rand.nextInt(predicates.size());
-            if (!predicates.get(idx).isConstant()) {
-                random_idx.add(idx);
-            }
-        }
-        for (int choose_idx : random_idx) {
-            applicationRHSs.add(predicates.get(choose_idx));
-        }
+//        int NUM_NonConstant = 4;
+//        if (NUM_NonConstant > whole_num_nonCons) {
+//            NUM_NonConstant = whole_num_nonCons;
+//        }
+//        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        while (random_idx.size() < NUM_NonConstant) {
+//            int idx = rand.nextInt(predicates.size());
+//            if (!predicates.get(idx).isConstant()) {
+//                random_idx.add(idx);
+//            }
+//        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
 
         // 7. use all non-constant predicates as RHSs
 //        logger.info("#### choose all non-constant RHSs");
@@ -425,10 +457,10 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 8. use all predicates as RHSs
-//        logger.info("#### choose all RHSs");
-//        for (Predicate p : predicates) {
-//            applicationRHSs.add(p);
-//        }
+        logger.info("#### choose all RHSs");
+        for (Predicate p : predicates) {
+            applicationRHSs.add(p);
+        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -650,7 +682,6 @@ public class ParallelRuleDiscoverySampling {
         psAssist.setBf(PredicateSet.bf);
         psAssist.setTaskId(taskId);
         Broadcast<PredicateSetAssist> bcpsAssist = sc.broadcast(psAssist);
-
 
         while (lattice != null && level <= MAX_CURRENT_PREDICTES) {
             // print lattice
@@ -1162,19 +1193,21 @@ public class ParallelRuleDiscoverySampling {
         JavaSparkContext sc = new JavaSparkContext(spark.sparkContext());
 
         BroadcastLattice broadcastLattice;
-        if (this.ifRL == 0) {
+        if (this.ifDQN == false) {
             broadcastLattice = new BroadcastLattice(allPredicates, invalidX, invalidXRHSs, validXRHSs,
                     interestingness, KthScore, suppRatios, predicateProviderIndex, option);
         } else {
-            broadcastLattice = new BroadcastLattice(allPredicates, this.allExistPredicates, invalidX, invalidXRHSs, validXRHSs,
+            broadcastLattice = new BroadcastLattice(allPredicates, invalidX, invalidXRHSs, validXRHSs,
                     interestingness, KthScore, suppRatios, predicateProviderIndex, option,
-                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                    this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size,
-                    this.table_name, this.N);
+                    this.dqnmlp, this.ifDQN, this.predicateDQNHashIDs);
+//            broadcastLattice = new BroadcastLattice(allPredicates, this.allExistPredicates, invalidX, invalidXRHSs, validXRHSs,
+//                    interestingness, KthScore, suppRatios, predicateProviderIndex, option,
+//                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
+//                    this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size,
+//                    this.table_name, this.N);
         }
 
         Broadcast<BroadcastLattice> bcpsLattice = sc.broadcast(broadcastLattice);
-
 
         // broadcast provideIndex, i.e., all predicates
         PredicateSetAssist psAssist = new PredicateSetAssist();
@@ -1229,7 +1262,7 @@ public class ParallelRuleDiscoverySampling {
                     bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
                     bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOfflineTrainStage(), bLattice.getIfExistModel(),
                     bLattice.getPI_path(), bLattice.getRL_code_path(), bLattice.getLearning_rate(), bLattice.getReward_decay(), bLattice.getE_greedy(),
-                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name(), bLattice.getN());
+                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name(), bLattice.getN(), bLattice.getDqnmlp(), bLattice.getPredicatesHashIDs(), bLattice.getIfDQN());
             return latticeWorker;
 
         }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
@@ -2047,6 +2080,7 @@ public class ParallelRuleDiscoverySampling {
                 }
             }
             if (this.if_conf_filter == 1) {
+
                 HashMap<Predicate, Long> allRHSSupports = message.getAllCurrentRHSsSupport();
                 for (Map.Entry<Predicate, Long> entry : allRHSSupports.entrySet()) {
                     if (entry.getValue() * 1.0 / message.getCurrentSupp() < this.conf_filter_thr) {
@@ -3389,7 +3423,7 @@ public class ParallelRuleDiscoverySampling {
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
                     this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
-                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
+                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N, this.dqnmlp, this.predicateDQNHashIDs, this.ifDQN);
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);
             if (nextLattice == null || nextLattice.size() == 0) {

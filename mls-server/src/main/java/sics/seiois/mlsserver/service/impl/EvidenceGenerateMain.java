@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import java.io.*;
 import java.util.*;
 
+import org.tensorflow.Session;
 import sics.seiois.mlsserver.biz.ConstantPredicateGenerateMain;
 import sics.seiois.mlsserver.biz.der.metanome.REEFinderEvidSet;
 import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraint;
@@ -35,6 +36,8 @@ import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateBuilder;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
+import sics.seiois.mlsserver.biz.der.mining.model.DQNMLP;
+import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
 import sics.seiois.mlsserver.biz.der.mining.recovery.ConstantRecovery;
 import sics.seiois.mlsserver.enums.RuleFinderTypeEnum;
 import sics.seiois.mlsserver.model.*;
@@ -409,7 +412,6 @@ public class EvidenceGenerateMain {
         return ruleResults;
     }
 
-
     public static DenialConstraint parseOneREE(String rule, REEFinderEvidSet reeFinderEvidSet) {
         String[] pstrings = rule.split(",")[0].split("->");
         String[] xStrings = pstrings[0].split("\\^");
@@ -605,6 +607,10 @@ public class EvidenceGenerateMain {
 
         String outputResultFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "outputResultFile");
 
+        // whether use DQN to prune
+        boolean ifDQN = Boolean.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifDQN"));
+
+
 //        ParallelRuleDiscovery parallelRuleDiscovery = new ParallelRuleDiscovery(allPredicates, K, maxTupleNum,
 //                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
 //                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune);
@@ -618,30 +624,39 @@ public class EvidenceGenerateMain {
 //                1, 1, 1, 1, 1, 0);
 
         ParallelRuleDiscoverySampling parallelRuleDiscovery;
-        if (ifRL == 0) {
+        if (ifDQN == false) {
             parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                     w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
         } else {
-            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
-            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
-            String PI_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"PIPath")); // python interpreter path
-            String RL_code_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"RLCodePath")); // PredicateAssc code path
-            int N = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"N"));
-            int DeltaL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"deltaL"));
-            // parameters for RL model
-            float learning_rate = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"learningRate"));
-            float reward_decay = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"rewardDecay"));
-            float e_greedy = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"eGreedy"));
-            int replace_target_iter = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"replaceTargetIter"));
-            int memory_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"memorySize"));
-            int batch_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"batchSize"));
-
+            String DQNModelFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNModelFile");
+            // float DQNThreshold = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNThreshold"));
+            String dqnTxtPath = PredicateConfig.MLS_TMP_HOME + "DQN" + request.getTaskId() + "/" +  DQNModelFile; //"experiment_results";
+            MLPFilterClassifier dqn = new MLPFilterClassifier(dqnTxtPath, hdfs);
             parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                     w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
-                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
-                    learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
+                    ifDQN, dqn);
+
+//            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
+//            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
+//            String PI_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"PIPath")); // python interpreter path
+//            String RL_code_path = String.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"RLCodePath")); // PredicateAssc code path
+//            int N = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"N"));
+//            int DeltaL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"deltaL"));
+//            // parameters for RL model
+//            float learning_rate = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"learningRate"));
+//            float reward_decay = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"rewardDecay"));
+//            float e_greedy = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"eGreedy"));
+//            int replace_target_iter = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"replaceTargetIter"));
+//            int memory_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"memorySize"));
+//            int batch_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"batchSize"));
+//
+//            parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
+//                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
+//                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
+//                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
+//                    learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
         }
 
         // rule discovery

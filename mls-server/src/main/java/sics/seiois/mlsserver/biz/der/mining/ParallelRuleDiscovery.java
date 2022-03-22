@@ -372,7 +372,7 @@ public class ParallelRuleDiscovery {
 
             Lattice latticeWorker = task.generateNextLatticeLevel(bLattice.getAllPredicates(), null, bLattice.getInvalidX(),bLattice.getInvalidRHSs(), bLattice.getValidXRHSs(),
                     bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
-                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0);
+                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0, null, null, false);
             return latticeWorker;
 
         }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
@@ -1220,7 +1220,7 @@ public class ParallelRuleDiscovery {
 
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, null, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
-                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0);
+                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0, null, null, false);
 
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);

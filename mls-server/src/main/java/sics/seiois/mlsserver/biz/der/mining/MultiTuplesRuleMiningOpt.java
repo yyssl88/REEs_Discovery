@@ -658,6 +658,17 @@ public class MultiTuplesRuleMiningOpt {
         }
 
         PredicateSet currrentPs = unitSet.getCurrrent();
+        // check whether t_0 and t_1 are in the same relations
+        boolean ifSame = true;
+        for (Predicate p : currrentPs) {
+            if (p.isConstant()) {
+                continue;
+            }
+            if (! p.getOperand1().getColumnLight().getTableName().equals(p.getOperand2().getColumnLight().getTableName())) {
+                ifSame = false;
+            }
+        }
+
         // currentSet does not contain constant predicates and same Set
         ArrayList<Predicate> currentSet = new ArrayList<>();
         Map<String, ArrayList<Predicate>> constantPs = new HashMap<>();
@@ -738,7 +749,8 @@ public class MultiTuplesRuleMiningOpt {
                 currentList.add(p);
             }
             HyperCube hyperCube = hyperCubes.get(index);
-            hyperCube.getStatistic_new(false);
+            hyperCube.getStatistic_new(ifSame);
+//           hyperCube.getStatistic_new(false);
             /*
             if (pids[pBegin.getIndex1()] < pids[pBegin.getIndex2()]) {
                 // hyperCube.getStatistic(false);
