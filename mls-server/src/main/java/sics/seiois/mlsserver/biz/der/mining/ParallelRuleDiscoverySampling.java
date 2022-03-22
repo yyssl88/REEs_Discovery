@@ -438,6 +438,19 @@ public class ParallelRuleDiscoverySampling {
 //            }
 //        }
 
+        // 10. test airports - fix RHSs
+//        for (Predicate p : predicates) {
+//            if (p.isConstant()) {
+//                continue;
+//            }
+//            if (p.getOperand1().getColumnLight().getName().contains("wikipedia_link") ||
+//                p.getOperand1().getColumnLight().getName().contains("home_link") ||
+//                p.getOperand1().getColumnLight().getName().contains("iso_region") ||
+//                p.getOperand1().getColumnLight().getName().contains("type")) {
+//                applicationRHSs.add(p);
+//            }
+//        }
+
         logger.info("applicationRHSs size : {}", applicationRHSs.size());
         for (Predicate p : applicationRHSs) {
             logger.info("applicationRHSs: {}", p.toString());

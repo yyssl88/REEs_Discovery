@@ -237,6 +237,7 @@ public class ConstantRecovery {
 
     private void transformREETemplates(DenialConstraintSet rees, DenialConstraintSet reesFinal) {
         HashSet<String> dups = new HashSet<>();
+        int nonConstantRuleSize = 0;
         for (DenialConstraint ree : rees) {
             ArrayList<Predicate> cTemplates = new ArrayList<>();
             ArrayList<Predicate> nonCPredicates = new ArrayList<>();
@@ -257,6 +258,7 @@ public class ConstantRecovery {
             }
             if (ifContainConstant == false) {
                 reesFinal.add(ree);
+                nonConstantRuleSize++;
                 continue;
             }
             reesFinal.add(ree); // keep all rules from sample data.
@@ -267,7 +269,7 @@ public class ConstantRecovery {
                 dups.add(key);
             }
         }
-        logger.info("#### nonConstant REEs num: {}", reesFinal.size());
+        logger.info("#### nonConstant REEs num: {}", nonConstantRuleSize);
     }
 
 

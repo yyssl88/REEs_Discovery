@@ -39,10 +39,14 @@ public class TestLatticeSampling {
         Boolean noCrossColumn = Boolean.TRUE;
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
-        String output_file = "D:/REE/tmp/airports/rules/rules_test.txt"; //"D:/REE/tmp/inspection/rules/rules_rs_round8.txt"; //"; //"D:/REE/tmp/airports/rules/rules_round2.txt";
-        String directory_path =  "D:/REE/tmp/airports/airports/datasets/"; // "D:/REE/tmp/inspection/copy/inspection_RS_ROUND8/"; //D:/REE/tmp/airports/airports_RS_ROUND8/"; //"D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
+        String output_file = "D:\\REE\\tmp\\airports\\rules\\rules1.txt"; //"D:/REE/tmp/inspection/rules/rules_rs_round8.txt"; //"; //"D:/REE/tmp/airports/rules/rules_round2.txt";
+        String directory_path =  "D:\\REE\\tmp\\airports\\sample1"; // "D:/REE/tmp/inspection/copy/inspection_RS_ROUND8/"; //D:/REE/tmp/airports/airports_RS_ROUND8/"; //"D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
         // String directory_path =  "D:/REE/tmp/property/samples/property_RS_ROUND3/"; //""D:/REE/tmp/ncvoter/"; //  // "D:/REE/tmp/user_info";
-        String constant_file = "D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
+        String constant_file = "D:\\REE\\tmp\\constant_airports.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
+
+//        String output_file = args[0];
+//        String directory_path = args[1];
+//        String constant_file = args[2];
 
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
@@ -63,10 +67,10 @@ public class TestLatticeSampling {
         float w_sub = 0.1f;
         int ifPrune = 1;
 
-        int if_conf_filter = 1;
-        int if_cluster_workunits = 1;
+        int if_conf_filter = 0;
+        int if_cluster_workunits = 0;
 
-        int filter_enum_number = 10;
+        int filter_enum_number = 5;
 
         // whether to use reinforcement learning for predicate association computation
         int ifRL = 0;
@@ -147,6 +151,7 @@ public class TestLatticeSampling {
 
             long runTime = System.currentTimeMillis();
             ParallelRuleDiscoverySampling parallelRuleDiscoverySampling;
+            log.info("filter_enum_number: {}", filter_enum_number);
             if (ifRL == 0) {
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float) errorThreshold, maxOneRelationNum, input, allCount,

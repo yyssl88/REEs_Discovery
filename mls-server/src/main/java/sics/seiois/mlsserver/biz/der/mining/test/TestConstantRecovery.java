@@ -48,21 +48,23 @@ public class TestConstantRecovery {
         InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
         BufferedReader bReader = new BufferedReader(sReader);
         String line;
-        String valid_prefix = "Rule : ";
+        String valid_prefix1 = "Rule : ";
+        String valid_prefix2 = "REE: ";
         while ((line = bReader.readLine()) != null) {
-            if (line.length() <= valid_prefix.length() || (!line.startsWith(valid_prefix))) {
+            if (!line.startsWith(valid_prefix1) && !line.startsWith(valid_prefix2)) {
                 continue;
-            } else {
-                DenialConstraint ree = parseOneREE(line.trim(), input);
-                if (ree != null) {
-                    rees.add(ree);
-                }
+            } if (line.length() <= valid_prefix1.length() && line.length() <= valid_prefix2.length()) {
+                continue;
+            }
+            DenialConstraint ree = parseOneREE(line.trim(), input);
+            if (ree != null) {
+                rees.add(ree);
             }
         }
         logger.info("#### load {} rees", rees.size());
-        for (DenialConstraint ree : rees) {
-            logger.info(ree.toString());
-        }
+//        for (DenialConstraint ree : rees) {
+//            logger.info(ree.toString());
+//        }
         return rees;
     }
 
@@ -89,9 +91,14 @@ public class TestConstantRecovery {
 //        String directory_path = "D:\\REE\\tmp\\airports";
 //        String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
 //        String ree_sample_file = "D:\\REE\\tmp\\outputResult_airports__RW__SRatio0.1__ROUND1_PREEMiner_NORM_vary_sr_Figa__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
-        String directory_path = "D:\\REE\\tmp\\property";
-        String constant_file = "D:\\REE\\tmp\\constant_property.txt";
-        String ree_sample_file = "D:\\REE\\tmp\\outputResult_property__RW__SRatio0.1__ROUND7_PREEMiner_NORM_vary_round_Figc__supp0.0001_conf0.9_N100_DeltaL3_tnum2_topK10000_processor20.txt";
+        String directory_path = "D:\\REE\\tmp\\airports\\dataset";
+        String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
+        String ree_sample_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8.txt";
+
+//        String directory_path = args[0];
+//        String constant_file = args[1];
+//        String ree_sample_file = args[2];
+
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
         noCrossColumn = false;
