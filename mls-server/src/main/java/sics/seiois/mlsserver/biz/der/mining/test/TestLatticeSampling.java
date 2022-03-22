@@ -182,6 +182,7 @@ public class TestLatticeSampling {
                 osw.write(oo);
                 c_ree++;
             }
+            osw.close();
 
         } catch (FileNotFoundException | InputIterationException e) {
             log.info("Cannot load file\n");

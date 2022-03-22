@@ -94,10 +94,12 @@ public class TestConstantRecovery {
         String directory_path = "D:\\REE\\tmp\\airports\\dataset";
         String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
         String ree_sample_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8.txt";
+        String output_recovery_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8_CR.txt";;
 
 //        String directory_path = args[0];
 //        String constant_file = args[1];
 //        String ree_sample_file = args[2];
+//        String output_recovery_file = args[3];
 
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
@@ -206,6 +208,8 @@ public class TestConstantRecovery {
             DenialConstraintSet rees = constantRecovery.getREEsResults();
 
             System.out.printf("Total running time: %s\n", System.currentTimeMillis() - runTime);
+            FileOutputStream outputStream = new FileOutputStream(output_recovery_file);
+            OutputStreamWriter osw = new OutputStreamWriter(outputStream);
             System.out.printf("# of All REEs %s\n", rees.size());
             int c_ree = 1;
             for (DenialConstraint ree : rees) {
@@ -213,8 +217,11 @@ public class TestConstantRecovery {
                     continue;
                 }
                 System.out.println(ree.toString());
+                osw.write(ree.toString());
+                osw.write("\n");
                 c_ree++;
             }
+            osw.close();
 
         } catch (FileNotFoundException | InputIterationException e) {
             logger.info("Cannot load file\n");
