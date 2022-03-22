@@ -21,8 +21,7 @@ import sics.seiois.mlsserver.biz.der.mining.utils.ParsedColumnLight;
 import sics.seiois.mlsserver.biz.der.mining.utils.PredicateProviderIndex;
 import sics.seiois.mlsserver.biz.der.mining.utils.WorkUnit;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.util.*;
 
 public class CalculateRuleSuppConf {
@@ -48,7 +47,9 @@ public class CalculateRuleSuppConf {
     private long[] supports;
     private double[] confidences;
 
-    private int filter_enum_number = 10;
+    private int filter_enum_number = 5;
+
+    private HashMap<Integer, Predicate> idx_predicates;
 
 
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
@@ -593,6 +594,20 @@ public class CalculateRuleSuppConf {
         return this.nonConsPredicates;
     }
 
+    public void readAllPredicates(String predicates_path) throws IOException {
+        this.idx_predicates = new HashMap<>();
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(predicates_path));
+        InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
+        BufferedReader bReader = new BufferedReader(sReader);
+        String line;
+        int k = 0;
+        while ((line = bReader.readLine()) != null) {
+            Predicate p = PredicateBuilder.parsePredicateString(this.input, line);
+            this.idx_predicates.put(k, p);
+            k++;
+        }
+    }
+
     public long[] getSupports() {
         return this.supports;
     }
@@ -614,7 +629,8 @@ public class CalculateRuleSuppConf {
             String rhs_id = seq_rule.split(",")[1];
 
             WorkUnit workunit = new WorkUnit();
-            Predicate rhs = this.allExistPredicates.get(Integer.parseInt(rhs_id));
+//            Predicate rhs = this.allExistPredicates.get(Integer.parseInt(rhs_id));
+            Predicate rhs = this.idx_predicates.get(Integer.parseInt(rhs_id)); // read from all Predicates file
             rhss.add(rhs);
             workunit.addRHS(rhs);
             if (rhs.isConstant()) {
@@ -624,7 +640,8 @@ public class CalculateRuleSuppConf {
             }
 
             for (String lhs_id : lhs_ids) {
-                workunit.addCurrent(this.allExistPredicates.get(Integer.parseInt(lhs_id)));
+//                workunit.addCurrent(this.allExistPredicates.get(Integer.parseInt(lhs_id)));
+                workunit.addCurrent(this.idx_predicates.get(Integer.parseInt(lhs_id))); // read from all Predicates file
             }
             workunit.setTransferData();
             workUnits.add(workunit);
@@ -656,11 +673,13 @@ public class CalculateRuleSuppConf {
         }
     }
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         logger.info("Given a rule, calculate its support and confidence");
 
-        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports\\dataset", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
                 "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
+
+        String predicates_path = "D:\\REE\\tmp\\allPredicates_5Enum_5%\\airports_predicates.txt";
 
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\property_bak\\property", "constant_file=D:\\REE\\tmp\\property_bak\\constant_property.txt",
 //                "chunkLength=200000", "maxTupleNum=2"};
@@ -669,14 +688,18 @@ public class CalculateRuleSuppConf {
 //                "chunkLength=200000", "maxTupleNum=2"};
 
         CalculateRuleSuppConf calculateRuleSuppConf = new CalculateRuleSuppConf();
+
         calculateRuleSuppConf.preparePredicates(args_);
         calculateRuleSuppConf.getAllPredicatesNum();
+
+        calculateRuleSuppConf.readAllPredicates(predicates_path);
 
         logger.info("allPredicates: {}", calculateRuleSuppConf.getAllPredicates());
         logger.info("all applicationRHSs: {}", calculateRuleSuppConf.getApplicationRHSs());
 
 //        calculateRuleSuppConf.getSupportConfidence("1 11,5");
-        calculateRuleSuppConf.getSupportConfidence("16 8 19 20,5");
+//        calculateRuleSuppConf.getSupportConfidence("16 8 19 20,5");
+        calculateRuleSuppConf.getSupportConfidence("16 8 25 33,5");
 //        calculateRuleSuppConf.getSupportConfidence("5 6 11 12 18 19,5");
 //        calculateRuleSuppConf.getSupportConfidence("1 3 7 16,5");
 

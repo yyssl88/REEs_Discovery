@@ -94,7 +94,7 @@ public class TestConstantRecovery {
         String directory_path = "D:\\REE\\tmp\\airports\\dataset";
         String constant_file = "D:\\REE\\tmp\\constant_airports.txt";
         String ree_sample_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8.txt";
-        String output_recovery_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8_CR.txt";;
+        String output_recovery_file = "D:\\REE\\tmp\\airports\\rules_v21\\rules8_CR.txt";
 
 //        String directory_path = args[0];
 //        String constant_file = args[1];

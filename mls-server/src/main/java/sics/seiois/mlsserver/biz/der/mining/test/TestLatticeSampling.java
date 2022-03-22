@@ -45,6 +45,10 @@ public class TestLatticeSampling {
         // String directory_path =  "D:/REE/tmp/property/samples/property_RS_ROUND3/"; //""D:/REE/tmp/ncvoter/"; //  // "D:/REE/tmp/user_info";
         String constant_file = "D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
 
+//        String output_file = args[0];
+//        String directory_path = args[1];
+//        String constant_file = args[2];
+
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
         noCrossColumn = true;
@@ -64,10 +68,10 @@ public class TestLatticeSampling {
         float w_sub = 0.1f;
         int ifPrune = 1;
 
-        int if_conf_filter = 1;
-        int if_cluster_workunits = 1;
+        int if_conf_filter = 0;
+        int if_cluster_workunits = 0;
 
-        int filter_enum_number = 10;
+        int filter_enum_number = 5;
 
         // whether to use reinforcement learning for predicate association computation
         int ifRL = 0;
