@@ -2,6 +2,10 @@ package sics.seiois.mlsserver.biz.der.mining;
 
 import gnu.trove.list.array.TIntArrayList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
+import org.apache.hadoop.conf.Configuration;
+import org.apache.hadoop.fs.FSDataInputStream;
+import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.Path;
 import org.apache.spark.api.java.JavaRDD;
 import org.apache.spark.api.java.JavaSparkContext;
 import org.apache.spark.broadcast.Broadcast;
@@ -16,10 +20,12 @@ import sics.seiois.mlsserver.biz.der.metanome.input.Input;
 import sics.seiois.mlsserver.biz.der.metanome.input.InputLight;
 import sics.seiois.mlsserver.biz.der.metanome.input.ParsedColumn;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
+import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateBuilder;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
 import sics.seiois.mlsserver.biz.der.mining.model.DQNMLP;
 import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
 import sics.seiois.mlsserver.biz.der.mining.utils.*;
+import sics.seiois.mlsserver.model.PredicateConfig;
 import sics.seiois.mlsserver.model.PredicateExpressionModel;
 import sics.seiois.mlsserver.model.SparkContextConfig;
 import sics.seiois.mlsserver.service.impl.PredicateSetAssist;
@@ -43,6 +49,7 @@ public class ParallelRuleDiscoverySampling {
     private float confidence;
     private long maxOneRelationNum;
     private long allCount;
+//    private Input input;
     private InputLight inputLight;
 
     public static int MIN_NUM_WORK_UNITS = 200000;
@@ -105,14 +112,40 @@ public class ParallelRuleDiscoverySampling {
     private HashMap<String, Integer> predicateDQNHashIDs;
     private boolean ifDQN;
     // set the DQNMLP
-    void loadDQNModel(MLPFilterClassifier dqnmlp) {
+    void loadDQNModel(MLPFilterClassifier dqnmlp) throws IOException {
         if (dqnmlp == null) {
-            dqnmlp = new MLPFilterClassifier();
+            this.dqnmlp = new MLPFilterClassifier();
         } else {
             this.dqnmlp = dqnmlp;
         }
-        for (int pid = 0; pid < this.allPredicates.size(); pid++) {
-            this.predicateDQNHashIDs.put(this.allPredicates.get(pid).toString(), pid);
+        this.predicateDQNHashIDs = new HashMap<>();
+//        for (int pid = 0; pid < this.allPredicates.size(); pid++) {
+//            this.predicateDQNHashIDs.put(this.allPredicates.get(pid).toString(), pid);
+//        }
+        String data_name = this.allPredicates.get(0).getTableName();
+        if (data_name.contains("AMiner")) {
+            data_name = "aminer";
+        }
+        loadAllPredicates(data_name);
+    }
+
+    // load all Predicates from file
+//    private HashMap<Integer, Predicate> index2predicates;
+    public void loadAllPredicates(String data_name) throws IOException {
+//        this.index2predicates = new HashMap<>();
+        FileSystem hdfs = FileSystem.get(new Configuration());
+        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "allPredicates/" + data_name + "_predicates.txt";
+        FSDataInputStream inputTxt = hdfs.open(new Path(inputTxtPath));
+        BufferedInputStream bis = new BufferedInputStream(inputTxt);
+        InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
+        BufferedReader bReader = new BufferedReader(sReader);
+        String line;
+        int k = 0;
+        while ((line = bReader.readLine()) != null) {
+//            Predicate p = PredicateBuilder.parsePredicateString(this.input, line);
+//            this.index2predicates.put(k, p);
+            this.predicateDQNHashIDs.put(line, k);
+            k++;
         }
     }
 
@@ -132,6 +165,7 @@ public class ParallelRuleDiscoverySampling {
         this.confidence = confidence;
         this.maxOneRelationNum = maxOneRelationNum;
         this.allCount = allCount;
+//        this.input = input;
         this.inputLight = new InputLight(input);
 
         this.ifPrune = ifPrune;
@@ -217,7 +251,7 @@ public class ParallelRuleDiscoverySampling {
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
-                                         boolean ifDQN, MLPFilterClassifier dqnmlp) {
+                                         boolean ifDQN, MLPFilterClassifier dqnmlp) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
                 w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
