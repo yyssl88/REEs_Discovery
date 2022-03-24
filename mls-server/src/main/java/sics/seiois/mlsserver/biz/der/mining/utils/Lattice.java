@@ -621,7 +621,7 @@ public class Lattice implements KryoSerializable {
             return new LatticeVertex(lv, newP);
         }
         ArrayList<Predicate> validRHSs = new ArrayList<>();
-        int numPredicates = allPredicates.size();
+        int numPredicates = predicatesHashIDs.size();
         double[][] feature_vectors = new double[1][numPredicates * 2];
         // add P_sel
         for (Predicate p : lv.getPredicates()) {

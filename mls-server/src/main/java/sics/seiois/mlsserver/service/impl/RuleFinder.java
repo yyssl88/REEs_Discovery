@@ -141,6 +141,7 @@ public class RuleFinder {
                     fpath + "/lib/mls-guava-0.24.jar" + "," +
                     fpath + "/lib/algorithm_integration-1.2.jar" + "," +
                     fpath + "/lib/java-lsh-RELEASE.jar" + "," +
+                    fpath + "/lib/ejml-0.23.jar" + "," +
                     fpath + "/lib/opencsv-2.3.jar" + ",";
 
             sparkLauncher.setAppName("ruleFinder")
