@@ -1,17 +1,13 @@
 package sics.seiois.mlsserver.biz.der.mining.model;
 
-
+import de.metanome.algorithm_integration.Operator;
 import org.apache.hadoop.fs.FSDataInputStream;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.Path;
-import org.codehaus.groovy.tools.groovydoc.SimpleGroovyPackageDoc;
 import org.ejml.simple.SimpleMatrix;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.io.Serializable;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -19,7 +15,7 @@ import java.util.HashMap;
     implement the java code of rule interestingness model
     input: one rule
  */
-public class Interestingness implements Serializable {
+public class InterestingnessModel implements Serializable {
 
     private HashMap<String, Integer> vobsHash;
 
@@ -32,6 +28,42 @@ public class Interestingness implements Serializable {
     static public int MAX_LHS_PREDICATES = 10;
     static public int MAX_RHS_PREDICATES = 1;
     static public String PADDING_VALUE = "PAD";
+
+    private void loadModel(String modelPAthFile) throws  IOException {
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(modelPAthFile));
+        InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
+        BufferedReader bReader = new BufferedReader(sReader);
+
+        ArrayList<SimpleMatrix> matrices = new ArrayList<>();
+        String line = null;
+        boolean beginMatrix = true;
+        while ( (line = bReader.readLine()) != null) {
+            if (line.trim().equals("")) {
+                continue;
+            }
+            int row = 0, col = 0;
+            if (beginMatrix) {
+                String[] info = line.split(" ");
+                row = Integer.parseInt(info[0].trim());
+                col = Integer.parseInt(info[1].trim());
+            }
+            double[][] mat = new double[row][col];
+            for (int r = 0; r <row; r++) {
+                line = bReader.readLine();
+                String[] info = line.split(" ");
+                for (int c = 0; c < info.length; c++) {
+                    mat[r][c] = Double.parseDouble(info[c].trim());
+                }
+            }
+            SimpleMatrix matrix = new SimpleMatrix(mat);
+            matrices.add(matrix);
+        }
+        // assign to matrices
+        this.tokensEmbedMatrix = matrices.get(0);
+        this.weightPredicates = matrices.get(1);
+        this.weightREEsEmbed = matrices.get(2);
+        this.weightInterest = matrices.get(3);
+    }
 
     /*
         read "tokensEmbedMatrix", "weightPredicates", "weightREEsEmbed", "weightInterest" one by one
@@ -215,12 +247,66 @@ public class Interestingness implements Serializable {
         tokenToIDFile:  Token1: 1; Token2: 2; ...
         model_path: the model path of interestingness model
      */
-    public Interestingness(String tokenToIDFile, String model_path, FileSystem hdfs) throws Exception{
-        // load token vob
-        this.vobsHash = this.loadVobsID(tokenToIDFile, hdfs);
-        // load model parameters
-        this.loadModel(model_path, hdfs);
+    public InterestingnessModel(String tokenToIDFile, String model_path, FileSystem hdfs) {
+        try {
+            // load token vob
+            this.vobsHash = this.loadVobsID(tokenToIDFile, hdfs);
+            // load model parameters
+            this.loadModel(model_path, hdfs);
+        } catch (Exception e) {
 
+        }
+    }
+
+    public InterestingnessModel(String tokenToIDFile, String model_path) {
+        try {
+            // load token vob
+            this.vobsHash = this.loadVobsID(tokenToIDFile);
+            // load model parameters
+            this.loadModel(model_path);
+        } catch (Exception e) {
+
+        }
+    }
+
+
+    private HashMap<String, Integer> loadVobsID(String tokenToIDFile) throws IOException {
+
+        BufferedInputStream bis = new BufferedInputStream(new FileInputStream(tokenToIDFile));
+        InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
+        BufferedReader bReader = new BufferedReader(sReader);
+
+        HashMap<String, Integer> vobsIDs = new HashMap<>();
+        String line = null;
+        while ((line = bReader.readLine()) != null) {
+            if (line.trim().equals("")) {
+                continue;
+            }
+            String[] info = line.split(" "); // the first one is the token, and the second one is the ID
+            String token = info[0];
+            int ID = Integer.parseInt(info[1].trim());
+            if (!vobsIDs.containsKey(token)) {
+                vobsIDs.put(token, ID);
+            }
+        }
+
+        // change the toString of OPERATOR
+        // 1. ==
+        if (vobsIDs.containsKey("==")) {
+            int id_ = vobsIDs.get("==");
+            String op = Operator.EQUAL.toString();
+            vobsIDs.remove("==");
+            vobsIDs.put(op, id_);
+        }
+        // 2. !=
+        if (vobsIDs.containsKey("<>")) {
+            int id_ = vobsIDs.get("<>");
+            String op = Operator.UNEQUAL.toString();
+            vobsIDs.remove("<>");
+            vobsIDs.put(op, id_);
+        }
+
+        return vobsIDs;
     }
 
     private HashMap<String, Integer> loadVobsID(String tokenToIDFile, FileSystem hdfs) throws Exception {
@@ -242,6 +328,30 @@ public class Interestingness implements Serializable {
                 vobsIDs.put(token, ID);
             }
         }
+
+        // change the toString of OPERATOR
+        // 1. ==
+        if (vobsIDs.containsKey("==")) {
+            int id_ = vobsIDs.get("==");
+            String op = Operator.EQUAL.toString();
+            vobsIDs.remove("==");
+            vobsIDs.put(op, id_);
+        }
+        // 2. !=
+        if (vobsIDs.containsKey("<>")) {
+            int id_ = vobsIDs.get("<>");
+            String op = Operator.UNEQUAL.toString();
+            vobsIDs.remove("<>");
+            vobsIDs.put(op, id_);
+        }
+
         return vobsIDs;
+    }
+
+    // get the objective weights
+    public ArrayList<Double> getObjectiveWeights() {
+        ArrayList<Double> weights = new ArrayList<>();
+        // do something here
+        return weights;
     }
 }
