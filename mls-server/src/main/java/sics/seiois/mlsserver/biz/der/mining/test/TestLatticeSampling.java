@@ -115,7 +115,8 @@ public class TestLatticeSampling {
             //PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue);
             PredicateBuilder predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue, ml_config_file);
             ConstantPredicateBuilder cpredicates = new ConstantPredicateBuilder(input, constant_file);
-            log.info("Size of the predicate space:" + (predicates.getPredicates().size() + cpredicates.getPredicates().size()));
+            log.info("Size of the predicate space: {}, constant size: {}, non-constant size: {}", (predicates.getPredicates().size() + cpredicates.getPredicates().size()),
+                    cpredicates.getPredicates().size(), predicates.getPredicates().size());
 
             // construct PLI index
             // input.buildPLIs_col();
@@ -137,6 +138,7 @@ public class TestLatticeSampling {
                     allPredicates.add(p);
                 }
             }
+            log.info("#### non-constant Predicates size: {}", allPredicates.size());
 
             // set value INT for constant predicates
             HashSet<Predicate> constantPs = new HashSet<>();
@@ -144,6 +146,7 @@ public class TestLatticeSampling {
                 constantPs.add(cp);
             }
             input.transformConstantPredicates(constantPs);
+            log.info("#### constant Predicates size: {}", constantPs.size());
 
             // add constant predicates
             for (Predicate p : constantPs) {

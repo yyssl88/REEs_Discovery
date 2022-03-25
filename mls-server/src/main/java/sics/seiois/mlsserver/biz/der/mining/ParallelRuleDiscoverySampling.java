@@ -493,6 +493,9 @@ public class ParallelRuleDiscoverySampling {
         // 8. use all predicates as RHSs
 //        logger.info("#### choose all RHSs");
 //        for (Predicate p : predicates) {
+////            if (!p.isConstant() && p.getOperand1().getColumnLight().getName().contains("scheduled_service")) {
+////                continue;
+////            }
 //            applicationRHSs.add(p);
 //        }
 
@@ -522,10 +525,13 @@ public class ParallelRuleDiscoverySampling {
 //            if (p.isConstant()) {
 //                continue;
 //            }
-//            if (p.getOperand1().getColumnLight().getName().contains("Zip") ||
-//                p.getOperand1().getColumnLight().getName().contains("City") ||
+//            if (p.getOperand1().getColumnLight().getName().contains("City") ||
+//                p.getOperand1().getColumnLight().getName().contains("Inspection_ID") ||
+//                p.getOperand1().getColumnLight().getName().contains("DBA_Name") ||
+//                p.getOperand1().getColumnLight().getName().contains("Facility_Type") ||
+//                p.getOperand1().getColumnLight().getName().contains("Latitude") ||
 //                p.getOperand1().getColumnLight().getName().contains("Longitude") ||
-//                p.getOperand1().getColumnLight().getName().contains("Risk")) {
+//                p.getOperand1().getColumnLight().getName().contains("Results")) {
 //                applicationRHSs.add(p);
 //            }
 //        }
@@ -581,6 +587,7 @@ public class ParallelRuleDiscoverySampling {
                 removePredicates.add(p);
             }
         }
+        logger.info("#### Filter Enum Constant Predicates size of Table Property_Features for X: {}", removePredicates.size());
         for (Predicate p : removePredicates) {
             allPredicates.remove(p);
         }
@@ -592,8 +599,8 @@ public class ParallelRuleDiscoverySampling {
             if (!p.isConstant()) {
                 continue;
             }
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number) {
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
@@ -607,8 +614,11 @@ public class ParallelRuleDiscoverySampling {
     private void removeEnumPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() < this.filter_enum_number) {
+            if (!p.isConstant()) {
+                continue;
+            }
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number ||
+                p.getOperand2().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
@@ -659,9 +669,9 @@ public class ParallelRuleDiscoverySampling {
         logger.info("#### table_name: {}", this.table_name);
 
 
-        if (table_name.contains("Property_Features")) {
-            removePropertyFeatureCPredicates(this.allPredicates);
-        }
+//        if (table_name.contains("Property_Features")) {
+//            removePropertyFeatureCPredicates(this.allPredicates);
+//        }
 
         this.prepareAllPredicatesMultiTuples();
 
@@ -680,7 +690,18 @@ public class ParallelRuleDiscoverySampling {
         // remove constant predicates of enumeration type
         removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
-        logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
+//        logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
+        int cpsize = 0;
+        int psize = 0;
+        for (Predicate p : this.allPredicates) {
+            if (p.isConstant()) {
+                cpsize++;
+            } else {
+                psize++;
+            }
+        }
+        logger.info("#### after filtering, there are {} predicates, constant size: {}, non-constant size: {}", this.allPredicates.size(), cpsize, psize);
+
 
         Lattice lattice = new Lattice(this.maxTupleNum);
 //        lattice.initialize(this.allPredicates, this.maxTupleNum);
@@ -3007,9 +3028,9 @@ public class ParallelRuleDiscoverySampling {
         this.table_name = this.table_name.substring(0, this.table_name.length() - 1); // remove last "_"
         logger.info("#### table_name: {}", this.table_name);
 
-        if (table_name.contains("Property_Features")) {
-            removePropertyFeatureCPredicates(this.allPredicates);
-        }
+//        if (table_name.contains("Property_Features")) {
+//            removePropertyFeatureCPredicates(this.allPredicates);
+//        }
 
         this.prepareAllPredicatesMultiTuples();
 
@@ -3028,6 +3049,17 @@ public class ParallelRuleDiscoverySampling {
 
         // remove constant predicates of enumeration type for X
         removeEnumPredicates(this.allPredicates, this.allExistPredicates);
+
+        int cpsize = 0;
+        int psize = 0;
+        for (Predicate p : this.allPredicates) {
+            if (p.isConstant()) {
+                cpsize++;
+            } else {
+                psize++;
+            }
+        }
+        logger.info("#### after filtering, there are {} predicates, constant size: {}, non-constant size: {}", this.allPredicates.size(), cpsize, psize);
 
         // 1. initialize the 1st level combinations
         Lattice lattice = new Lattice(this.maxTupleNum);
