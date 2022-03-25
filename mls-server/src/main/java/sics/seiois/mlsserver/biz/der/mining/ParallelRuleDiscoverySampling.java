@@ -535,29 +535,29 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 6. randomly choose some non-constant RHS.
-//        int NUM_NonConstant = 4;
-//        if (NUM_NonConstant > whole_num_nonCons) {
-//            NUM_NonConstant = whole_num_nonCons;
-//        }
-//        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
-//        Collections.sort(predicates, new Comparator<Predicate>() {
-//            @Override
-//            public int compare(Predicate o1, Predicate o2) {
-//                return o1.toString().compareTo(o2.toString());
-//            }
-//        });
-//        Random rand = new Random();
-//        rand.setSeed(1234567);
-//        HashSet<Integer> random_idx = new HashSet<>();
-//        while (random_idx.size() < NUM_NonConstant) {
-//            int idx = rand.nextInt(predicates.size());
-//            if (!predicates.get(idx).isConstant()) {
-//                random_idx.add(idx);
-//            }
-//        }
-//        for (int choose_idx : random_idx) {
-//            applicationRHSs.add(predicates.get(choose_idx));
-//        }
+        int NUM_NonConstant = 4;
+        if (NUM_NonConstant > whole_num_nonCons) {
+            NUM_NonConstant = whole_num_nonCons;
+        }
+        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
+        Collections.sort(predicates, new Comparator<Predicate>() {
+            @Override
+            public int compare(Predicate o1, Predicate o2) {
+                return o1.toString().compareTo(o2.toString());
+            }
+        });
+        Random rand = new Random();
+        rand.setSeed(1234567);
+        HashSet<Integer> random_idx = new HashSet<>();
+        while (random_idx.size() < NUM_NonConstant) {
+            int idx = rand.nextInt(predicates.size());
+            if (!predicates.get(idx).isConstant()) {
+                random_idx.add(idx);
+            }
+        }
+        for (int choose_idx : random_idx) {
+            applicationRHSs.add(predicates.get(choose_idx));
+        }
 
         // 7. use all non-constant predicates as RHSs
 //        logger.info("#### choose all non-constant RHSs");
@@ -568,10 +568,10 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 8. use all predicates as RHSs
-        logger.info("#### choose all RHSs");
-        for (Predicate p : predicates) {
-            applicationRHSs.add(p);
-        }
+//        logger.info("#### choose all RHSs");
+//        for (Predicate p : predicates) {
+//            applicationRHSs.add(p);
+//        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -590,6 +590,19 @@ public class ParallelRuleDiscoverySampling {
 //                p.getOperand1().getColumnLight().getName().contains("home_link") ||
 //                p.getOperand1().getColumnLight().getName().contains("iso_region") ||
 //                p.getOperand1().getColumnLight().getName().contains("type")) {
+//                applicationRHSs.add(p);
+//            }
+//        }
+
+        // 11. test inspection - fix RHSs
+//        for (Predicate p : predicates) {
+//            if (p.isConstant()) {
+//                continue;
+//            }
+//            if (p.getOperand1().getColumnLight().getName().contains("Zip") ||
+//                p.getOperand1().getColumnLight().getName().contains("City") ||
+//                p.getOperand1().getColumnLight().getName().contains("Longitude") ||
+//                p.getOperand1().getColumnLight().getName().contains("Risk")) {
 //                applicationRHSs.add(p);
 //            }
 //        }
