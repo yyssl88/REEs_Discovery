@@ -625,16 +625,16 @@ public class Lattice implements KryoSerializable {
         double[][] feature_vectors = new double[1][numPredicates * 2];
         // add P_sel
         for (Predicate p : lv.getPredicates()) {
-            feature_vectors[0][predicatesHashIDs.get(p.toString())] = 1.0;
+            feature_vectors[0][predicatesHashIDs.get(p.toString().trim())] = 1.0;
         }
         // feature_vectors[0][predicatesHashIDs.get(newP.toString())] = 1.0;
         for (Predicate rhs : lv.getRHSs()) {
             // remove RHS
-            feature_vectors[0][predicatesHashIDs.get(rhs.toString())] = 0.0;
+            feature_vectors[0][predicatesHashIDs.get(rhs.toString().trim())] = 0.0;
             // add RHS
-            feature_vectors[0][numPredicates + predicatesHashIDs.get(rhs.toString())] = 1.0;
+            feature_vectors[0][numPredicates + predicatesHashIDs.get(rhs.toString().trim())] = 1.0;
             // add the new predicate
-            feature_vectors[0][predicatesHashIDs.get(newP)] = 1.0;
+            feature_vectors[0][predicatesHashIDs.get(newP.toString().trim())] = 1.0;
             if (mlpFilterClassifier.run(feature_vectors)) {
                 validRHSs.add(rhs);
             }

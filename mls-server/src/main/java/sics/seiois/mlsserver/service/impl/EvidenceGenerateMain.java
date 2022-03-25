@@ -555,6 +555,9 @@ public class EvidenceGenerateMain {
         return ruleResults;
     }
 
+    /*
+        for sampling and top-K algorithm
+     */
     private static List<RuleResult> generateMultiTupleRule(RuleDiscoverExecuteRequest request, REEFinderEvidSet reeFinderEvidSet,
                                                            TableInfos tableInfos, FileSystem hdfs, SparkSession spark,
                                                            PredicateConfig config) throws Exception {

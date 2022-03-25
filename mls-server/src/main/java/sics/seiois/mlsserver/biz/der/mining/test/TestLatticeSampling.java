@@ -16,6 +16,7 @@ import sics.seiois.mlsserver.biz.der.metanome.predicates.ConstantPredicateBuilde
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateBuilder;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
+import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -40,10 +41,12 @@ public class TestLatticeSampling {
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
         int round = 2;
-        String output_file = "D:/REE/tmp/airports/rules/camera_ready/rules_round" + Integer.toString(round) + ".txt"; //"D:/REE/tmp/inspection/rules/rules_rs_round8.txt"; //"; //"D:/REE/tmp/airports/rules/rules_round2.txt";
-        String directory_path =  "D:/REE/tmp/airports/airports_RW_ROUND" + Integer.toString(round) + "/"; // "D:/REE/tmp/inspection/copy/inspection_RS_ROUND8/"; //D:/REE/tmp/airports/airports_RS_ROUND8/"; //"D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
+        String output_file = "D:/REE/tmp/property/rules/camera_ready/rules_test.txt"; //"D:/REE/tmp/inspection/rules/camera_ready/rules_test.csv";
+                //  // "D:/REE/tmp/ncvoter/rules/camera_ready/rules_test.txt"; // "D:/REE/tmp/airports/rules/camera_ready/rules_round" + Integer.toString(round) + ".txt"; //"D:/REE/tmp/inspection/rules/rules_rs_round8.txt"; //"; //"D:/REE/tmp/airports/rules/rules_round2.txt";
+        String directory_path = "D:/REE/tmp/property/property/"; //"D:/REE/tmp/inspection/inspection/samples/";
+                //"D:/REE/tmp/property/test/"; //"D:/REE/tmp/ncvoter/datasets/small_test/"; // "D:/REE/tmp/airports/airports_RW_ROUND" + Integer.toString(round) + "/"; // "D:/REE/tmp/inspection/copy/inspection_RS_ROUND8/"; //D:/REE/tmp/airports/airports_RS_ROUND8/"; //"D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
         // String directory_path =  "D:/REE/tmp/property/samples/property_RS_ROUND3/"; //""D:/REE/tmp/ncvoter/"; //  // "D:/REE/tmp/user_info";
-        String constant_file = "D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
+        String constant_file = "D:/REE/tmp/property/constant_property.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // // "D:/REE/tmp/ncvoter/ncvoter_constant_predicates.txt"; //"D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
 
 //        String output_file = args[0];
 //        String directory_path = args[1];
@@ -90,6 +93,10 @@ public class TestLatticeSampling {
         int replace_target_iter = 300;
         int memory_size = 500;
         int batch_size = 32;
+
+        boolean ifDQN = false; //true;
+        String DQNModelFile = "D:/REE/tmp/ncvoter/ncvoter_model.txt";
+        String predicatesHashIDFile = "D:/REE/tmp/ncvoter/ncvoter_predicates.txt";
 
         Dir directory = new Dir(directory_path, relation_num_ratio);
 
@@ -156,16 +163,16 @@ public class TestLatticeSampling {
             long runTime = System.currentTimeMillis();
             ParallelRuleDiscoverySampling parallelRuleDiscoverySampling;
             log.info("filter_enum_number: {}", filter_enum_number);
-            if (ifRL == 0) {
+            if (ifDQN == false) {
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float) errorThreshold, maxOneRelationNum, input, allCount,
                         w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits, filter_enum_number);
             } else {
+                MLPFilterClassifier dqn = new MLPFilterClassifier(DQNModelFile);
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float)errorThreshold, maxOneRelationNum, input, allCount,
                         w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits, filter_enum_number,
-                        ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path,N, DeltaL,
-                        learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
+                        ifDQN, dqn, predicatesHashIDFile);
             }
 
             parallelRuleDiscoverySampling.levelwiseRuleDiscoveryLocal();

@@ -85,6 +85,7 @@ public class ParallelRuleDiscoverySampling {
 
     // interestingness
     Interestingness interestingness;
+    private boolean ifNN;
 
     private String table_name;
     // use reinforcement learning for predicate association compute
@@ -109,8 +110,9 @@ public class ParallelRuleDiscoverySampling {
 
     // set the DQNMLP model
     private MLPFilterClassifier dqnmlp;
-    private HashMap<String, Integer> predicateDQNHashIDs;
+    private HashMap<String, Integer> predicateDQNHashIDs = null;
     private boolean ifDQN;
+
     // set the DQNMLP
     void loadDQNModel(MLPFilterClassifier dqnmlp) throws IOException {
         if (dqnmlp == null) {
@@ -149,6 +151,49 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
+    // load model locally
+    void loadDQNModel(MLPFilterClassifier dqnmlp, String predicateHashIDsFile) throws IOException {
+        if (dqnmlp == null) {
+            this.dqnmlp = new MLPFilterClassifier();
+        } else {
+            this.dqnmlp = dqnmlp;
+        }
+        this.predicateDQNHashIDs = new HashMap<>();
+//        for (int pid = 0; pid < this.allPredicates.size(); pid++) {
+//            this.predicateDQNHashIDs.put(this.allPredicates.get(pid).toString(), pid);
+//        }
+
+        File inputTxt = new File(predicateHashIDsFile);
+        FileReader fr = new FileReader(inputTxt);
+        BufferedReader br = new BufferedReader(fr);
+        String line;
+        int k = 0;
+        while ((line = br.readLine()) != null) {
+//            Predicate p = PredicateBuilder.parsePredicateString(this.input, line);
+//            this.index2predicates.put(k, p);
+            this.predicateDQNHashIDs.put(line, k);
+            k++;
+        }
+
+    }
+
+
+
+    // load Rule Interestingness model NN version
+    void loadInterestingnessModel(float w_1, float w_2, float w_3, float w_4, float w_5, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+                                  FileSystem hdfs) {
+        try {
+            if (this.predicateDQNHashIDs == null) {
+                this.loadAllPredicates(this.allPredicates.get(0).getTableName());
+            }
+        } catch (IOException e) {
+
+        }
+        // reconstruct the interestingness object
+        this.interestingness = new Interestingness(this.ifNN, w_1, w_2, w_3, w_4, w_5, tokenToIDFile, interestingnessModelFile,
+                filterRegressionFile, this.allPredicates, this.allCount, hdfs, this.predicateDQNHashIDs);
+
+    }
 
     public ParallelRuleDiscoverySampling() {
     }
@@ -259,6 +304,38 @@ public class ParallelRuleDiscoverySampling {
         this.ifDQN = ifDQN;
         this.loadDQNModel(dqnmlp);
     }
+
+    // local version of DQN classifier
+    public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
+                                         float confidence, long maxOneRelationNum, Input input, long allCount,
+                                         float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
+                                         boolean ifDQN, MLPFilterClassifier dqnmlp, String predicateHashIDsFile) throws IOException {
+        this(predicates, K, maxTupleNum, support,
+                confidence, maxOneRelationNum, input, allCount,
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+
+        this.ifDQN = ifDQN;
+        this.loadDQNModel(dqnmlp, predicateHashIDsFile);
+    }
+
+
+
+    public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
+                                         float confidence, long maxOneRelationNum, Input input, long allCount,
+                                         float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
+                                         int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
+                                         boolean ifNN, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+                                         FileSystem hdfs) throws IOException {
+        this(predicates, K, maxTupleNum, support,
+                confidence, maxOneRelationNum, input, allCount,
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+
+        // whether use NN rule interestingness model
+        this.ifNN = ifNN;
+        this.loadInterestingnessModel(w_1, w_2, w_3, w_4, w_5, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
+    }
+
 
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
@@ -3039,7 +3116,7 @@ public class ParallelRuleDiscoverySampling {
             tmp_allPredicates.add(p);
         }
         // remove constant predicates of enumeration type for RHS
-        removeEnumPredicates(tmp_allPredicates);
+        // removeEnumPredicates(tmp_allPredicates);
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
 
         // remove predicates that are irrelevant to RHSs
