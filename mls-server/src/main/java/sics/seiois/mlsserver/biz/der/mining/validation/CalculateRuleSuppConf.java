@@ -14,6 +14,7 @@ import sics.seiois.mlsserver.biz.der.metanome.mlsel.MLSelection;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.ConstantPredicateBuilder;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.PredicateBuilder;
+import sics.seiois.mlsserver.biz.der.metanome.predicates.operands.ColumnOperand;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
 import sics.seiois.mlsserver.biz.der.mining.Message;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
@@ -606,6 +607,29 @@ public class CalculateRuleSuppConf {
             this.idx_predicates.put(k, p);
             k++;
         }
+
+        // set columnLights and deal with constantInt
+        Set<Predicate> cps = new HashSet<>();
+        HashMap<String, ColumnOperand> hashOperands = new HashMap<>();
+        for (Predicate p : this.allPredicates) {
+            if (!hashOperands.containsKey(p.getOperand1().toString())) {
+                hashOperands.put(p.getOperand1().toString(), p.getOperand1());
+            }
+            if (!hashOperands.containsKey(p.getOperand2().toString())) {
+                hashOperands.put(p.getOperand2().toString(), p.getOperand2());
+            }
+        }
+        for (Predicate p : this.idx_predicates.values()) {
+            if (p.isConstant()) {
+                cps.add(p);
+            }
+            p.getOperand1().setColumnLight(hashOperands.get(p.getOperand1().toString()).getColumnLight());
+            p.getOperand2().setColumnLight(hashOperands.get(p.getOperand2().toString()).getColumnLight());
+        }
+
+        // deal with constant predicates
+        this.input.transformConstantPredicates(cps);
+
     }
 
     public long[] getSupports() {
@@ -676,10 +700,13 @@ public class CalculateRuleSuppConf {
     public static void main(String[] args) throws IOException {
         logger.info("Given a rule, calculate its support and confidence");
 
-        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports\\dataset", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+//        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports\\dataset", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
+//                "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
+
+        String[] args_ = {"directory_path=D:/REE/tmp/ncvoter/testSuppConf/ncvoter/", "constant_file=D:/REE/tmp/ncvoter/testSuppConf/constant_ncvoter.txt",
                 "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
 
-        String predicates_path = "D:\\REE\\tmp\\allPredicates_5Enum_5%\\airports_predicates.txt";
+        String predicates_path = "D:/REE/tmp/ncvoter/testSuppConf/ncvoter_predicates.txt"; //""D:\\REE\\tmp\\allPredicates_5Enum_5%\\airports_predicates.txt";
 
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\property_bak\\property", "constant_file=D:\\REE\\tmp\\property_bak\\constant_property.txt",
 //                "chunkLength=200000", "maxTupleNum=2"};
@@ -699,7 +726,7 @@ public class CalculateRuleSuppConf {
 
 //        calculateRuleSuppConf.getSupportConfidence("1 11,5");
 //        calculateRuleSuppConf.getSupportConfidence("16 8 19 20,5");
-        calculateRuleSuppConf.getSupportConfidence("16 8 25 33,5");
+        calculateRuleSuppConf.getSupportConfidence("8,37");
 //        calculateRuleSuppConf.getSupportConfidence("5 6 11 12 18 19,5");
 //        calculateRuleSuppConf.getSupportConfidence("1 3 7 16,5");
 
