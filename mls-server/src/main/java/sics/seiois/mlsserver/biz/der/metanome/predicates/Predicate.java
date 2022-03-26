@@ -226,7 +226,10 @@ public class Predicate implements PartitionRefiner, de.metanome.algorithm_integr
             // 这个常熟为谓词为 col="cc"，则 constantInt 就是 3
             // ⭐⭐ 那么 support 就是这个常数 cc 在这一列出现次数
             String k = this.getOperand1().getColumn().toStringData();
-            long suppConstant = statistic.get(k).get(this.constantInt);
+            long suppConstant = 0;
+            if (statistic.get(k).containsKey(this.constantInt)) {
+                suppConstant = statistic.get(k).get(this.constantInt);
+            }
             this.support += suppConstant;
         } else {
             // 非常数谓词

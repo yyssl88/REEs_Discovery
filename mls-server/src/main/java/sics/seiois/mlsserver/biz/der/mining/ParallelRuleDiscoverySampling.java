@@ -535,37 +535,37 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 6. randomly choose some non-constant RHS.
-        int NUM_NonConstant = 4;
-        if (NUM_NonConstant > whole_num_nonCons) {
-            NUM_NonConstant = whole_num_nonCons;
-        }
-        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
-        Collections.sort(predicates, new Comparator<Predicate>() {
-            @Override
-            public int compare(Predicate o1, Predicate o2) {
-                return o1.toString().compareTo(o2.toString());
-            }
-        });
-        Random rand = new Random();
-        rand.setSeed(1234567);
-        HashSet<Integer> random_idx = new HashSet<>();
-        while (random_idx.size() < NUM_NonConstant) {
-            int idx = rand.nextInt(predicates.size());
-            if (!predicates.get(idx).isConstant()) {
-                random_idx.add(idx);
-            }
-        }
-        for (int choose_idx : random_idx) {
-            applicationRHSs.add(predicates.get(choose_idx));
-        }
-
-        // 7. use all non-constant predicates as RHSs
-//        logger.info("#### choose all non-constant RHSs");
-//        for (Predicate p : predicates) {
-//            if (!p.isConstant()) {
-//                applicationRHSs.add(p);
+//        int NUM_NonConstant = 4;
+//        if (NUM_NonConstant > whole_num_nonCons) {
+//            NUM_NonConstant = whole_num_nonCons;
+//        }
+//        logger.info("#### randomly choose {} non-constant RHSs", NUM_NonConstant);
+//        Collections.sort(predicates, new Comparator<Predicate>() {
+//            @Override
+//            public int compare(Predicate o1, Predicate o2) {
+//                return o1.toString().compareTo(o2.toString());
+//            }
+//        });
+//        Random rand = new Random();
+//        rand.setSeed(1234567);
+//        HashSet<Integer> random_idx = new HashSet<>();
+//        while (random_idx.size() < NUM_NonConstant) {
+//            int idx = rand.nextInt(predicates.size());
+//            if (!predicates.get(idx).isConstant()) {
+//                random_idx.add(idx);
 //            }
 //        }
+//        for (int choose_idx : random_idx) {
+//            applicationRHSs.add(predicates.get(choose_idx));
+//        }
+
+        // 7. use all non-constant predicates as RHSs
+        logger.info("#### choose all non-constant RHSs");
+        for (Predicate p : predicates) {
+            if (!p.isConstant()) {
+                applicationRHSs.add(p);
+            }
+        }
 
         // 8. use all predicates as RHSs
 //        logger.info("#### choose all RHSs");
