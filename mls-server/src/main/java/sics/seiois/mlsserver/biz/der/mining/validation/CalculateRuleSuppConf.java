@@ -495,6 +495,13 @@ public class CalculateRuleSuppConf {
             }
             this.input.transformConstantPredicates(constantPs);
 
+            // because this code could be used in sample data, some constant predicates will not be in there
+            for (Predicate p : constantPs) {
+                if (p.getConstantInt() == null) {
+                    p.setConstantInt(Integer.MAX_VALUE - 1);
+                }
+            }
+
             // add constant predicates
             for (Predicate p : constantPs) {
                 if (p.getConstant().equals("")) {
@@ -629,6 +636,12 @@ public class CalculateRuleSuppConf {
 
         // deal with constant predicates
         this.input.transformConstantPredicates(cps);
+        // consider if there are no constant existing in the dataset
+        for (Predicate cp : cps) {
+            if (cp.getConstantInt() == null) {
+                cp.setConstantInt(Integer.MAX_VALUE - 1);
+            }
+        }
 
     }
 
@@ -703,10 +716,13 @@ public class CalculateRuleSuppConf {
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\airports\\dataset", "constant_file=D:\\REE\\tmp\\constant_airports.txt",
 //                "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
 
-        String[] args_ = {"directory_path=D:/REE/tmp/ncvoter/testSuppConf/ncvoter/", "constant_file=D:/REE/tmp/ncvoter/testSuppConf/constant_ncvoter.txt",
+//        String[] args_ = {"directory_path=D:/REE/tmp/ncvoter/testSuppConf/ncvoter/", "constant_file=D:/REE/tmp/ncvoter/testSuppConf/constant_ncvoter.txt",
+//                "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
+
+        String[] args_ = {"directory_path=D:/REE/tmp/property/testSuppConf/property/", "constant_file=D:/REE/tmp/property/testSuppConf/constant_property.txt",
                 "chunkLength=200000", "maxTupleNum=2", "filterEnumNumber=5"};
 
-        String predicates_path = "D:/REE/tmp/ncvoter/testSuppConf/ncvoter_predicates.txt"; //""D:\\REE\\tmp\\allPredicates_5Enum_5%\\airports_predicates.txt";
+        String predicates_path = "D:/REE/tmp/property/testSuppConf/property_predicates.txt"; //"D:/REE/tmp/ncvoter/testSuppConf/ncvoter_predicates.txt"; //""D:\\REE\\tmp\\allPredicates_5Enum_5%\\airports_predicates.txt";
 
 //        String[] args_ = {"directory_path=D:\\REE\\tmp\\property_bak\\property", "constant_file=D:\\REE\\tmp\\property_bak\\constant_property.txt",
 //                "chunkLength=200000", "maxTupleNum=2"};
@@ -726,7 +742,7 @@ public class CalculateRuleSuppConf {
 
 //        calculateRuleSuppConf.getSupportConfidence("1 11,5");
 //        calculateRuleSuppConf.getSupportConfidence("16 8 19 20,5");
-        calculateRuleSuppConf.getSupportConfidence("8,37");
+        calculateRuleSuppConf.getSupportConfidence("5 25,2");
 //        calculateRuleSuppConf.getSupportConfidence("5 6 11 12 18 19,5");
 //        calculateRuleSuppConf.getSupportConfidence("1 3 7 16,5");
 

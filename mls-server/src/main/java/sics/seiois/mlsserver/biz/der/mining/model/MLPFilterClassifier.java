@@ -22,6 +22,8 @@ public class MLPFilterClassifier implements Serializable {
     private int feature_num;
     private int action_num;
 
+    private double probConf;
+
     public int getFeature_num() {
         return this.feature_num;
     }
@@ -50,7 +52,8 @@ public class MLPFilterClassifier implements Serializable {
         }
     }
 
-    public MLPFilterClassifier(String model_path, FileSystem hdfs) throws Exception {
+    public MLPFilterClassifier(String model_path, FileSystem hdfs, double threshold) throws Exception {
+        this.probConf = threshold;
         this.matrices = new ArrayList<>();
         FSDataInputStream inputTxt = hdfs.open(new Path(model_path));
         BufferedInputStream bis = new BufferedInputStream(inputTxt);
@@ -195,11 +198,20 @@ public class MLPFilterClassifier implements Serializable {
         temp = temp.mult(this.matrices.get(this.matrices.size() - 2));
         temp = temp.plus(this.matrices.get(this.matrices.size() - 1));
         // temp shape (1 * 2)
+        // prob is the failure probability
+        double prob = Math.exp(temp.get(0, 0) * 1.0) / (Math.exp(temp.get(0, 0)) + Math.exp(temp.get(0, 1)));
+        if (prob >= this.probConf) {
+            return false;
+        } else {
+            return true;
+        }
+        /*
         if (temp.get(0, 0) > temp.get(0, 1)) {
             return false;
         } else{
             return true;
         }
+         */
     }
 
     private static final Logger logger = LoggerFactory.getLogger(MLPFilterClassifier.class);

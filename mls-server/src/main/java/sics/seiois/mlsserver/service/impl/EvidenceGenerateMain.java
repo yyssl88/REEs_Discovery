@@ -635,9 +635,9 @@ public class EvidenceGenerateMain {
                     w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
         } else {
             String DQNModelFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNModelFile");
-            // float DQNThreshold = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNThreshold"));
+            float DQNThreshold = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNThreshold"));
             String dqnTxtPath = PredicateConfig.MLS_TMP_HOME + "DQN" + request.getTaskId() + "/" +  DQNModelFile; //"experiment_results";
-            MLPFilterClassifier dqn = new MLPFilterClassifier(dqnTxtPath, hdfs);
+            MLPFilterClassifier dqn = new MLPFilterClassifier(dqnTxtPath, hdfs, DQNThreshold);
             parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                     w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
