@@ -525,9 +525,9 @@ public class CalculateRuleSuppConf {
             this.table_name = this.table_name.substring(0, this.table_name.length() - 1); // remove last "_"
             logger.info("#### table_name: {}", this.table_name);
 
-            if (table_name.contains("Property_Features")) {
-                removePropertyFeatureCPredicates(this.allPredicates);
-            }
+//            if (table_name.contains("Property_Features")) {
+//                removePropertyFeatureCPredicates(this.allPredicates);
+//            }
 
             this.prepareAllPredicatesMultiTuples();
 

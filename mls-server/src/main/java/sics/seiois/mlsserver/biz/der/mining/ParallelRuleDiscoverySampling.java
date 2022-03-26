@@ -124,10 +124,26 @@ public class ParallelRuleDiscoverySampling {
 //        for (int pid = 0; pid < this.allPredicates.size(); pid++) {
 //            this.predicateDQNHashIDs.put(this.allPredicates.get(pid).toString(), pid);
 //        }
-        String data_name = this.allPredicates.get(0).getTableName();
-        if (data_name.contains("AMiner")) {
-            data_name = "aminer";
+        String data_name = null;
+        for (Predicate p : this.allPredicates) {
+            if (p.getTableName().contains("AMiner")) {
+                data_name = "aminer";
+                break;
+            }
+            if (p.getTableName().contains("Property")) {
+                data_name = "property";
+                break;
+            }
         }
+        if (data_name == null) {
+            data_name = this.allPredicates.get(0).getTableName();
+        }
+//        String data_name = this.allPredicates.get(0).getTableName();
+//        if (data_name.contains("AMiner")) {
+//            data_name = "aminer";
+//        } else if (data_name.contains("Property")) {
+//            data_name = "property";
+//        }
         loadAllPredicates(data_name);
     }
 
@@ -613,6 +629,19 @@ public class ParallelRuleDiscoverySampling {
 //            }
 //        }
 
+        // 12. test ncvoter - fix RHSs
+//        for (Predicate p : predicates) {
+//            if (p.isConstant()) {
+//                continue;
+//            }
+//            if (p.getOperand1().getColumnLight().getName().equals("city") ||
+//                p.getOperand1().getColumnLight().getName().equals("city_id2") ||
+//                p.getOperand1().getColumnLight().getName().equals("county_id") ||
+//                p.getOperand1().getColumnLight().getName().equals("id")) {
+//                applicationRHSs.add(p);
+//            }
+//        }
+
         logger.info("applicationRHSs size : {}", applicationRHSs.size());
         for (Predicate p : applicationRHSs) {
             logger.info("applicationRHSs: {}", p.toString());
@@ -767,7 +796,7 @@ public class ParallelRuleDiscoverySampling {
         // remove constant predicates of enumeration type
         removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
-//        logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
+        logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
         int cpsize = 0;
         int psize = 0;
         for (Predicate p : this.allPredicates) {

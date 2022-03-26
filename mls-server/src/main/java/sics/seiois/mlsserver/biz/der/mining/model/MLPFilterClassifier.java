@@ -200,6 +200,7 @@ public class MLPFilterClassifier implements Serializable {
         // temp shape (1 * 2)
         // prob is the failure probability
         double prob = Math.exp(temp.get(0, 0) * 1.0) / (Math.exp(temp.get(0, 0)) + Math.exp(temp.get(0, 1)));
+//        logger.info("#### probability: {}", prob);
         if (prob >= this.probConf) {
             return false;
         } else {

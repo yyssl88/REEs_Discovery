@@ -2952,7 +2952,7 @@ public class RuleFindRequestMock {
 
     private static TableInfo getPropertyAddress(String path, String[] options) {
         TableInfo table1 = new TableInfo();
-        table1.setTableName("Propery_Address");
+        table1.setTableName("Property_Address");
         if (options == null) {
             table1.setTableDataPath(path + "/2_Property_Address.csv");
         } else {
