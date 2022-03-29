@@ -89,6 +89,49 @@ public class MLPFilterClassifier implements Serializable {
         this.action_num = this.matrices.get(this.matrices.size() - 1).numCols();
     }
 
+    // for Local Rule Discovery
+    public MLPFilterClassifier(String model_path, double threshold) {
+        this.probConf = threshold;
+        this.matrices = new ArrayList<>();
+        FileReader fr = null;
+        BufferedReader br = null;
+        try {
+            File file = new File(model_path);
+            fr = new FileReader(file);
+            br = new BufferedReader(fr);
+            StringBuffer sb = new StringBuffer();
+            String line;
+            boolean beginMatrix = true;
+            while ( (line = br.readLine()) != null) {
+                if (line.trim().equals("")) {
+                    continue;
+                }
+                int row = 0, col = 0;
+                if(beginMatrix) {
+                    String[] info = line.split(" ");
+                    row = Integer.parseInt(info[0].trim());
+                    col = Integer.parseInt(info[1].trim());
+                }
+                double[][] mat = new double[row][col];
+                for (int r = 0; r < row; r++) {
+                    line = br.readLine();
+                    String[] info = line.split(" ");
+                    for (int c = 0; c < info.length; c++) {
+                        mat[r][c] = Double.parseDouble(info[c].trim());
+                    }
+                }
+                SimpleMatrix matrix = new SimpleMatrix(mat);
+                this.matrices.add(matrix);
+            }
+            // the input and ouput dimensions of DQN
+            this.feature_num = this.matrices.get(0).numRows();
+            this.action_num = this.matrices.get(this.matrices.size() - 1).numCols();
+
+        } catch (IOException e) {
+            logger.error("IOException error of model", e);
+        }
+    }
+
     public MLPFilterClassifier(String model_path) {
         this.matrices = new ArrayList<>();
         FileReader fr = null;

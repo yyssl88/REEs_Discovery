@@ -51,6 +51,10 @@ public class TestLatticeSampling {
 //        String output_file = args[0];
 //        String directory_path = args[1];
 //        String constant_file = args[2];
+//        boolean ifDQN = Boolean.valueOf(args[3]);
+//        String DQNModelFile = args[4];
+//        String predicatesHashIDFile = args[5];
+//        double DQNThreshold = Double.valueOf(args[6]);
 
         double rowLimit = 1.0;
         double errorThreshold = 0.9;
@@ -74,7 +78,7 @@ public class TestLatticeSampling {
         int if_conf_filter = 0;
         int if_cluster_workunits = 0;
 
-        int filter_enum_number = 6;
+        int filter_enum_number = 5;
 
         // whether to use reinforcement learning for predicate association computation
         int ifRL = 0;
@@ -97,6 +101,7 @@ public class TestLatticeSampling {
         boolean ifDQN = false; //true;
         String DQNModelFile = "D:/REE/tmp/ncvoter/ncvoter_model.txt";
         String predicatesHashIDFile = "D:/REE/tmp/ncvoter/ncvoter_predicates.txt";
+        double DQNThreshold = 0.9;
 
         Dir directory = new Dir(directory_path, relation_num_ratio);
 
@@ -168,7 +173,7 @@ public class TestLatticeSampling {
                         support, (float) errorThreshold, maxOneRelationNum, input, allCount,
                         w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits, filter_enum_number);
             } else {
-                MLPFilterClassifier dqn = new MLPFilterClassifier(DQNModelFile);
+                MLPFilterClassifier dqn = new MLPFilterClassifier(DQNModelFile, DQNThreshold);
                 parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                         support, (float)errorThreshold, maxOneRelationNum, input, allCount,
                         w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits, filter_enum_number,
