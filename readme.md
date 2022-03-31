@@ -1,6 +1,4 @@
 
-### paper.pdf     
---- The full version of paper (rule discovery with sampling methods)
 
 ### mls-server    
 --- The source code of REEs discovery 
