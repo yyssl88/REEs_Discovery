@@ -68,6 +68,8 @@ public class ParallelRuleDiscoverySampling {
     private PriorityQueue<DenialConstraint> topKREEsTemp;
     private DenialConstraint[] topKREEs;
     private Double[] topKREEScores;
+    // the k-th UB score
+    private Double kthUB;
 
     private HashSet<IBitSet> invalidX;
     private HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs;
@@ -192,8 +194,6 @@ public class ParallelRuleDiscoverySampling {
         }
 
     }
-
-
 
     // load Rule Interestingness model NN version
     void loadInterestingnessModel(float w_1, float w_2, float w_3, float w_4, float w_5, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
@@ -810,39 +810,7 @@ public class ParallelRuleDiscoverySampling {
 
 
         Lattice lattice = new Lattice(this.maxTupleNum);
-//        lattice.initialize(this.allPredicates, this.maxTupleNum);
 
-
-        // only for test application-driven methods
-        // RHSs predicate: <t_0>, <t_0, t_1>, <t_0, t_2>
-//        ArrayList<Predicate> applicationRHSs = new ArrayList<>();
-//        // add all predicates to RHSs
-//        int t1 = 0, t2 = 2;
-//        for (Predicate p : this.allPredicates) {
-////            if (p.isConstant() && p.getIndex1() == 1) {
-////                continue;
-////            } else if (p.isConstant() && p.getIndex1() == 0) {
-////                applicationRHSs.add(p);
-//            if (p.isConstant())  {
-//                continue;
-//            } else {
-//                // for non-constant predicates, also add <t_0, t_2>
-//                applicationRHSs.add(p);
-////                Predicate newp = predicateProviderIndex.getPredicate(p, t1, t2);
-////                applicationRHSs.add(newp);
-//            }
-//        }
-//        int ccount = 0;
-//        for(int i = 0; i < this.allPredicates.size(); i=i+1) {
-//            if (this.allPredicates.get(i).getOperand1().getColumn().getTableName().contains("Author2Paper")) {
-//                continue;
-//            }
-//            applicationRHSs.add(this.allPredicates.get(i));
-//            ccount ++;
-//            if (ccount == 4) {
-//                break;
-//            }
-//        }
 
         lattice.initialize(this.allPredicates, this.maxTupleNum, applicationRHSs);
 
@@ -1210,52 +1178,6 @@ public class ParallelRuleDiscoverySampling {
 //                        Message message = messages.get(index);
 //                        logger.info(">>>>sup after :{} | rhs support after : {}", message.getCurrentSupp(), message.getSupports());
 //                    }
-                }
-
-                // for offline RL
-                if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1 && messages != null) {
-                    logger.info("#### Get Training Data, i.e., Rewards for OFFLINE RL...");
-                    for (Message msg : messages) {
-                        // method 1-2
-//                        if (msg.getCurrentSet().size() <= 1) {
-//                            continue;
-//                        }
-//                        long X_supp = msg.getCurrentSupp();
-//                        if (X_supp == 0) {
-//                            continue;
-//                        }
-//                        this.ps_rewards.put(msg.getCurrentSet(), X_supp - this.support);
-
-                        // method 3
-                        String Psel_sequence = "";
-                        for (Predicate p : msg.getCurrentSet()) {
-                            Psel_sequence += this.allExistPredicates.indexOf(p);
-                            Psel_sequence += " ";
-                        }
-                        Psel_sequence = Psel_sequence.substring(0, Psel_sequence.length() - 1); // remove last " "
-                        for (Map.Entry<Predicate, Long> entry : msg.getAllCurrentRHSsSupport().entrySet()) {
-                            sequenceResults += Psel_sequence;
-                            sequenceResults += ",";
-                            sequenceResults += this.allExistPredicates.indexOf(entry.getKey());
-                            sequenceResults += ",";
-                            if (entry.getValue() - this.support > 0) {
-                                sequenceResults += "1\n";
-                            } else {
-                                sequenceResults += "-1\n";
-                            }
-                            count_seq = count_seq + 1;
-                            if (count_seq >= this.N) {
-                                ifReachN = true;
-                                break;
-                            }
-                        }
-                        if (ifReachN) {
-                            break;
-                        }
-                    }
-                    if (ifReachN) {
-                        break;
-                    }
                 }
 
                 // maintain top-K max heap of REEs

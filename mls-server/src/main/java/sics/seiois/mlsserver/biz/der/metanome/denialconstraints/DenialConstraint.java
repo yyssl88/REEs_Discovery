@@ -33,6 +33,7 @@ public class DenialConstraint {
 
     // interestingness score
     private double interestingnessScore;
+    //
 
     public void setInterestingnessScore(double score) {
         this.interestingnessScore = score;

@@ -542,11 +542,11 @@ public class CalculateRuleSuppConf {
 
             // remove predicates that are irrelevant to RHSs
             if (this.maxTupleNum <= 2) {
-                filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+//                filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
             }
 
             // remove constant predicates of enumeration type for X
-            removeEnumPredicates(this.allPredicates, this.allExistPredicates);
+//            removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         } catch (FileNotFoundException | InputIterationException e) {
             logger.info("Cannot load file\n");

@@ -89,7 +89,8 @@ public class MLPFilterClassifier implements Serializable {
         this.action_num = this.matrices.get(this.matrices.size() - 1).numCols();
     }
 
-    public MLPFilterClassifier(String model_path) {
+    public MLPFilterClassifier(String model_path, double threshold) {
+        this.probConf = threshold;
         this.matrices = new ArrayList<>();
         FileReader fr = null;
         BufferedReader br = null;
