@@ -11,7 +11,7 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
 
-class InterestingnessEmbeds(object):
+class InterestingnessEmbedsWithObj(object):
     def __init__(self,
                  vob_size,
                  token_embedding_size,
@@ -19,6 +19,8 @@ class InterestingnessEmbeds(object):
                  rees_embedding_size,
                  max_predicates_lhs,
                  max_predicates_rhs,
+                 num_objective_fea,
+                 optionIfOBJ,
                  lr,
                  epochs,
                  batch_size):
@@ -30,12 +32,16 @@ class InterestingnessEmbeds(object):
                                  max_predicates_lhs,
                                  max_predicates_rhs)
 
-        # interestingness weights
+        # interestingness weights for NN
         self.weight_interest = tf.Variable(tf.random_normal([rees_embedding_size, 1]), trainable=True)
+        self.weights_sub_obj = tf.Variable(tf.random_normal([num_objective_fea + 1, 1]), trainable=True)
         self.learning_rate = lr
         self.epochs = epochs
         self.batch_size = batch_size
         self.vob_size = vob_size
+        # the objective features: support, confidence and concise
+        self.num_objective_features = num_objective_fea;
+        self.optionIFObj = optionIfOBJ
 
         # construct the model
         self.construct()
@@ -99,6 +105,11 @@ class InterestingnessEmbeds(object):
         cross_entropy = tf.reduce_mean(tf.nn.softmax_cross_entropy_with_logits(logits=predictions, labels=GT))
         return cross_entropy
 
+    def combine_obj_sub_interestingness(self, obj_features, sub_features):
+        features = tf.concat([obj_features, sub_features], axis=1)
+        score = tf.matmul(features, self.weights_sub_obj)
+        return score
+
     def construct(self):
         # token ids of tokeVob
         self.lhs_vec_ph_left = tf.placeholder(dtype=tf.int32,
@@ -116,11 +127,21 @@ class InterestingnessEmbeds(object):
         self.label_ph = tf.placeholder(dtype=tf.float32, shape=[None, 2],
                                                 name='label')
 
+        if self.optionIFObj:
+            self.object_features = tf.placeholder(dtype=tf.float32, shape=[None, self.num_objective_features], name='objective_features')
+
         # construct the rule interestingness model
         ree_embed_left = self.reesRepr.encode(self.lhs_vec_ph_left, self.rhs_vec_ph_left)
         ree_embed_right = self.reesRepr.encode(self.lhs_vec_ph_right, self.rhs_vec_ph_right)
-        self.interestingness_left = tf.matmul(ree_embed_left, self.weight_interest)
-        self.interestingness_right = tf.matmul(ree_embed_right, self.weight_interest)
+        if self.optionIFObj:
+            self.subjective_left = tf.sigmoid(tf.matmul(ree_embed_left, self.weight_interest))
+            self.interestingness_left = self.combine_obj_sub_interestingness(self.object_features, self.subjective_left)
+            self.subjective_right = tf.sigmoid(tf.matmul(ree_embed_right, self.weight_interest))
+            self.interestingness_right = self.combine_obj_sub_interestingness(self.object_features, self.subjective_right)
+        else:
+            self.interestingness_left = tf.matmul(ree_embed_left, self.weight_interest)
+            self.interestingness_right = tf.matmul(ree_embed_right, self.weight_interest)
+
 
         # predictions
         self.logits, self.predictions = self.inference_classification(self.interestingness_left, self.interestingness_right)
@@ -147,19 +168,36 @@ class InterestingnessEmbeds(object):
         return np.array(batch_lhs_left, 'int'), np.array(batch_rhs_left, 'int'), \
                 np.array(batch_lhs_right, 'int'), np.array(batch_rhs_right, 'int'), batch_train_labels
 
-    def compute_interestingness(self, rees_lhs, rees_rhs):
+    def compute_interestingness(self, rees_lhs, rees_rhs, objectFeas):
         num_batch = len(rees_lhs) // self.batch_size + 1
         interestingness_values = []
         for batch_id in range(num_batch):
             # fetch data
             start_id, end_id = self.batch_size * batch_id, self.batch_size * (batch_id + 1)
             batch_rees_lhs, batch_rees_rhs = rees_lhs[start_id: end_id], rees_rhs[start_id: end_id]
+            batch_object_feas = objectFeas[start_id: end_id]
             feed_dict_interest = {self.lhs_vec_ph_left: batch_rees_lhs,
-                                  self.rhs_vec_ph_left: batch_rees_rhs}
+                                  self.rhs_vec_ph_left: batch_rees_rhs,
+                                  self.object_features: batch_object_feas}
             batch_interestingness = self.sess.run(self.interestingness_left, feed_dict_interest)
             if len(batch_interestingness) > 0:
                 interestingness_values += list(np.hstack(batch_interestingness))
         return interestingness_values[:len(rees_lhs)]
+
+    def compute_subjective(self, rees_lhs, rees_rhs):
+        num_batch = len(rees_lhs) // self.batch_size + 1
+        subjective_values = []
+        for batch_id in range(num_batch):
+            # fetch data
+            start_id, end_id = self.batch_size * batch_id, self.batch_size * (batch_id + 1)
+            batch_rees_lhs, batch_rees_rhs = rees_lhs[start_id: end_id], rees_rhs[start_id: end_id]
+            feed_dict_interest = {self.lhs_vec_ph_left: batch_rees_lhs,
+                                  self.rhs_vec_ph_left: batch_rees_rhs}
+            batch_subjective_scores = self.sess.run(self.subjective_left, feed_dict_interest)
+            if len(batch_subjective_scores) > 0:
+                subjective_values += list(np.hstack(batch_subjective_scores))
+        return subjective_values[:len(rees_lhs)]
+
 
     def evaluate(self, rees_lhs, rees_rhs, test_pair_ids, test_labels):
         start_time = time.time()

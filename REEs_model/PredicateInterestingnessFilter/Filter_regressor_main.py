@@ -16,6 +16,17 @@ tf.disable_v2_behavior()
 
 MAX_LHS_PREDICATES = 7
 
+
+def imbalance(trainDataMore, trainDataSmall, trainLabelsMore, trainLabelsSmall):
+    sc = len(trainDataMore)
+    sc_ = len(trainDataSmall)
+    ratio = sc // sc_
+    trainDataSmall = np.concatenate([trainDataSmall] * ratio, 0)
+    trainLabelsSmall = np.concatenate([trainLabelsSmall] * ratio, 0)
+    trainData = np.concatenate([trainDataMore, trainDataSmall], 0)
+    trainLabels = np.concatenate([trainLabelsMore, trainLabelsSmall], 0)
+    return trainData, trainLabels
+
 def main():
     start = time.time()
 
@@ -28,7 +39,6 @@ def main():
     parser.add_argument('-model_path', '--model_path', type=str, default="FilterModel/filtermodel.txt")
     parser.add_argument('-filter_dir', '--filter_dir', type=str, default="FilterData/")
     parser.add_argument('-epoch', '--epoch', type=int, default=200)
-    parser.add_argument('-predicates_path', '--predicates_path', type=str, default="allPredicates/predicates_airport.txt")
 
 
     args = parser.parse_args()
@@ -37,16 +47,12 @@ def main():
         logging.info('[Argument] %s=%r' % (k, v))
         print("k:", k, ", v:", v)
 
-    # initialize predicates
-    predicateStrArr = []
-    for line in open(arg_dict['predicates_path']):
-        predicateStrArr.append(line.strip())
 
-    if "" in predicateStrArr:
-        predicateStrArr.remove("")
-    print("All Predicates : ", predicateStrArr)
-
-    p_num = len(predicateStrArr)
+    # load json statistic of predicates
+    json_file = os.path.join(arg_dict['filter_dir'], 'statistic.json')
+    with open(json_file, 'r') as f:
+        statistic = json.load(f)
+    p_num = statistic['p_num']
 
     ### train the FilterClassifier
     filterRegressor = FilterRegressor(p_num * 2, arg_dict['learning_rate'], arg_dict['hidden_dim'],
@@ -55,7 +61,11 @@ def main():
     # save training data
     trainData, validData, trainLabels, validLabels = filterRegressor.loadFilterData(arg_dict['filter_dir'])
 
+    start = time.time()
+
     filterRegressor.train(trainData, trainLabels, validData, validLabels)
+    end = time.time()
+    print("TEST!!!!!! finish training Filter Classifier, using time: ", str(end - start))
     # save the model for JAVA
     filterRegressor.saveModelToText(arg_dict['model_path'])
 

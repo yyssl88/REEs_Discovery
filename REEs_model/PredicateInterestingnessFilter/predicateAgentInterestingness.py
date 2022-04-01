@@ -33,6 +33,16 @@ class Predicate(object):
             # operand2
             self.operand2 = {'relation': res[4].split(RELATION_ATTRIBUTE)[0].strip(), 'attribute': res[4].split(RELATION_ATTRIBUTE)[1].strip()}
 
+    def print(self):
+        # constant predicates
+        if self.constant != None:
+            return self.index1 + '.' + self.operand1['relation'] + '.' + self.operand1[
+                'attribute'] + ' ' + self.operator + ' ' + self.constant
+        else:
+            return self.index1 + '.' + self.operand1['relation'] + '.' + self.operand1[
+                'attribute'] + ' ' + self.operator + ' ' + self.index2 + '.' + self.operand2['relation'] + '.' + \
+                   self.operand2['attribute']
+
     def parsePredicate(self, predicate):
         """
         提取规则 核心数据
@@ -113,11 +123,21 @@ class PredicateAgentInterestingness(object):
         for pid, predicate_str in enumerate(predicateStrArr):
             self.predicatesArr.append(Predicate(predicate_str))
 
+
+    # random selected one non-constant predicate as RHS, return rhs_id
+    def randomRHSID(self):
+        sc = np.random.randint(0, len(self.nonConstantPredicateIDsArr))
+        return self.nonConstantPredicateIDsArr[sc]
+
     def getAllPredicates(self):
         return self.predicatesArr
 
     def getPredicatesNums(self):
         return self.predicates_num
+
+    def printAllPredicates(self):
+        for pid, p in enumerate(self.predicatesArr):
+            print(pid, p.print())
 
     def reset(self):
         self.current_state = np.zeros(self.predicates_num)
@@ -152,29 +172,32 @@ class PredicateAgentInterestingness(object):
         rees_lhs, rees_rhs = processAllRules([ree], tokenVobs)
         return rees_lhs, rees_rhs
 
-    def step(self, action, rhs_id, InterestingnessModel, max_lhs_predicates, current_interestingness, tokenVobs):
-        # if action is STAY
-        if action == len(self.predicatesArr):
-            done = True
-            return copy.deepcopy(self.current_state), 0, done, 0
+    ''' predicate: [0, ..., predicates_num - 1]
+        STAY: predicates_num 
+    '''
+    def step(self, action, rhs_id, InterestingnessModel, max_lhs_predicates, current_subjective, tokenVobs):
+        # if action == len(self.predicatesArr):
+        #     done = True
+        #     return copy.deepcopy(self.current_state), 0, done, 0
         # next state
         next_state = copy.deepcopy(self.current_state)
         next_state[action] = 1.0
         # first check STAY action
         if action == self.predicates_num:
-            return copy.deepcopy(next_state), 0, True, current_interestingness
+            done = True
+            return copy.deepcopy(next_state), 0, done, current_subjective
         # reward function
         # 1. get LHS predicates
         selectedPIDs = np.nonzero(next_state)[0]
         rees_lhs, rees_rhs = self.generateInterestingnessFeatures(selectedPIDs, rhs_id, tokenVobs)
-        interestingnessScore = InterestingnessModel.compute_interestingness(rees_lhs, rees_rhs)[0]
-        reward = interestingnessScore - current_interestingness
+        subjectiveScore = InterestingnessModel.compute_subjective(rees_lhs, rees_rhs)[0]
+        reward = subjectiveScore - current_subjective
         done = False
         if len(selectedPIDs) > max_lhs_predicates:
             done = True
         # update state
         self.current_state = next_state
-        return copy.deepcopy(self.current_state), reward, done, interestingnessScore
+        return copy.deepcopy(self.current_state), reward, done, subjectiveScore
 
     def calculateInterestingness(self, selectedPredicatesXPIDs, rhsPredicatePID, InterestingnessModel):
         '''
@@ -184,22 +207,29 @@ class PredicateAgentInterestingness(object):
         :return:
         '''
         rees_lhs, rees_rhs = self.generateInterestingnessFeatures(selectedPredicatesXPIDs, rhsPredicatePID)
-        interestingnessScore = InterestingnessModel.compute_interestingness(rees_lhs, rees_rhs)
-        return interestingnessScore
+        subjectiveScore = InterestingnessModel.compute_subjective(rees_lhs, rees_rhs)
+        return subjectiveScore
 
     def stepBegin(self, rhs_id, InterestingnessModel):
         lhs_indices = np.nonzero(self.current_state)[0]
         rees_lhs, rees_rhs = self.generateInterestingnessFeatures(lhs_indices, rhs_id)
-        interestingnessScore = InterestingnessModel.compute_interestingness(rees_lhs, rees_rhs)
-        return interestingnessScore
+        subjectiveScore = InterestingnessModel.compute_subjective(rees_lhs, rees_rhs)
+        return subjectiveScore
 
     ''' Interestingness Score Generate training instances
     '''
     def selectOnePathRandom(self, maxLength, InterestingnessModel):
         selectedPredicatesPIDs = []
         # choose one rhs
-        rhsPredicatePID = np.random.randint(0, self.predicates_num)
+        # rhsPredicatePID = np.random.randint(0, self.predicates_num)
+        rhsPredicatePID = self.randomRHSID()
         sameRelationsDict = defaultdict(str)
+        # update relations of RHS
+        r_dict = self.predicatesArr[rhsPredicatePID].getRelations()
+        for k, v in r_dict.items():
+            if k not in sameRelationsDict:
+                sameRelationsDict[k] = v
+
         for _ in range(maxLength):
             unselected = []
             for pid, predicate in enumerate(self.predicatesArr):
@@ -218,7 +248,15 @@ class PredicateAgentInterestingness(object):
                 for pid in unselected:
                     if self.predicatesArr[pid].isConstantPredicate():
                          continue
-                    unselected_new.append(pid)
+                    # check valid
+                    r_dict = self.predicatesArr[pid].getRelations()
+                    isValid = True
+                    for k, v in r_dict.items():
+                        if v != sameRelationsDict[k]:
+                            isValid = False
+                            break
+                    if isValid:
+                        unselected_new.append(pid)
             else:
                 for pid in unselected:
                     predicate = self.predicatesArr[pid]
@@ -267,7 +305,7 @@ class PredicateAgentInterestingness(object):
 
     def generateLabelPerRecord(self, selectedPIDs, rhsPID, InterestingnessModel, DQN, max_lhs_predicates):
         selectedPIDs_new = copy.deepcopy(selectedPIDs)
-        interestingnessScoreMax = 0
+        subjectiveScoreMax = 0
         while True:
             if len(selectedPIDs_new) > max_lhs_predicates:
                 break
@@ -276,11 +314,11 @@ class PredicateAgentInterestingness(object):
             action = DQN.choose_action(observation, rhsPID, self.predicatesArr)
             if action == -1 or action == self.predicates_num:
                 break
-            interestingnessScore = self.calculateInterestingness(selectedPIDs_new + [action], rhsPID, InterestingnessModel)
+            subjectiveScore = self.calculateInterestingness(selectedPIDs_new + [action], rhsPID, InterestingnessModel)
             # go to the next step
             selectedPIDs_new.append(action)
-            interestingnessScoreMax = max(interestingnessScoreMax, interestingnessScore)
+            subjectiveScoreMax = max(subjectiveScoreMax, subjectiveScore)
         # generate training instance
         observation = self.generateFeature(selectedPIDs_new, rhsPID)
-        return observation, interestingnessScoreMax
+        return observation, subjectiveScoreMax
 

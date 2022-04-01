@@ -16,7 +16,7 @@ import os
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
-MAX_LHS_PREDICATES = 6
+MAX_LHS_PREDICATES = 7
 
 def main():
     start = time.time()

@@ -14,7 +14,7 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
 
-MAX_LHS_PREDICATES = 6
+MAX_LHS_PREDICATES = 7
 
 def checkSameRelation(r_1, r_2):
     if "t0" in r_1 and "t0" in r_2:

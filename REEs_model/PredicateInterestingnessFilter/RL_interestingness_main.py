@@ -4,7 +4,7 @@ from predicateAgentInterestingness import *
 from DQNInterest_mlp import DeepQNetwork
 from REEs_model.Filter_mlp import FilterRegressor
 from REEs_model.parameters import *
-from interestingnessFixedEmbeds import *
+from interestingnessFixedEmbedsWithObj import *
 import argparse
 import logging
 import time
@@ -14,24 +14,46 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
 
-#MAX_LHS_PREDICATES = 7
-#MAX_RHS_PREDICATES = 1
+MAX_LHS_PREDICATES = 7
+MAX_RHS_PREDICATES = 1
 
-def test(pComb, model, validator, predicatesArr):
+def checkSameRelation(r_1, r_2):
+    if "t0" in r_1 and "t0" in r_2:
+        if r_1["t0"] == r_2["t0"]:
+            return True
+    if "t1" in r_1 and "t1" in r_2:
+        if r_1["t1"] == r_2["t1"]:
+            return True
+    return False
+
+def test(pComb, model, InterestingnessModel, predicatesArr):
     for ll in range(1, 6, 1):
         for z in range(10):
-            rhs_id = np.random.randint(0, pComb.predicates_num)
+            #rhs_id = np.random.randint(0, pComb.predicates_num)
+            rhs_id = pComb.randomRHSID()
             # first select one nonConstantPredicate
+            relationRHS = predicatesArr[rhs_id].getRelations()
             unselected = []
+            unselected_new = []
             for pid, p in enumerate(predicatesArr):
+                # remove rhs
+                relation_p = p.getRelations()
+                if pid == rhs_id or not checkSameRelation(relationRHS, relation_p):
+                    continue
+                unselected_new.append(pid)
                 if p.isConstantPredicate():
                     unselected.append(pid)
-            sc = np.random.choice(len(unselected), 1)
+            sc = np.random.choice(len(unselected), 1)[0]
             observation = np.zeros(pComb.predicates_num)
-            observation[sc] = 1.0
+            observation[unselected[sc]] = 1.0
             if ll - 1 > 0:
-                sc = np.random.choice(pComb.predicates_num, ll - 1, replace=False)
-                observation[sc] = 1.0
+                #sc = np.random.choice(pComb.predicates_num, ll - 1, replace=False)
+                #observation[sc] = 1.0
+                if len(unselected_new) < ll - 1:
+                    continue
+                sc = np.random.choice(len(unselected_new), ll - 1, replace=False)
+                for e in sc:
+                    observation[unselected_new[e]] = 1.0
             observation[rhs_id] = 0.0
             if np.sum(observation) == 0:
                 continue
@@ -39,16 +61,17 @@ def test(pComb, model, validator, predicatesArr):
             rhs[rhs_id] = 1.0
             observation_lrhs = np.concatenate([observation, rhs])
             learned_rewards = model.evaluate(observation_lrhs)
-            confidence = pComb.calculateConf(observation, rhs_id, validator)
+            score = pComb.calculateInterestingness(observation, rhs_id, InterestingnessModel)
             for r in learned_rewards:
-                print("UB of confidence with length {}, current confidence {}, future reward {} and UB {} ".format(ll, confidence, r[1], confidence + r[1]))
+                print("UB of interestingness score with length {}, current interestingness {}, future reward {} and UB {} ".format(ll, score, r[1], score + r[1]))
 
 def run(pComb, dqn, InterestingnessModel, epoch, model_path, tokenVobs):
     step = 0
     for episode in range(epoch):
         # initial observation
         observation = pComb.reset()
-        rhs_id = np.random.randint(0, pComb.predicates_num)
+        # rhs_id = np.random.randint(0, pComb.predicates_num)
+        rhs_id = pComb.randomRHSID()
         #observation = pComb.initialAction(rhs_id)
 
         rhs = np.zeros(pComb.predicates_num)
@@ -94,12 +117,14 @@ def run(pComb, dqn, InterestingnessModel, epoch, model_path, tokenVobs):
                 break
             step += 1
 
+    test(pComb, dqn, InterestingnessModel, pComb.getAllPredicates())
+
     # save RL model
     #saver = tf.train.Saver()
     #save_path = saver.save(model.sess, model_path)
     #print("Model saved in path: ", save_path)
     # save to txt file
-    #model.saveModelToText(model_path)
+    # dqn.saveModelToText(model_path)
 
 def main():
     start = time.time()
@@ -146,6 +171,7 @@ def main():
         predicateStrArr.remove("")
     print("All Predicates : ", predicateStrArr)
 
+
     vob_size = 0
     tokenVobs = defaultdict(int)
     for line in open(arg_dict['vobs_file']):
@@ -154,9 +180,10 @@ def main():
 
     vob_size = len(tokenVobs.keys())
     # interestingness model
-    InterestingnessModel = InterestingnessEmbeds(vob_size, arg_dict['token_embed_dim'], arg_dict['hidden_size'],
+    optionIfOBJ = False
+    InterestingnessModel = InterestingnessEmbedsWithObj(vob_size, arg_dict['token_embed_dim'], arg_dict['hidden_size'],
                                   arg_dict['rees_embed_dim'], MAX_LHS_PREDICATES,
-                                  MAX_RHS_PREDICATES, arg_dict['learning_rate'], arg_dict['epochs'], arg_dict['batch_size'])
+                                  MAX_RHS_PREDICATES, 3, optionIfOBJ, arg_dict['learning_rate'], arg_dict['epochs'], arg_dict['batch_size'])
     InterestingnessModel.loadModel(arg_dict['interestingness_model_path'])
 
     # run
@@ -173,10 +200,11 @@ def main():
                          # output_graph=True
                          )
 
+    start = time.time()
     run(pAgent, dqnInterestingness, InterestingnessModel, arg_dict["epochs"], arg_dict["model_path"], tokenVobs)
 
     end = time.time()
-    print("finish training, using time: ", str(end - start), arg_dict["model_path"])
+    print("TEST!!!!!! finish training DQN, using time: ", str(end - start))
 
     # save the DQN model
     dqnInterestingness.saveModel(arg_dict['model_path'])

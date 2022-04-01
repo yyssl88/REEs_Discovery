@@ -35,7 +35,7 @@ task=(
 
 tid=$1
 #tid=5
-epoch=200
+epoch=300
 
 #data_path="/opt/disk1/yaoshuw/discovery/Sampling/originalData/"${task[${tid}]}"/"
 data_path="/opt/disk1/yaoshuw/discovery/Sampling/DQN/"${task[${tid}]}'/'

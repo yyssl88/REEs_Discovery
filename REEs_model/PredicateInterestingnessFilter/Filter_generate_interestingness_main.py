@@ -78,6 +78,17 @@ def main():
 
     # run
     p_num = len(predicateStrArr)
+    # make statistic
+    statistic = dict()
+    statistic['p_num'] = len(predicateStrArr)
+    statistic['all_predicates'] = predicateStrArr
+    statistic['rhsPIDs'] = []
+
+    # save statistic
+    json_file = os.path.join(arg_dict['filter_dir'], 'statistic.json')
+    with open(json_file, 'w') as f:
+        json.dump(statistic, f)
+        print('Load json successfully ...')
 
     pAgent = PredicateAgentInterestingness(p_num, predicateStrArr)
     model = DeepQNetwork(p_num, p_num * 2,
@@ -105,11 +116,13 @@ def main():
     filterRegressor = FilterRegressor(p_num * 2, arg_dict['learning_rate'], arg_dict['hidden_dim'],
                                         arg_dict['epochs'], arg_dict['batch_size'])
 
+    start = time.time()
     trainData, validData, trainLabels, validLabels = filterRegressor.generateAllTrainingInstances(pAgent,
                                                                                                    model,
                                                                                                    InterestingnessModel,
                                                                                                    MAX_LHS_PREDICATES,
                                                                                                    arg_dict['combine_num'])
+    print("TEST!!!!!! finish generating Filter Data, using time: ", str(end - start))
     # save training data
     filterRegressor.saveFilterData(arg_dict['filter_dir'], trainData, validData, trainLabels, validLabels)
 
