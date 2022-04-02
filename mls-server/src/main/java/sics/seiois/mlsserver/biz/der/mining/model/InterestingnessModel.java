@@ -23,6 +23,7 @@ public class InterestingnessModel implements Serializable {
     private SimpleMatrix weightPredicates;              // shape (3, token_embedding_size)
     private SimpleMatrix weightREEsEmbed;               // shape (token_embedding_Size * 2, rees_embedding_size)
     private SimpleMatrix weightInterest;                // shape (ree_embedding_size, 1)
+    private SimpleMatrix weightObjSubj;                  // shape (4, 1)
 
     static public int UNIT_PREDICATE = 5;
     static public int MAX_LHS_PREDICATES = 10;
@@ -63,6 +64,9 @@ public class InterestingnessModel implements Serializable {
         this.weightPredicates = matrices.get(1);
         this.weightREEsEmbed = matrices.get(2);
         this.weightInterest = matrices.get(3);
+        this.weightObjSubj = matrices.get(4);
+        // weights of features are non-negative
+        this.weightObjSubj = this.weightObjSubj.elementMult(this.weightObjSubj);
     }
 
     /*
@@ -102,6 +106,8 @@ public class InterestingnessModel implements Serializable {
         this.weightPredicates = matrices.get(1);
         this.weightREEsEmbed = matrices.get(2);
         this.weightInterest = matrices.get(3);
+        // weights of features are non-negative
+        this.weightObjSubj = this.weightObjSubj.elementMult(this.weightObjSubj);
     }
 
     /**
@@ -206,7 +212,11 @@ public class InterestingnessModel implements Serializable {
         return features;
     }
 
-    public double run(ArrayList<Predicate> reeLHS, Predicate rhs) {
+    /*
+        reeObj: [1, 3], 3 is the number of objective features
+     */
+    public double run(ArrayList<Predicate> reeLHS, Predicate rhs, double[][] reeObj) {
+        SimpleMatrix objFeas = new SimpleMatrix(reeObj);
         ArrayList<Predicate> reeRHS = new ArrayList<>();
         reeRHS.add(rhs);
         int[] ree_lhs = this.transformFeature(reeLHS, MAX_LHS_PREDICATES);
@@ -220,8 +230,11 @@ public class InterestingnessModel implements Serializable {
         // 3. get embeddings of REE
         SimpleMatrix reeEmbed = this.concatTwoByCol(lhsEmbed, rhsEmbed);
         reeEmbed = this.ReLU(reeEmbed.mult(this.weightREEsEmbed));
-        // 4. compute the rule interestingness score
-        SimpleMatrix score = reeEmbed.mult(this.weightInterest);
+        // 4. compute the rule interestingness subjective score
+        SimpleMatrix subjectiveScore = reeEmbed.mult(this.weightInterest);
+        // 5. compute the final rule interestingness score
+        SimpleMatrix features = this.concatTwoByCol(objFeas, subjectiveScore);
+        SimpleMatrix score = features.mult(this.weightObjSubj);
         return score.get(0, 0);
     }
 
@@ -348,10 +361,14 @@ public class InterestingnessModel implements Serializable {
         return vobsIDs;
     }
 
-    // get the objective weights
+    // get the objective and subjective weights
+    // first 3 objective features and one subjective ones
     public ArrayList<Double> getObjectiveWeights() {
         ArrayList<Double> weights = new ArrayList<>();
-        // do something here
+        for (int i = 0; i < this.weightObjSubj.numRows(); i++) {
+            weights.add(this.weightObjSubj.get(i, 0));
+        }
         return weights;
     }
+
 }

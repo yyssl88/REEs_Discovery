@@ -1309,11 +1309,6 @@ public class ParallelRuleDiscoverySampling {
             broadcastLattice = new BroadcastLattice(allPredicates, invalidX, invalidXRHSs, validXRHSs,
                     interestingness, KthScore, suppRatios, predicateProviderIndex, option,
                     this.dqnmlp, this.ifDQN, this.predicateDQNHashIDs);
-//            broadcastLattice = new BroadcastLattice(allPredicates, this.allExistPredicates, invalidX, invalidXRHSs, validXRHSs,
-//                    interestingness, KthScore, suppRatios, predicateProviderIndex, option,
-//                    this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-//                    this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size,
-//                    this.table_name, this.N);
         }
 
         Broadcast<BroadcastLattice> bcpsLattice = sc.broadcast(broadcastLattice);
