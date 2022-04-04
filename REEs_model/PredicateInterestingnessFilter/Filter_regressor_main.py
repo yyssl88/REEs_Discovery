@@ -1,8 +1,7 @@
 #from predicateAssoc import PAssoc
-from predicateAgent import *
+from predicateAgentInterestingness import *
 import sys
 sys.path.append('../../REEs_model')
-from DQN_mlp import DeepQNetwork
 from REEs_model.Filter_mlp import FilterRegressor
 import argparse
 import logging
@@ -32,13 +31,13 @@ def main():
 
     parser = argparse.ArgumentParser(description="Learn Predicate Association")
 
-    parser.add_argument('-learning_rate', '--learning_rate', type=float, default=0.01)
-    parser.add_argument('-batch_size', '--batch_size', type=int, default=32)
-    parser.add_argument('-hidden_dim', '--hidden_dim', type=int, default=100)
+    parser.add_argument('-learning_rate', '--learning_rate', type=float, default=0.0001)
+    parser.add_argument('-batch_size', '--batch_size', type=int, default=64)
+    parser.add_argument('-hidden_dim', '--hidden_dim', type=int, default=200)
 
     parser.add_argument('-model_path', '--model_path', type=str, default="FilterModel/filtermodel.txt")
     parser.add_argument('-filter_dir', '--filter_dir', type=str, default="FilterData/")
-    parser.add_argument('-epoch', '--epoch', type=int, default=200)
+    parser.add_argument('-epoch', '--epoch', type=int, default=300)
 
 
     args = parser.parse_args()
@@ -60,6 +59,9 @@ def main():
 
     # save training data
     trainData, validData, trainLabels, validLabels = filterRegressor.loadFilterData(arg_dict['filter_dir'])
+
+    trainLabels.shape = -1, 1
+    validLabels.shape = -1, 1
 
     start = time.time()
 

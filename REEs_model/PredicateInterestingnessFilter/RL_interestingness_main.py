@@ -14,9 +14,6 @@ import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
 
-MAX_LHS_PREDICATES = 7
-MAX_RHS_PREDICATES = 1
-
 def checkSameRelation(r_1, r_2):
     if "t0" in r_1 and "t0" in r_2:
         if r_1["t0"] == r_2["t0"]:
@@ -26,7 +23,7 @@ def checkSameRelation(r_1, r_2):
             return True
     return False
 
-def test(pComb, model, InterestingnessModel, predicatesArr):
+def test(pComb, model, InterestingnessModel, predicatesArr, tokenVobs):
     for ll in range(1, 6, 1):
         for z in range(10):
             #rhs_id = np.random.randint(0, pComb.predicates_num)
@@ -61,7 +58,8 @@ def test(pComb, model, InterestingnessModel, predicatesArr):
             rhs[rhs_id] = 1.0
             observation_lrhs = np.concatenate([observation, rhs])
             learned_rewards = model.evaluate(observation_lrhs)
-            score = pComb.calculateInterestingness(observation, rhs_id, InterestingnessModel)
+            selectedPredicateIDs = np.nonzero(observation)[0]
+            score = pComb.calculateInterestingness(selectedPredicateIDs, rhs_id, InterestingnessModel, tokenVobs)
             for r in learned_rewards:
                 print("UB of interestingness score with length {}, current interestingness {}, future reward {} and UB {} ".format(ll, score, r[1], score + r[1]))
 
@@ -117,7 +115,7 @@ def run(pComb, dqn, InterestingnessModel, epoch, model_path, tokenVobs):
                 break
             step += 1
 
-    test(pComb, dqn, InterestingnessModel, pComb.getAllPredicates())
+    test(pComb, dqn, InterestingnessModel, pComb.getAllPredicates(), tokenVobs)
 
     # save RL model
     #saver = tf.train.Saver()
@@ -148,7 +146,8 @@ def main():
 
     parser.add_argument('-classpath', '--classpath', type=str, default="")
     parser.add_argument('-hidden_dim', '--hidden_dim', type=int, default=200)
-    parser.add_argument('-combine_num', '--combine_num', type=int, default=300)
+    parser.add_argument('-combine_num', '--combine_num', type=int, default=500)
+    parser.add_argument('-optionIfObj', '--optionIfObj', type=bool, default=True)
 
 
     parser.add_argument('-token_embed_dim', '--token_embed_dim', type=int, default=100)
@@ -175,15 +174,16 @@ def main():
     vob_size = 0
     tokenVobs = defaultdict(int)
     for line in open(arg_dict['vobs_file']):
-        token, count = line.split()[0], int(line.split()[1])
+        token, count = ' '.join(line.split()[:-1]), int(line.split()[-1])
         tokenVobs[token] = count
+
+    print('Token Vobs are : ', tokenVobs)
 
     vob_size = len(tokenVobs.keys())
     # interestingness model
-    optionIfOBJ = False
     InterestingnessModel = InterestingnessEmbedsWithObj(vob_size, arg_dict['token_embed_dim'], arg_dict['hidden_size'],
                                   arg_dict['rees_embed_dim'], MAX_LHS_PREDICATES,
-                                  MAX_RHS_PREDICATES, 3, optionIfOBJ, arg_dict['learning_rate'], arg_dict['epochs'], arg_dict['batch_size'])
+                                  MAX_RHS_PREDICATES, 3, arg_dict['optionIfObj'], arg_dict['learning_rate'], arg_dict['epochs'], arg_dict['batch_size'])
     InterestingnessModel.loadModel(arg_dict['interestingness_model_path'])
 
     # run
