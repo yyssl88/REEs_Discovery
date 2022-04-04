@@ -87,7 +87,7 @@ public class ParallelRuleDiscoverySampling {
 
     // interestingness
     Interestingness interestingness;
-    private boolean ifNN;
+    private String topKOption;
 
     private String table_name;
     // use reinforcement learning for predicate association compute
@@ -196,18 +196,57 @@ public class ParallelRuleDiscoverySampling {
     }
 
     // load Rule Interestingness model NN version
-    void loadInterestingnessModel(float w_1, float w_2, float w_3, float w_4, float w_5, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+    void loadInterestingnessModel(String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
                                   FileSystem hdfs) {
         try {
             if (this.predicateDQNHashIDs == null) {
-                this.loadAllPredicates(this.allPredicates.get(0).getTableName());
+                String data_name = null;
+                for (Predicate p : this.allPredicates) {
+                    if (p.getTableName().contains("AMiner")) {
+                        data_name = "aminer";
+                        break;
+                    }
+                    if (p.getTableName().contains("Property")) {
+                        data_name = "property";
+                        break;
+                    }
+                }
+                if (data_name == null) {
+                    data_name = this.allPredicates.get(0).getTableName();
+                }
+                this.loadAllPredicates(data_name);
             }
         } catch (IOException e) {
 
         }
         // reconstruct the interestingness object
-        this.interestingness = new Interestingness(this.ifNN, w_1, w_2, w_3, w_4, w_5, tokenToIDFile, interestingnessModelFile,
+        this.interestingness = new Interestingness(tokenToIDFile, interestingnessModelFile,
                 filterRegressionFile, this.allPredicates, this.allCount, hdfs, this.predicateDQNHashIDs);
+
+    }
+
+    void loadInterestingnessModel(String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile, String predicateHashIDsFile) throws IOException {
+
+        // 1. load all predicates
+        this.predicateDQNHashIDs = new HashMap<>();
+//        for (int pid = 0; pid < this.allPredicates.size(); pid++) {
+//            this.predicateDQNHashIDs.put(this.allPredicates.get(pid).toString(), pid);
+//        }
+
+        File inputTxt = new File(predicateHashIDsFile);
+        FileReader fr = new FileReader(inputTxt);
+        BufferedReader br = new BufferedReader(fr);
+        String line;
+        int k = 0;
+        while ((line = br.readLine()) != null) {
+//            Predicate p = PredicateBuilder.parsePredicateString(this.input, line);
+//            this.index2predicates.put(k, p);
+            this.predicateDQNHashIDs.put(line, k);
+            k++;
+        }
+
+        // 2. reconstruct the interestingness object
+        this.interestingness = new Interestingness(tokenToIDFile, interestingnessModelFile, filterRegressionFile, this.allPredicates, this.allCount, this.predicateDQNHashIDs);
 
     }
 
@@ -290,7 +329,7 @@ public class ParallelRuleDiscoverySampling {
         this.topKREEScores = new Double[this.K];
         for (int i = 0; i < this.K; i++) {
             this.topKREEs[i] = null;
-            this.topKREEScores[i] = 0.0;
+            this.topKREEScores[i] = -Double.MAX_VALUE;
         }
         // invalid predicate combinations
         this.invalidX = new HashSet<>();
@@ -336,53 +375,38 @@ public class ParallelRuleDiscoverySampling {
     }
 
 
+    /*
+        top-K interestingness rules discovery
+     */
 
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
-                                         boolean ifNN, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+                                         String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
                                          FileSystem hdfs) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
                 w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
 
-        // whether use NN rule interestingness model
-        this.ifNN = ifNN;
-        this.loadInterestingnessModel(w_1, w_2, w_3, w_4, w_5, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
+        // topKOption is the indicator to switch different ablation study
+        this.topKOption = topKOption;
+        this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
     }
-
 
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
-                                         int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage,
-                                         String PI_path, String RL_code_path, int N, int DeltaL,
-                                         float learning_rate, float reward_decay, float e_greedy,
-                                         int replace_target_iter, int memory_size, int batch_size) {
+                                         String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+                                         String predicateHashIDsFile) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
                 w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
-        this.MEM = new ArrayList<>();
-        this.ifRL = ifRL;
-        this.ifOnlineTrainRL = ifOnlineTrainRL;
-        this.ifOfflineTrainStage = ifOfflineTrainStage;
-        this.ps_rewards = new HashMap<>();
-        this.PI_path = PI_path;
-        if (RL_code_path.endsWith("/")) {
-            this.RL_code_path = RL_code_path.substring(0, RL_code_path.length() - 1);
-        } else {
-            this.RL_code_path = RL_code_path;
-        }
-        this.N = N;
-        this.DeltaL = DeltaL;
-        this.learning_rate = learning_rate;
-        this.reward_decay = reward_decay;
-        this.e_greedy = e_greedy;
-        this.replace_target_iter = replace_target_iter;
-        this.memory_size = memory_size;
-        this.batch_size = batch_size;
+
+        // topKOption is the indicator to switch different ablation study
+        this.topKOption = topKOption;
+        this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, predicateHashIDsFile);
     }
 
     private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
@@ -1212,7 +1236,7 @@ public class ParallelRuleDiscoverySampling {
                 this.addValidXRHSs(messages);
                 // prune meanineless work units
                 if (option.equals("original")) {
-                    workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc);
+                    workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc, this.topKOption);
                 } else {
                     ArrayList<WorkUnit> remainTasks = new ArrayList<>();
                     for (int tid = remainStartSc; tid < workUnits_init.size(); tid++) {
@@ -1265,7 +1289,7 @@ public class ParallelRuleDiscoverySampling {
         prune work units using interestingness scores and supports
      */
     private ArrayList<WorkUnit> pruneXWorkUnits(Interestingness interestingness, double KthScore, HashMap<PredicateSet, Double> supp_ratios,
-                                                ArrayList<WorkUnit> tasks, int remainedStartSc) {
+                                                ArrayList<WorkUnit> tasks, int remainedStartSc, String topKOption) {
         logger.info("#### all workunits num: {}, remainedStartSc: {}", tasks.size(), remainedStartSc);
         logger.info("#### before pruning, workunits num: {}", tasks.size());
         ArrayList<WorkUnit> prunedTasks = new ArrayList<>();
@@ -1274,13 +1298,19 @@ public class ParallelRuleDiscoverySampling {
 
             if (supp_ratios.containsKey(task.getCurrrent())) {
                 // check support
-                long suppOne = (long) (supp_ratios.get(task.getCurrrent()) * this.maxOneRelationNum);
+                long suppOne = (long) (supp_ratios.get(task.getCurrrent()) * this.allCount);
                 if (suppOne < support) {
                     continue;
                 }
                 // check interestingness UB
-                double ub = interestingness.computeUB(suppOne * 1.0 / this.maxOneRelationNum, 1.0, task.getCurrrent(), null);
-                if (ub < KthScore) {
+                for (Predicate rhs : task.getRHSs()) {
+                    double ub = interestingness.computeUB(suppOne * 1.0 / this.allCount, 1.0, task.getCurrrent(), rhs, topKOption);
+                    if (ub <= KthScore) {
+                        task.getRHSs().remove(rhs);
+                    }
+                }
+                // if no RHSs to do in this task, continue to handle other ones
+                if (task.getRHSs().size() == 0) {
                     continue;
                 }
             }
@@ -1302,14 +1332,9 @@ public class ParallelRuleDiscoverySampling {
         JavaSparkContext sc = new JavaSparkContext(spark.sparkContext());
 
         BroadcastLattice broadcastLattice;
-        if (this.ifDQN == false) {
-            broadcastLattice = new BroadcastLattice(allPredicates, invalidX, invalidXRHSs, validXRHSs,
-                    interestingness, KthScore, suppRatios, predicateProviderIndex, option);
-        } else {
-            broadcastLattice = new BroadcastLattice(allPredicates, invalidX, invalidXRHSs, validXRHSs,
-                    interestingness, KthScore, suppRatios, predicateProviderIndex, option,
-                    this.dqnmlp, this.ifDQN, this.predicateDQNHashIDs);
-        }
+
+        broadcastLattice = new BroadcastLattice(allPredicates, invalidX, invalidXRHSs, validXRHSs,
+                interestingness, KthScore, suppRatios, predicateProviderIndex, option, this.topKOption, this.predicateDQNHashIDs);
 
         Broadcast<BroadcastLattice> bcpsLattice = sc.broadcast(broadcastLattice);
 
@@ -1328,7 +1353,7 @@ public class ParallelRuleDiscoverySampling {
         // prune with interestingness UB
         if (option.equals("original")) {
 //            this.pruneLattice(invalidX, validXRHSs);
-            lattice.pruneXInterestingnessUB(interestingness, KthScore, suppRatios);
+            lattice.pruneXInterestingnessUB(interestingness, KthScore, suppRatios, this.topKOption);
         } else if (option.equals("anytime")) {
 //            this.pruneLattice(invalidX, validXRHSs);
             lattice.pruneXInterestingnessUB(interestingness, KthScore, suppRatios, partialRules);
@@ -1366,7 +1391,8 @@ public class ParallelRuleDiscoverySampling {
                     bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
                     bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOfflineTrainStage(), bLattice.getIfExistModel(),
                     bLattice.getPI_path(), bLattice.getRL_code_path(), bLattice.getLearning_rate(), bLattice.getReward_decay(), bLattice.getE_greedy(),
-                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name(), bLattice.getN(), bLattice.getDqnmlp(), bLattice.getPredicatesHashIDs(), bLattice.getIfDQN());
+                    bLattice.getReplace_target_iter(), bLattice.getMemory_size(), bLattice.getBatch_size(), bLattice.getTable_name(), bLattice.getN(),
+                    bLattice.getPredicatesHashIDs(), bLattice.getTopKOption());
             return latticeWorker;
 
         }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
@@ -1981,7 +2007,7 @@ public class ParallelRuleDiscoverySampling {
             this.addValidXRHSs(messages);
             // prune meanineless work units
             if (option.equals("original")) {
-                workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc);
+                workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc, this.topKOption);
             } else {
                 ArrayList<WorkUnit> remainTasks = new ArrayList<>();
                 for (int tid = remainStartSc; tid < workUnits_init.size(); tid++) {
@@ -2299,7 +2325,7 @@ public class ParallelRuleDiscoverySampling {
             PredicateSet kkps = message.getCurrentSet(); //new PredicateSet();
             if (!results.containsKey(kkps)) {
                 // results.put(kkps, message.getCurrentSupp() * 1.0 / this.allCount);
-                results.put(kkps, message.getCurrentSupp() * 1.0 / this.maxOneRelationNum);
+                results.put(kkps, message.getCurrentSupp() * 1.0 / this.allCount);
             }
 
             // consider X + p_0 in message, check their interestingness upper bound later.
@@ -2314,10 +2340,10 @@ public class ParallelRuleDiscoverySampling {
                 if (!results.containsKey(kkkps)) {
                     if (rhs.isConstant()) {
                         // results.put(kkkps, entry.getValue() * maxOneRelationNum * 1.0 / this.allCount);
-                        results.put(kkkps, entry.getValue() * maxOneRelationNum * 1.0 / this.maxOneRelationNum);
+                        results.put(kkkps, entry.getValue() * maxOneRelationNum * 1.0 / this.allCount);
                     } else {
                         // results.put(kkkps, entry.getValue() * 1.0 / this.allCount);
-                        results.put(kkkps, entry.getValue() * 1.0 / this.maxOneRelationNum);
+                        results.put(kkkps, entry.getValue() * 1.0 / this.allCount);
                     }
                 }
             }
@@ -3125,254 +3151,6 @@ public class ParallelRuleDiscoverySampling {
 //            logger.info("Search level : {} with lattice {}", level, lattice.printCurrents());
             logger.info("Search level : {} with lattice", level);
 
-            // train RL model
-            if (this.ifRL == 1 && this.ifOnlineTrainRL == 1 && level % this.DeltaL == 0) {
-                String sequence;
-                ArrayList<PredicateSet> Psel = new ArrayList<>();
-                ArrayList<Predicate> next_p = new ArrayList<>();
-                ArrayList<Long> reward = new ArrayList<>();
-                ArrayList<PredicateSet> RHSs = new ArrayList<>();
-                // save the predicate indices in Psel
-                ArrayList<HashSet<Integer>> Psel_indices_set = new ArrayList<>();
-                // if there exists no legal next_p, remove current Psel
-                ArrayList<Integer> removePselIndex = new ArrayList<>();
-
-//                int rhss_size = 0;
-//                for (Map.Entry<IBitSet, LatticeVertex> entry: lattice.getLatticeLevel().entrySet()) {
-//                    rhss_size = entry.getValue().getRHSs().size();
-//                    break;
-//                }
-//                int seq_num = Math.min(lattice.getLatticeLevel().size() * (rhss_size - 1), this.N);
-
-                int currLVNum = lattice.getLatticeLevel().size();
-                int seq_num = Math.min(currLVNum, this.N);
-                logger.info("#### the number of sequences for RL is {}", seq_num);
-
-                // select Psel randomly, and select next_p randomly at level 0
-                HashSet<Integer> nonConstantIndices = new HashSet<>();
-                if (level == 0) { // make sure the initial Psel contains non-constant predicate
-                    int tmp_idx = 0;
-                    for (Map.Entry<IBitSet, LatticeVertex> entry : lattice.getLatticeLevel().entrySet()) {
-                        for (Predicate p : entry.getValue().getPredicates()) {
-                            if (!p.isConstant()) {
-                                nonConstantIndices.add(tmp_idx);
-                                break;
-                            }
-                        }
-                        tmp_idx = tmp_idx + 1;
-                    }
-                    seq_num = Math.min(seq_num, nonConstantIndices.size());
-                }
-                HashSet<Integer> Psel_idx = new HashSet<>();
-                while (Psel_idx.size() < seq_num) {
-                    int rand_num = (int) (Math.random() * currLVNum);
-                    if (level != 0) {
-                        Psel_idx.add(rand_num);
-                        continue;
-                    }
-                    if (nonConstantIndices.contains(rand_num)) {
-                        Psel_idx.add(rand_num);
-                    }
-                }
-                int tmp_i = 0;
-                for (Map.Entry<IBitSet, LatticeVertex> entry : lattice.getLatticeLevel().entrySet()) {
-                    if (!Psel_idx.contains(tmp_i)) {
-                        tmp_i = tmp_i + 1;
-                        continue;
-                    }
-
-                    // in case of generating empty workunits for reward computation
-                    if (entry.getValue().getRHSs().size() == 0) {
-                        tmp_i = tmp_i + 1;
-                        continue;
-                    }
-
-                    PredicateSet tmp_set = new PredicateSet();
-                    HashSet<Integer> tmp_idx_set = new HashSet<>();
-                    for (Predicate p : entry.getValue().getPredicates()) {
-                        tmp_set.add(p);
-                        tmp_idx_set.add(p.getIndex1());
-                        if (!p.isConstant()) {
-                            tmp_idx_set.add(p.getIndex2());
-                        }
-                    }
-                    Psel.add(tmp_set);
-                    Psel_indices_set.add(tmp_idx_set);
-                    RHSs.add(new PredicateSet(entry.getValue().getRHSs()));
-
-                    if (level == 0) { // initial, select action randomly; LHS only contains one predicate
-                        int ifExistLegalNextP = 0;
-                        int idx = 0;
-                        for (Predicate p : this.allExistPredicates) {
-                            if (tmp_set.containsPredicate(p)) {
-                                idx = idx + 1;
-                                continue;
-                            }
-                            // check whether p contains index in Psel
-                            if (p.isConstant() && !tmp_idx_set.contains(p.getIndex1())) {
-                                idx = idx + 1;
-                                continue;
-                            }
-                            if (!p.isConstant() && !tmp_idx_set.contains(p.getIndex1()) &&
-                                    !tmp_idx_set.contains(p.getIndex2())) {
-                                idx = idx + 1;
-                                continue;
-                            }
-                            // check support
-                            if (!this.highSelectivityPredicateIndices.contains(idx)) {
-                                idx = idx + 1;
-                                continue;
-                            }
-                            idx = idx + 1;
-                            next_p.add(p);
-                            ifExistLegalNextP = 1;
-                            break;
-                        }
-                        if (ifExistLegalNextP == 0) {
-                            removePselIndex.add(Psel.size() - 1);
-                        }
-                    }
-                    tmp_i = tmp_i + 1;
-                }
-
-                String legal_nextP_indices = getLegalNextPIndices(this.allExistPredicates, this.highSelectivityPredicateIndices, Psel_indices_set);
-
-                // select next_p using Mcorr at level DeltaL
-                if (level > 0 && !legal_nextP_indices.equals("")) {
-                    // select action with maximum predicted reward by current model Mcorr.
-                    sequence = transformSequence(this.allExistPredicates, Psel, null, null);
-                    String predict_actions = useRL(sequence, 0, 0, legal_nextP_indices,
-                            this.allExistPredicates.size(), this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N); // form: "pid1;pid2;pid3;..."
-                    int rm_idx = 0;
-                    for (String action : predict_actions.split(";")) {
-                        if (action.equals("-1")) {
-                            removePselIndex.add(rm_idx);
-                            rm_idx = rm_idx + 1;
-                            continue;
-                        }
-                        next_p.add(this.allExistPredicates.get(Integer.parseInt(action)));
-                        rm_idx = rm_idx + 1;
-                    }
-                }
-
-                // remove Psel without legal next_p
-                for (tmp_i = removePselIndex.size() - 1; tmp_i >= 0; tmp_i = tmp_i - 1) {
-                    int rm_idx = removePselIndex.get(tmp_i);
-                    Psel.remove(rm_idx);
-                    Psel_indices_set.remove(rm_idx);
-                    RHSs.remove(rm_idx);
-                }
-                removePselIndex.clear();
-
-                if (legal_nextP_indices.equals("")) { // when N = 1, and there's no legal next p
-                    Psel.clear();
-                }
-
-                // compute supports and rewards, save to MEM
-                for (tmp_i = 0; tmp_i < Psel.size(); tmp_i = tmp_i + 1) {
-                    reward.add(0L);
-                }
-                computeRewardAndSaveMEMLocal(Psel, next_p, reward, RHSs);
-
-                Boolean ifContinue = true;
-                if (Psel.size() == 0) {
-                    ifContinue = false;
-                }
-                if (level == 0 && !ifContinue) {
-                    ifExistModel = false;
-                }
-
-                // send (Psel_i, p_i, reward_i), then train Mcorr_i+1 and save it. i++
-                sequence = transformSequence(this.allExistPredicates, Psel, next_p, reward);
-                int ifInitTrain = 0;
-                if (level == 0) {
-                    ifInitTrain = 1;
-                }
-                if (ifContinue) {
-                    useRL(sequence, 1, ifInitTrain, "", this.allExistPredicates.size(),
-                            this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
-                }
-
-                // the left (DeltaL - 1) step
-                for (int step = 1; step < this.DeltaL; step = step + 1) {
-                    if (!ifContinue) {
-                        break;
-                    }
-                    // 1. For Psel_i+1, select action with maximum predicted reward by current model Mcorr_i+1.
-                    for (tmp_i = 0; tmp_i < Psel.size(); tmp_i = tmp_i + 1) { // update Psel_i to Psel_i+1
-                        Predicate tmp_p = next_p.get(tmp_i);
-                        Psel.get(tmp_i).add(tmp_p);
-                        Psel_indices_set.get(tmp_i).add(tmp_p.getIndex1());
-                        if (!tmp_p.isConstant()) {
-                            Psel_indices_set.get(tmp_i).add(tmp_p.getIndex2());
-                        }
-                    }
-                    // remove duplicate Psel
-                    deduplicateSequence(Psel, RHSs, Psel_indices_set);
-                    // remove invalid Psel, minimal RHSs, and invalidXRHSs RHSs
-                    pruneSequence(Psel, RHSs, Psel_indices_set);
-                    if (Psel.size() == 0) {
-                        ifContinue = false;
-                        break;
-                    }
-                    legal_nextP_indices = getLegalNextPIndices(this.allExistPredicates, this.highSelectivityPredicateIndices, Psel_indices_set);
-                    if (legal_nextP_indices.equals("")) { // when N = 1, and there's no legal next p
-                        Psel.clear();
-                        ifContinue = false;
-                        break;
-                    }
-                    sequence = transformSequence(this.allExistPredicates, Psel, null, null);
-                    String predict_actions = useRL(sequence, 0, 0, legal_nextP_indices,
-                            this.allExistPredicates.size(), this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N); // form: "pid1;pid2;pid3;..."
-                    next_p.clear();
-                    int rm_idx = 0;
-                    for (String action : predict_actions.split(";")) {
-                        if (action.equals("-1")) {
-                            removePselIndex.add(rm_idx);
-                            rm_idx = rm_idx + 1;
-                            continue;
-                        }
-                        next_p.add(this.allExistPredicates.get(Integer.parseInt(action)));
-                        rm_idx = rm_idx + 1;
-                    }
-
-                    // remove Psel without legal next_p
-                    for (tmp_i = removePselIndex.size() - 1; tmp_i >= 0; tmp_i = tmp_i - 1) {
-                        rm_idx = removePselIndex.get(tmp_i);
-                        Psel.remove(rm_idx);
-                        Psel_indices_set.remove(rm_idx);
-                        RHSs.remove(rm_idx);
-                    }
-                    removePselIndex.clear();
-
-                    if (Psel.size() == 0) {
-                        ifContinue = false;
-                        break;
-                    }
-
-                    // 2. compute supports and rewards, save to MEM
-                    reward.clear();
-                    for (tmp_i = 0; tmp_i < Psel.size(); tmp_i = tmp_i + 1) {
-                        reward.add(0L);
-                    }
-                    computeRewardAndSaveMEMLocal(Psel, next_p, reward, RHSs);
-
-                    if (Psel.size() == 0) {
-                        ifContinue = false;
-                        break;
-                    }
-
-                    // 3. send (Psel_i, p_i, reward_i), then train Mcorr_i+1 and save it. i++
-                    sequence = transformSequence(this.allExistPredicates, Psel, next_p, reward);
-                    useRL(sequence, 1, 0, "", this.allExistPredicates.size(),
-                            this.PI_path, this.RL_code_path, this.learning_rate, this.reward_decay,
-                            this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N);
-                }
-            }
-
             ArrayList<WorkUnit> workUnits_ = lattice.generateWorkUnits();
             workUnits_ = this.mergeWorkUnits(workUnits_);
             // solve skewness
@@ -3485,7 +3263,7 @@ public class ParallelRuleDiscoverySampling {
                 this.addValidXRHSs(messages);
                 // prune meanineless work units
                 if (option.equals("original")) {
-                    workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc);
+                    workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc, this.topKOption);
                 } else {
                     ArrayList<WorkUnit> remainTasks = new ArrayList<>();
                     for (int tid = remainStartSc; tid < workUnits_init.size(); tid++) {
@@ -3538,7 +3316,7 @@ public class ParallelRuleDiscoverySampling {
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
                     this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
-                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N, this.dqnmlp, this.predicateDQNHashIDs, this.ifDQN);
+                    this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N, this.predicateDQNHashIDs, this.topKOption);
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);
             if (nextLattice == null || nextLattice.size() == 0) {
@@ -3957,7 +3735,7 @@ public class ParallelRuleDiscoverySampling {
             this.addValidXRHSs(messages);
             // prune meanineless work units
             if (option.equals("original")) {
-                workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc);
+                workUnits_init = this.pruneXWorkUnits(interestingness, this.getKthInterestingnessScore(), currentSupports, workUnits_init, remainStartSc, this.topKOption);
             } else {
                 ArrayList<WorkUnit> remainTasks = new ArrayList<>();
                 for (int tid = remainStartSc; tid < workUnits_init.size(); tid++) {

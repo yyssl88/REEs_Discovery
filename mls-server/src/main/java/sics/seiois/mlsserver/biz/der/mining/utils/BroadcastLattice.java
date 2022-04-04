@@ -29,6 +29,7 @@ public class BroadcastLattice implements Serializable {
     private HashMap<IBitSet, ArrayList<Predicate>> invalidRHSs;
     private HashMap<IBitSet, ArrayList<Predicate>> validXRHSs;
     private Interestingness interestingness;
+    private String topKOption;
     private double KthScore;
     private HashMap<PredicateSet, Double> suppRatios;
     private PredicateProviderIndex predicateProviderIndex;
@@ -75,6 +76,7 @@ public class BroadcastLattice implements Serializable {
     }
 
 
+    // for DQN of sampling
     public BroadcastLattice(List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
                             HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
                             HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
@@ -87,6 +89,20 @@ public class BroadcastLattice implements Serializable {
         this.ifDQN = ifDQN;
         this.predicatesHashIDs = predicatesHashIDs;
     }
+
+    // for DQN of top-K rule interestingness
+    public BroadcastLattice(List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
+                            HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
+                            HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
+                            Interestingness interestingness, double KthScore,
+                            HashMap<PredicateSet, Double> suppRatios, PredicateProviderIndex predicateProviderIndex,
+                            String option, String topKOption, HashMap<String, Integer> predicatesHashIDs) {
+        this(allPredicates, invalidX, invalidXRHSs, validXRHSs, interestingness, KthScore, suppRatios, predicateProviderIndex, option);
+
+        this.topKOption = topKOption;
+        this.predicatesHashIDs = predicatesHashIDs;
+    }
+
 
     public BroadcastLattice(List<Predicate> allPredicates, ArrayList<Predicate> allExistPredicates, HashSet<IBitSet> invalidX,
                             HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
@@ -223,4 +239,7 @@ public class BroadcastLattice implements Serializable {
         return this.predicatesHashIDs;
     }
 
+    public String getTopKOption() {
+        return this.topKOption;
+    }
 }

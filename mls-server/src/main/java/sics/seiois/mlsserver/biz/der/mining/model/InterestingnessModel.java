@@ -24,6 +24,7 @@ public class InterestingnessModel implements Serializable {
     private SimpleMatrix weightREEsEmbed;               // shape (token_embedding_Size * 2, rees_embedding_size)
     private SimpleMatrix weightInterest;                // shape (ree_embedding_size, 1)
     private SimpleMatrix weightObjSubj;                  // shape (4, 1)
+    private SimpleMatrix weightUBSubj;                  // shape (1, 1)
 
     static public int UNIT_PREDICATE = 5;
     static public int MAX_LHS_PREDICATES = 10;
@@ -65,8 +66,10 @@ public class InterestingnessModel implements Serializable {
         this.weightREEsEmbed = matrices.get(2);
         this.weightInterest = matrices.get(3);
         this.weightObjSubj = matrices.get(4);
+        this.weightUBSubj = matrices.get(5);
         // weights of features are non-negative
         this.weightObjSubj = this.weightObjSubj.elementMult(this.weightObjSubj);
+        this.weightUBSubj = this.weightUBSubj.elementMult(this.weightUBSubj);
     }
 
     /*
@@ -106,8 +109,10 @@ public class InterestingnessModel implements Serializable {
         this.weightPredicates = matrices.get(1);
         this.weightREEsEmbed = matrices.get(2);
         this.weightInterest = matrices.get(3);
+        this.weightUBSubj = matrices.get(4);
         // weights of features are non-negative
         this.weightObjSubj = this.weightObjSubj.elementMult(this.weightObjSubj);
+        this.weightUBSubj = this.weightUBSubj.elementMult(this.weightUBSubj);
     }
 
     /**
@@ -232,7 +237,9 @@ public class InterestingnessModel implements Serializable {
         reeEmbed = this.ReLU(reeEmbed.mult(this.weightREEsEmbed));
         // 4. compute the rule interestingness subjective score
         SimpleMatrix subjectiveScore = reeEmbed.mult(this.weightInterest);
-        // 5. compute the final rule interestingness score
+        // 5. compute the rule interestingness subjective score with UB
+        subjectiveScore = this.weightUBSubj.minus(this.ReLU(subjectiveScore));
+        // 6. compute the final rule interestingness score
         SimpleMatrix features = this.concatTwoByCol(objFeas, subjectiveScore);
         SimpleMatrix score = features.mult(this.weightObjSubj);
         return score.get(0, 0);
@@ -369,6 +376,11 @@ public class InterestingnessModel implements Serializable {
             weights.add(this.weightObjSubj.get(i, 0));
         }
         return weights;
+    }
+
+    // get the UB of subjective score
+    public double getUBSubjectiveScore() {
+        return this.weightUBSubj.get(0, 0);
     }
 
 }

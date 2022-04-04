@@ -244,6 +244,12 @@ public class RuleFinder {
         String DQNModelFile = argsMap.get("DQNModelFile");
         String DQNThreshold = argsMap.get("DQNThreshold");
 
+        // top-K rule interestingness
+        String topKOption = argsMap.get("topKOption");
+        String interestingnessModelFile = argsMap.get("interestingnessModelFile");
+        String tokenToIDFile = argsMap.get("tokenToIDFile");
+        String filterRegressionFile = argsMap.get("filterRegressionFile");
+
         numOfProcessors = numOfProcessors_;
 
         StringBuffer otherParam = new StringBuffer();
@@ -286,6 +292,12 @@ public class RuleFinder {
         otherParam.append("ifDQN=" + ifDQN + ";");
         otherParam.append("DQNModelFile=" + DQNModelFile + ";");
         otherParam.append("DQNThreshold=" + DQNThreshold + ";");
+
+        // interestingness top-K rule
+        otherParam.append("topKOption=" + topKOption + ";");
+        otherParam.append("tokenToIDFile=" + tokenToIDFile + ';');
+        otherParam.append("filterRegressionFile=" + filterRegressionFile + ';');
+        otherParam.append("interestingnessModelFile=" + interestingnessModelFile + ';');
 
 //        RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset);
         RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset, taskID);

@@ -346,11 +346,12 @@ public class EvidenceGenerateMain {
             int memory_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"memorySize"));
             int batch_size = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"batchSize"));
 
-            parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
-                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
-                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
-                    learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
+            parallelRuleDiscoverySampling = null;
+//            new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
+//                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
+//                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
+//                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
+//                    learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
         }
 
         // rule discovery
@@ -615,33 +616,16 @@ public class EvidenceGenerateMain {
         // whether use DQN to prune
         boolean ifDQN = Boolean.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifDQN"));
 
+        // top-K rule interestingness discovery option
+        String topKOption = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "topKOption");
+        String tokenToIDFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "tokenToIDFile");
+        String interestingnessModelFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "interestingnessModelFile");
+        String filterRegressionFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "filterRegressionFile");
 
-//        ParallelRuleDiscovery parallelRuleDiscovery = new ParallelRuleDiscovery(allPredicates, K, maxTupleNum,
-//                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-//                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune);
-
-//        ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
-//                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-//                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr);
-
-//        ParallelRuleDiscoverySampling parallelRuleDiscovery =  new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
-//                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-//                1, 1, 1, 1, 1, 0);
-
-        ParallelRuleDiscoverySampling parallelRuleDiscovery;
-        if (ifDQN == false) {
-            parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
-                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
-        } else {
-            String DQNModelFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNModelFile");
-            float DQNThreshold = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "DQNThreshold"));
-            String dqnTxtPath = PredicateConfig.MLS_TMP_HOME + "DQN" + request.getTaskId() + "/" +  DQNModelFile; //"experiment_results";
-            MLPFilterClassifier dqn = new MLPFilterClassifier(dqnTxtPath, hdfs, DQNThreshold);
-            parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
-                    support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
-                    ifDQN, dqn);
+        ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
+                support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
+                w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
+                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
 
 //            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
 //            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
@@ -662,7 +646,6 @@ public class EvidenceGenerateMain {
 //                    w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
 //                    ifRL, ifOnlineTrainRL, ifOfflineTrainStage, PI_path, RL_code_path, N, DeltaL,
 //                    learning_rate, reward_decay, e_greedy, replace_target_iter, memory_size, batch_size);
-        }
 
         // rule discovery
         String taskId = request.getTaskId();

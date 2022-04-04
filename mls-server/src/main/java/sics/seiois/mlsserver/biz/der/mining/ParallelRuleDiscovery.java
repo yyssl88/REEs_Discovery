@@ -295,7 +295,7 @@ public class ParallelRuleDiscovery {
                    continue;
                }
                // check interestingness UB
-                double ub = interestingness.computeUB(suppOne * 1.0 / this.maxOneRelationNum, 1.0, task.getCurrrent(), null);
+                double ub = interestingness.computeUB(suppOne * 1.0 / this.maxOneRelationNum, 1.0, task.getCurrrent(), null, "");
                if (ub < KthScore) {
                    continue;
                }
@@ -336,7 +336,7 @@ public class ParallelRuleDiscovery {
         // prune with interestingness UB
         if (option.equals("original")) {
 //            this.pruneLattice(invalidX, validXRHSs);
-            lattice.pruneXInterestingnessUB(interestingness, KthScore, suppRatios);
+            lattice.pruneXInterestingnessUB(interestingness, KthScore, suppRatios, "");
         } else if (option.equals("anytime")) {
 //            this.pruneLattice(invalidX, validXRHSs);
             lattice.pruneXInterestingnessUB(interestingness, KthScore, suppRatios, partialRules);
@@ -372,7 +372,7 @@ public class ParallelRuleDiscovery {
 
             Lattice latticeWorker = task.generateNextLatticeLevel(bLattice.getAllPredicates(), null, bLattice.getInvalidX(),bLattice.getInvalidRHSs(), bLattice.getValidXRHSs(),
                     bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
-                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0, null, null, false);
+                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0, null, null);
             return latticeWorker;
 
         }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
@@ -1209,10 +1209,10 @@ public class ParallelRuleDiscovery {
 //            String option = "original";
             if (option.equals("original")) {
 //            this.pruneLattice(invalidX, validXRHSs);
-                lattice.pruneXInterestingnessUB(interestingness, this.getKthInterestingnessScore(), currentSupports);
+                lattice.pruneXInterestingnessUB(interestingness, this.getKthInterestingnessScore(), currentSupports, "");
             } else if (option.equals("anytime")) {
 //            this.pruneLattice(invalidX, validXRHSs);
-                lattice.pruneXInterestingnessUB(interestingness, this.getKthInterestingnessScore(), currentSupports, null);
+                lattice.pruneXInterestingnessUB(interestingness, this.getKthInterestingnessScore(), currentSupports, "");
             }
 
 
@@ -1220,7 +1220,7 @@ public class ParallelRuleDiscovery {
 
             Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, null, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
-                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0, null, null, false);
+                    0, 0, 0, false, "", "", 0, 0, 0, 0, 0, 0, "", 0, null, null);
 
             // pruning
             nextLattice.removeInvalidLatticeAndRHSs(lattice);

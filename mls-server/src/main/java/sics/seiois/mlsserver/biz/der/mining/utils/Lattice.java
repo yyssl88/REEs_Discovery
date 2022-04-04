@@ -1,6 +1,5 @@
 package sics.seiois.mlsserver.biz.der.mining.utils;
 
-
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.KryoSerializable;
 import com.esotericsoftware.kryo.io.Input;
@@ -18,6 +17,7 @@ import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscovery;
 import sics.seiois.mlsserver.biz.der.mining.ParallelRuleDiscoverySampling;
 import sics.seiois.mlsserver.biz.der.mining.model.DQNMLP;
 import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterClassifier;
+import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterRegressor;
 
 import java.io.Serializable;
 import java.util.*;
@@ -363,23 +363,23 @@ public class Lattice implements KryoSerializable {
         supp_ratios:  support ratios of last validation results
         current lattice node: L,  IBitSet of supp_ratios: L
      */
-    private void pruneInterestingnessUB(Interestingness interestingness, double KthScore, HashMap<IBitSet, Double> supp_ratios) {
-        for (IBitSet key : this.latticeLevel.keySet()) {
-            LatticeVertex lv = this.latticeLevel.get(key);
-            double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates().getBitset()), 1.0, lv.getPredicates(), null);
-            if (ub < KthScore) {
-                this.latticeLevel.remove(key);
-                this.allLatticeVertexBits.remove(key);
-            }
-        }
-    }
+//    private void pruneInterestingnessUB(Interestingness interestingness, double KthScore, HashMap<IBitSet, Double> supp_ratios) {
+//        for (IBitSet key : this.latticeLevel.keySet()) {
+//            LatticeVertex lv = this.latticeLevel.get(key);
+//            double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates().getBitset()), 1.0, lv.getPredicates(), null);
+//            if (ub < KthScore) {
+//                this.latticeLevel.remove(key);
+//                this.allLatticeVertexBits.remove(key);
+//            }
+//        }
+//    }
 
     // early termination
     /*
         supp_ratios:  support ratios of last current X
         current lattice node: L, IBitSet of supp_ratios: L - 1
      */
-    public void pruneXInterestingnessUB(Interestingness interestingness, double KthScore, HashMap<PredicateSet, Double> supp_ratios) {
+    public void pruneXInterestingnessUB(Interestingness interestingness, double KthScore, HashMap<PredicateSet, Double> supp_ratios, String topKOption) {
 //        ArrayList<Double> ubScores = new ArrayList<>();
 //        ArrayList<Double> nonZeroUBScores = new ArrayList<>();
         HashSet<IBitSet> removeKeys = new HashSet<>();
@@ -391,7 +391,7 @@ public class Lattice implements KryoSerializable {
             // first check all predicates in lv, prune all
             if (supp_ratios.containsKey(lv.getPredicates())) {
                 PredicateSet tt = new PredicateSet(current);
-                double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates()), 1.0, tt, null);
+                double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates()), 1.0, tt, null, topKOption);
 //                curr_ub = ub;
 //                logger.info("#### KthScore: {}, ub: {}, curr_ub: {}", KthScore, ub, curr_ub);
                 if (ub < KthScore) {
@@ -408,7 +408,7 @@ public class Lattice implements KryoSerializable {
                 PredicateSet tt = new PredicateSet(current);
                 tt.remove(rhs);
                 if (supp_ratios.containsKey(tt)) {
-                    double ub = interestingness.computeUB(supp_ratios.get(tt), 1.0, tt, null);
+                    double ub = interestingness.computeUB(supp_ratios.get(current), 1.0, tt, rhs, topKOption);
 //                    if (curr_ub == 0.0) {
 //                        curr_ub = ub;
 //                    } else {
@@ -616,6 +616,62 @@ public class Lattice implements KryoSerializable {
             return false;
     }
 
+    public LatticeVertex expandLatticeByTopK(LatticeVertex lv, Predicate newP, double kth,
+                                             Interestingness interestingness,
+                                             HashMap<String, Integer> predicatesHashIDs, HashMap<PredicateSet, Double> suppRatios,
+                                             String topKOption) {
+        if (topKOption.equals("noFiltering")) {
+            return new LatticeVertex(lv, newP);
+        }
+        ArrayList<Predicate> validRHSs = new ArrayList<>();
+        int numPredicates = predicatesHashIDs.size();
+        PredicateSet pSet = new PredicateSet();
+        // add P_sel
+        for (Predicate p : lv.getPredicates()) {
+            pSet.add(p);
+        }
+        pSet.add(newP);
+        for (Predicate rhs : lv.getRHSs()) {
+            // remove RHS
+            pSet.remove(rhs);
+            boolean f1 = false, f2 = false;
+            if (suppRatios.containsKey(pSet)) {
+                f1 = true;
+                double UBScore = interestingness.computeUB(suppRatios.get(pSet), 1.0, pSet, rhs, topKOption);
+                if (UBScore > kth) {
+                    validRHSs.add(rhs);
+                }
+            }
+            pSet.remove(newP);
+            if (suppRatios.containsKey(pSet)) {
+                f2 = true;
+                double UBScore = interestingness.computeUB(suppRatios.get(pSet), 1.0, pSet, rhs, topKOption);
+                if (UBScore > kth) {
+                    validRHSs.add(rhs);
+                }
+            }
+
+            // add newP
+            pSet.add(newP);
+            if (f1 == false && f2 == false) {
+                double UBScore = interestingness.computeUB(1, 1.0, pSet, rhs, topKOption);
+                if (UBScore > kth) {
+                    validRHSs.add(rhs);
+                }
+            }
+
+            // add RHS
+            pSet.add(rhs);
+        }
+        // adjust RHSs, such that only keep valid RHSs predicted by DQN
+        if (validRHSs.size() == 0) {
+            return null;
+        }
+        LatticeVertex lv_new = new LatticeVertex(lv, newP);
+        lv_new.adjustRHSs(validRHSs);
+        return  lv_new;
+    }
+
     public LatticeVertex expandLatticeByDQN(LatticeVertex lv, Predicate newP, List<Predicate> allPredicates, MLPFilterClassifier mlpFilterClassifier, HashMap<String, Integer> predicatesHashIDs, boolean ifDQN) {
         if (ifDQN == false) {
             return new LatticeVertex(lv, newP);
@@ -658,7 +714,7 @@ public class Lattice implements KryoSerializable {
                                             int ifRL, int ifOnlineTrainRL, int ifOfflineTrainStage, boolean ifExistModel,
                                             String python_path, String RL_code_path,
                                             float lr, float rd, float eg, int rtr, int ms, int bs,
-                                            String table_name, int N_num, MLPFilterClassifier dqnmlp, HashMap<String, Integer> predicatesHashIDs, boolean ifDQN) {
+                                            String table_name, int N_num, HashMap<String, Integer> predicatesHashIDs, String topKOption) {
         logger.info("#####generate Next Lattice level!");
         // for RL
         ArrayList<PredicateSet> currPsel = new ArrayList<>();
@@ -732,7 +788,8 @@ public class Lattice implements KryoSerializable {
                         continue;
                     }
                     // LatticeVertex lv_child = new LatticeVertex(lv, newP);
-                    LatticeVertex lv_child = this.expandLatticeByDQN(lv, newP, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                    // LatticeVertex lv_child = this.expandLatticeByDQN(lv, newP, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                    LatticeVertex lv_child = this.expandLatticeByTopK(lv, newP, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
                     if (lv_child == null) {
                         continue;
                     }
@@ -761,7 +818,8 @@ public class Lattice implements KryoSerializable {
                         }
 
                         // LatticeVertex lv_child = new LatticeVertex(lv, cp1);
-                        LatticeVertex lv_child = this.expandLatticeByDQN(lv, cp1, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                        // LatticeVertex lv_child = this.expandLatticeByDQN(lv, cp1, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                        LatticeVertex lv_child = this.expandLatticeByTopK(lv, cp1, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
                         if (lv_child == null) {
                             continue;
                         }
@@ -789,7 +847,8 @@ public class Lattice implements KryoSerializable {
                             continue;
                         }
                         // LatticeVertex lv_child_ = new LatticeVertex(lv, cp2);
-                        LatticeVertex lv_child_ = this.expandLatticeByDQN(lv, cp2, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                        // LatticeVertex lv_child_ = this.expandLatticeByDQN(lv, cp2, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                        LatticeVertex lv_child_ = this.expandLatticeByTopK(lv, cp2, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
                         if (lv_child_ == null) {
                             continue;
                         }
@@ -855,7 +914,8 @@ public class Lattice implements KryoSerializable {
                         continue;
                     }
                     // LatticeVertex lv_child = new LatticeVertex(lv, newP);
-                    LatticeVertex lv_child = this.expandLatticeByDQN(lv, newP, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                    // LatticeVertex lv_child = this.expandLatticeByDQN(lv, newP, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                    LatticeVertex lv_child = this.expandLatticeByTopK(lv, newP, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
                     if (lv_child == null) {
                         continue;
                     }

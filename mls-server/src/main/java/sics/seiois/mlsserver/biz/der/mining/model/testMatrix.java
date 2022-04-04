@@ -93,7 +93,11 @@ public class testMatrix {
             rhs = allPredicates.get(5);
 
             // test Rule Interestingness model
-            double interestingnessScore = interestingness.run(reeLHS, rhs);
+            double[][] reeObj = new double[1][3];
+            for (int i = 0; i < 3; i++) {
+                reeObj[0][i] = 0.0;
+            }
+            double interestingnessScore = interestingness.run(reeLHS, rhs, reeObj);
             System.out.println(interestingnessScore);
 
 

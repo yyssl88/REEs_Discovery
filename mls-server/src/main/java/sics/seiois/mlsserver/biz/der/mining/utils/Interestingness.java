@@ -1,5 +1,6 @@
 package sics.seiois.mlsserver.biz.der.mining.utils;
 
+import com.google.inject.internal.cglib.core.$ObjectSwitchCallback;
 import shapeless.ops.nat;
 import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraint;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
@@ -40,6 +41,8 @@ public class Interestingness implements Serializable {
 
     // 本来是所有表的所有行数和，现在是 maxOneRelationNum，最长表的长度
     long allCount;
+
+    int featuresNum;
 
     /**
      * 在构造 Interestingness 调用
@@ -116,33 +119,44 @@ public class Interestingness implements Serializable {
     /*
         ifNN: true means using NN, false means using linear model
      */
-    public Interestingness(boolean ifNN, float w_1, float w_2, float w_3, float w_4, float w_5, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+    public Interestingness(String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
                            List<Predicate> allPredicates, long allCount, FileSystem hdfs, HashMap<String, Integer> predicatesHashID) {
-        if (ifNN == true) {
             // load the rule interestingness model
             this.interestingnessModel = new InterestingnessModel(tokenToIDFile, interestingnessModelFile, hdfs);
             // load Filter regression model
             this.mlpFilterRegressor = new MLPFilterRegressor(filterRegressionFile, hdfs);
             this.predicatesHashID = predicatesHashID;
             ArrayList<Double> objWeights = this.interestingnessModel.getObjectiveWeights();
+            this.featuresNum = objWeights.size();
             this.w_supp = objWeights.get(0);
             this.w_conf = objWeights.get(1);
             this.w_succ = objWeights.get(2);
             this.w_sub = objWeights.get(3);
-        } else{
-            this.interestingnessModel = null;
-            this.mlpFilterRegressor = null;
-            this.predicatesHashID = predicatesHashID;
-            this.w_supp = w_1;
-            this.w_conf = w_2;
-            this.w_diver = w_3;
-            this.w_succ = w_4;
-            this.w_sub = w_5;
+            this.allCount = allCount;
             this.counters = new HashMap<>();
             for (Predicate p : allPredicates) {
                 this.initCounter(p);
             }
-            this.allCount = allCount;
+    }
+
+
+    public Interestingness(String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+                           List<Predicate> allPredicates, long allCount, HashMap<String, Integer> predicatesHashID) {
+        // load the rule interestingness model
+        this.interestingnessModel = new InterestingnessModel(tokenToIDFile, interestingnessModelFile);
+        // load Filter regression model
+        this.mlpFilterRegressor = new MLPFilterRegressor(filterRegressionFile);
+        this.predicatesHashID = predicatesHashID;
+        ArrayList<Double> objWeights = this.interestingnessModel.getObjectiveWeights();
+        this.featuresNum = objWeights.size();
+        this.w_supp = objWeights.get(0);
+        this.w_conf = objWeights.get(1);
+        this.w_succ = objWeights.get(2);
+        this.w_sub = objWeights.get(3);
+        this.allCount = allCount;
+        this.counters = new HashMap<>();
+        for (Predicate p : allPredicates) {
+            this.initCounter(p);
         }
     }
 
@@ -164,21 +178,21 @@ public class Interestingness implements Serializable {
     /*
         compute the interestingness score for a valid REE with Neural Network
      */
-    public double computeInterestingnessNN(ArrayList<Predicate> reeLHS, Predicate rhs) {
-        return this.interestingnessModel.run(reeLHS, rhs);
+    public double computeInterestingnessNN(ArrayList<Predicate> reeLHS, Predicate rhs, double[][] reeobj) {
+        return this.interestingnessModel.run(reeLHS, rhs, reeobj);
     }
 
     /*
         compute the upper bound of the interestingness score
      */
-    public double computeUBNN(PredicateSet X, Predicate p_0) {
+    public double computeUBSubjectiveScore(PredicateSet X, Predicate p_0) {
         int numPredicates = this.predicatesHashID.size();
         double[][] feature_vectors = new double[1][numPredicates * 2];
         // add P_sel
         for (Predicate p : X) {
-            feature_vectors[0][this.predicatesHashID.get(p.toString())] = 1.0;
+            feature_vectors[0][this.predicatesHashID.get(p.toString().trim())] = 1.0;
         }
-        feature_vectors[0][this.predicatesHashID.get(p_0.toString())] = 1.0;
+        feature_vectors[0][this.predicatesHashID.get(p_0.toString().trim())] = 1.0;
         // compute the UB
         return this.mlpFilterRegressor.run(feature_vectors);
     }
@@ -187,46 +201,41 @@ public class Interestingness implements Serializable {
     /*
         compute the interestingness score for a valid REE
      */
-    private double computeInterestingness(double support_ratio, double confidence, double diversity, double succinctness, double subjective_fea) {
-        return this.w_supp * support_ratio + this.w_conf * confidence + this.w_diver * diversity +
-                this.w_succ * succinctness + this.w_sub * subjective_fea;
-    }
+//    private double computeInterestingness(double support_ratio, double confidence, double diversity, double succinctness, double subjective_fea) {
+//        return this.w_supp * support_ratio + this.w_conf * confidence + this.w_diver * diversity +
+//                this.w_succ * succinctness + this.w_sub * subjective_fea;
+//    }
 
     public double computeInterestingness(DenialConstraint ree) {
-        if (this.ifNN) {
-            ArrayList<Predicate> pSel = new ArrayList<>();
-            for (Predicate p : ree.getPredicateSet()) {
-                pSel.add(p);
-            }
-            Predicate rhs = ree.getRHS();
-            return this.computeInterestingnessNN(pSel, rhs);
-
+        ArrayList<Predicate> pSel = new ArrayList<>();
+        for (Predicate p : ree.getPredicateSet()) {
+            pSel.add(p);
         }
-//        double support_ratio = ree.getSupport() * 1.0 / allCount;
-        double support_ratio = ree.getSupport() * 1.0 / allCount / Math.sqrt(allCount);
-//        support_ratio = sigmoid(support_ratio);
-        double confidence = ree.getConfidence();
-        double diversity = this.computeDeiversity(ree.getPredicateSet());
-        double succinctness = 1.0 / ree.getPredicateSet().size();
-        double subjective_fea = ree.getSubjective_feature();
-        return this.computeInterestingness(support_ratio, confidence, diversity, succinctness, subjective_fea);
+        Predicate rhs = ree.getRHS();
+        double[][] objFeas = new double[1][this.featuresNum - 1];
+        // 1. support
+        objFeas[0][0] = ree.getSupport() * 1.0 / (this.allCount * this.allCount);
+        // 2. confidence
+        objFeas[0][1] = ree.getConfidence();
+        // 3. conciseness
+        objFeas[0][2] = 1.0 / ree.getPredicateSet().size();
+        return this.computeInterestingnessNN(pSel, rhs, objFeas);
     }
 
     /*
         compute the upper bound of a X -> p_0 with only one p_0
      */
-    public double computeUB(double support_ratio_ofX, double confidence, PredicateSet X, Predicate p_0) {
-        if (this.ifNN) {
-            return this.computeUBNN(X, p_0);
+    public double computeUB(double support_ratio_ofX, double confidence, PredicateSet X, Predicate p_0, String topKOption) {
+        double subjectiveScore = this.interestingnessModel.getUBSubjectiveScore();
+        if (topKOption.equals("allFiltering") && p_0 != null) {
+            subjectiveScore = this.computeUBSubjectiveScore(X, p_0);
         }
 //        double supp_ub = support_ratio_ofX;
-        double supp_ub = support_ratio_ofX / Math.sqrt(allCount);
+        double supp_ub = support_ratio_ofX / allCount; //Math.sqrt(allCount);
         double confidence_ub = 1.0f;
-        double diver_ub = this.computeDeiversity(X);
+        // double diver_ub = this.computeDeiversity(X);
         double succ_ub = 1.0 / X.size();
-        double sub_ub = 1.0;
-        return this.w_supp * supp_ub + this.w_conf * confidence_ub + this.w_diver * diver_ub +
-                this.w_succ * succ_ub + this.w_sub * sub_ub;
+        return this.w_supp * supp_ub + this.w_conf * confidence_ub + this.w_succ * succ_ub + this.w_sub * subjectiveScore;
     }
 
     public static double sigmoid(double num) {
