@@ -407,15 +407,22 @@ public class Lattice implements KryoSerializable {
                 }
                 PredicateSet tt = new PredicateSet(current);
                 tt.remove(rhs);
-                if (supp_ratios.containsKey(tt)) {
+                if (supp_ratios.containsKey(current)) {
                     double ub = interestingness.computeUB(supp_ratios.get(current), 1.0, tt, rhs, topKOption);
+                    if (ub <= KthScore) {
+                        removeKeys.add(key);
+                        break;
+                    }
+                }
+                if (supp_ratios.containsKey(tt)) {
+                    double ub = interestingness.computeUB(supp_ratios.get(tt), 1.0, tt, rhs, topKOption);
 //                    if (curr_ub == 0.0) {
 //                        curr_ub = ub;
 //                    } else {
 //                        curr_ub = curr_ub < ub ? curr_ub : ub;
 //                    }
 //                    logger.info("#### KthScore: {}, ub: {}, curr_ub: {}", KthScore, ub, curr_ub);
-                    if (ub < KthScore) {
+                    if (ub <= KthScore) {
                         // remove the RHS predicate (p_0) if it did not meet the value of UB
                         // lv.getRHSs().remove(rhs);
 
