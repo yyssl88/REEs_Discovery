@@ -161,6 +161,7 @@ public class ParallelRuleDiscoverySampling {
         BufferedReader bReader = new BufferedReader(sReader);
         String line;
         int k = 0;
+        this.predicateDQNHashIDs = new HashMap<>();
         while ((line = bReader.readLine()) != null) {
 //            Predicate p = PredicateBuilder.parsePredicateString(this.input, line);
 //            this.index2predicates.put(k, p);
@@ -600,21 +601,21 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         // 7. use all non-constant predicates as RHSs
-        logger.info("#### choose all non-constant RHSs");
-        for (Predicate p : predicates) {
-            if (!p.isConstant()) {
-                applicationRHSs.add(p);
-            }
-        }
+//        logger.info("#### choose all non-constant RHSs");
+//        for (Predicate p : predicates) {
+//            if (!p.isConstant()) {
+//                applicationRHSs.add(p);
+//            }
+//        }
 
         // 8. use all predicates as RHSs
-//        logger.info("#### choose all RHSs");
-//        for (Predicate p : predicates) {
-////            if (!p.isConstant() && p.getOperand1().getColumnLight().getName().contains("scheduled_service")) {
-////                continue;
-////            }
-//            applicationRHSs.add(p);
-//        }
+        logger.info("#### choose all RHSs");
+        for (Predicate p : predicates) {
+//            if (!p.isConstant() && p.getOperand1().getColumnLight().getName().contains("scheduled_service")) {
+//                continue;
+//            }
+            applicationRHSs.add(p);
+        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -1217,6 +1218,7 @@ public class ParallelRuleDiscoverySampling {
                                     if (ree != null) {
                                         validConstantRule.putIfAbsent(message.getCurrentSet(), new ArrayList<>());
                                         validConstantRule.get(message.getCurrentSet()).add(ree.getRHS());
+                                        logger.info("Valid REE values ###### are : {}", ree.toString());
                                     }
                                 }
                                 break;

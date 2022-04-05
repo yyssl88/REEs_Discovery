@@ -640,7 +640,9 @@ public class Lattice implements KryoSerializable {
         pSet.add(newP);
         for (Predicate rhs : lv.getRHSs()) {
             // remove RHS
-            pSet.remove(rhs);
+            if (pSet.containsPredicate(rhs)) {
+                pSet.remove(rhs);
+            }
             boolean f1 = false, f2 = false;
             if (suppRatios.containsKey(pSet)) {
                 f1 = true;
