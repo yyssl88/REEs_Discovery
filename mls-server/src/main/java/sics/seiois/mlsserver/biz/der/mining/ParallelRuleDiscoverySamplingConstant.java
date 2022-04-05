@@ -589,21 +589,21 @@ public class ParallelRuleDiscoverySamplingConstant {
 //        }
 
         // 7. use all non-constant predicates as RHSs
-        logger.info("#### choose all non-constant RHSs");
-        for (Predicate p : predicates) {
-            if (!p.isConstant()) {
-                applicationRHSs.add(p);
-            }
-        }
+//        logger.info("#### choose all non-constant RHSs");
+//        for (Predicate p : predicates) {
+//            if (!p.isConstant()) {
+//                applicationRHSs.add(p);
+//            }
+//        }
 
         // 8. use all predicates as RHSs
-//        logger.info("#### choose all RHSs");
-//        for (Predicate p : predicates) {
-////            if (!p.isConstant() && p.getOperand1().getColumnLight().getName().contains("scheduled_service")) {
-////                continue;
-////            }
-//            applicationRHSs.add(p);
-//        }
+        logger.info("#### choose all RHSs");
+        for (Predicate p : predicates) {
+//            if (!p.isConstant() && p.getOperand1().getColumnLight().getName().contains("scheduled_service")) {
+//                continue;
+//            }
+            applicationRHSs.add(p);
+        }
 
         // 9. test NCVoter
 //        logger.info("#### choose voting_intention as RHS");
@@ -814,7 +814,7 @@ public class ParallelRuleDiscoverySamplingConstant {
         logger.info("#### after filtering, there are {} predicates, constant size: {}, non-constant size: {}", this.allPredicates.size(), cpsize, psize);
 
 
-        Lattice lattice = new Lattice(this.maxTupleNum);
+        LatticeConstant lattice = new LatticeConstant(this.maxTupleNum);
 
 
         lattice.initialize(this.allPredicates, this.maxTupleNum, applicationRHSs);
@@ -923,7 +923,7 @@ public class ParallelRuleDiscoverySamplingConstant {
 
             }
 
-            Lattice nextLattice = runNextLattices(lattice, this.allPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
+            LatticeConstant nextLattice = runNextLattices(lattice, this.allPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     ifExistModel, interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null, spark);
 
             if (nextLattice == null || nextLattice.size() == 0) {
@@ -970,7 +970,7 @@ public class ParallelRuleDiscoverySamplingConstant {
         return prunedTasks;
     }
 
-    public Lattice runNextLattices(Lattice lattice, List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
+    public LatticeConstant runNextLattices(LatticeConstant lattice, List<Predicate> allPredicates, HashSet<IBitSet> invalidX,
                                    HashMap<IBitSet, ArrayList<Predicate>> invalidXRHSs,
                                    HashMap<IBitSet, ArrayList<Predicate>> validXRHSs,
                                    boolean ifExistModel,
@@ -1010,7 +1010,7 @@ public class ParallelRuleDiscoverySamplingConstant {
         }
 
         // split work units
-        ArrayList<Lattice> workUnitLattices = lattice.splitLattice(NUM_LATTICE);
+        ArrayList<LatticeConstant> workUnitLattices = lattice.splitLattice(NUM_LATTICE);
         // print split lattices
 //        logger.info("Lattices Number : {}", workUnitLattices.size());
         /*
@@ -1024,7 +1024,7 @@ public class ParallelRuleDiscoverySamplingConstant {
         }
 
         // parallel expand lattice vertices of next level
-        Lattice nextLattice = sc.parallelize(workUnitLattices, workUnitLattices.size()).map(task -> {
+        LatticeConstant nextLattice = sc.parallelize(workUnitLattices, workUnitLattices.size()).map(task -> {
 
             // synchronized (BroadcastLattice.class) {
             // get IndexProvider instances
@@ -1037,7 +1037,7 @@ public class ParallelRuleDiscoverySamplingConstant {
             // get lattice data
             BroadcastLattice bLattice = bcpsLattice.getValue();
 
-            Lattice latticeWorker = task.generateNextLatticeLevel(bLattice.getAllPredicates(), bLattice.getAllExistPredicates(), bLattice.getInvalidX(), bLattice.getInvalidRHSs(), bLattice.getValidXRHSs(),
+            LatticeConstant latticeWorker = task.generateNextLatticeLevel(bLattice.getAllPredicates(), bLattice.getAllExistPredicates(), bLattice.getInvalidX(), bLattice.getInvalidRHSs(), bLattice.getValidXRHSs(),
                     bLattice.getInterestingness(), bLattice.getKthScore(), bLattice.getSuppRatios(), bLattice.getPredicateProviderIndex(), bLattice.getOption(), null,
                     bLattice.getIfRL(), bLattice.getIfOnlineTrainRL(), bLattice.getIfOfflineTrainStage(), bLattice.getIfExistModel(),
                     bLattice.getPI_path(), bLattice.getRL_code_path(), bLattice.getLearning_rate(), bLattice.getReward_decay(), bLattice.getE_greedy(),
@@ -1045,7 +1045,7 @@ public class ParallelRuleDiscoverySamplingConstant {
                     bLattice.getPredicatesHashIDs(), bLattice.getTopKOption());
             return latticeWorker;
 
-        }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
+        }).aggregate(null, new ILatticeConstantAggFunction(), new ILatticeConstantAggFunction());
         long now = System.currentTimeMillis();
 
 //        Lattice nextLattice = workUnitLattices.stream().parallel().map(task -> {
@@ -2712,12 +2712,12 @@ public class ParallelRuleDiscoverySamplingConstant {
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
 
         // remove predicates that are irrelevant to RHSs
-        if (this.maxTupleNum <= 2) {
-            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
-        }
-
-        // remove constant predicates of enumeration type for X
-        removeEnumPredicates(this.allPredicates, this.allExistPredicates);
+//        if (this.maxTupleNum <= 2) {
+//            filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
+//        }
+//
+//        // remove constant predicates of enumeration type for X
+//        removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         int cpsize = 0;
         int psize = 0;
@@ -2731,7 +2731,7 @@ public class ParallelRuleDiscoverySamplingConstant {
         logger.info("#### after filtering, there are {} predicates, constant size: {}, non-constant size: {}", this.allPredicates.size(), cpsize, psize);
 
         // 1. initialize the 1st level combinations
-        Lattice lattice = new Lattice(this.maxTupleNum);
+        LatticeConstant lattice = new LatticeConstant(this.maxTupleNum);
         // only for test application-driven methods
 //        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
 //        ArrayList<Predicate> applicationRHSs = new ArrayList<>();
@@ -2933,7 +2933,7 @@ public class ParallelRuleDiscoverySamplingConstant {
 
 
             lattice.setAllLatticeVertexBits(lattice.getLatticeLevel());
-            Lattice nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
+            LatticeConstant nextLattice = lattice.generateNextLatticeLevel(this.allPredicates, this.allExistPredicates, this.invalidX, this.invalidXRHSs, this.validXRHSs,
                     interestingness, this.getKthInterestingnessScore(), currentSupports, predicateProviderIndex, option, null,
                     this.ifRL, this.ifOnlineTrainRL, this.ifOfflineTrainStage, ifExistModel, this.PI_path, this.RL_code_path,
                     this.learning_rate, this.reward_decay, this.e_greedy, this.replace_target_iter, this.memory_size, this.batch_size, this.table_name, this.N, this.predicateDQNHashIDs, this.topKOption);
