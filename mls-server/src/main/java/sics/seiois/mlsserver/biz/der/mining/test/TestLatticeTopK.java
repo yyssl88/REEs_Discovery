@@ -41,12 +41,12 @@ public class TestLatticeTopK {
         double minimumSharedValue = 0.30d;
         double maximumSharedValue = 0.7d;
         int round = 1;
-        String output_file = "D:/REE/tmp/airports/topk/rules/rules_topk_allFiltering.txt"; //"D:/REE/tmp/inspection/rules/camera_ready/rules_test.csv"; //  //
+        String output_file = "D:/REE/tmp/ncvoter/topk/rules/rules_topk_allFiltering.txt"; //""D:/REE/tmp/airports/topk/rules/rules_topk_allFiltering.txt"; //"D:/REE/tmp/inspection/rules/camera_ready/rules_test.csv"; //  //
                 //  // "D:/REE/tmp/ncvoter/rules/camera_ready/rules_test.txt"; // "D:/REE/tmp/airports/rules/camera_ready/rules_round" + Integer.toString(round) + ".txt"; //"D:/REE/tmp/inspection/rules/rules_rs_round8.txt"; //"; //"D:/REE/tmp/airports/rules/rules_round2.txt";
-        String directory_path = "D:/REE/tmp/airports/topk/airports/"; //"D:/REE/tmp/property/samples/property_RW_ROUND" + Integer.toString(round); // "D:/REE/tmp/inspection/inspection/filtered_columns/"; //  //
+        String directory_path = "D:/REE/tmp/ncvoter/topk/ncvoter/"; // "D:/REE/tmp/airports/topk/airports/"; //"D:/REE/tmp/property/samples/property_RW_ROUND" + Integer.toString(round); // "D:/REE/tmp/inspection/inspection/filtered_columns/"; //  //
                 //"D:/REE/tmp/property/test/"; //"D:/REE/tmp/ncvoter/datasets/small_test/"; // "D:/REE/tmp/airports/airports_RW_ROUND" + Integer.toString(round) + "/"; // "D:/REE/tmp/inspection/copy/inspection_RS_ROUND8/"; //D:/REE/tmp/airports/airports_RS_ROUND8/"; //"D:/REE/tmp/property/property"; //""D:/REE/tmp/ncvoter/"; // "D:/REE/tmp/airports/"; // "D:/REE/tmp/user_info";
         // String directory_path =  "D:/REE/tmp/property/samples/property_RS_ROUND3/"; //""D:/REE/tmp/ncvoter/"; //  // "D:/REE/tmp/user_info";
-        String constant_file = "D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; //; // // // "D:/REE/tmp/ncvoter/ncvoter_constant_predicates.txt"; //"D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
+        String constant_file = "D:/REE/tmp/ncvoter/ncvoter_constants_predicates.txt"; // "D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; //; // // // "D:/REE/tmp/ncvoter/ncvoter_constant_predicates.txt"; //"D:/REE/tmp/airports/constant_airports_new.txt"; //"D:/REE/tmp/inspection/constant_inspection.txt"; // "D:/REE/tmp/property/constant_property.txt"; //D:/REE/tmp/ncvoter_constants/ncvoter_constants_predicates.txt"; //";
 
 //        String output_file = args[0];
 //        String directory_path = args[1];
@@ -78,11 +78,11 @@ public class TestLatticeTopK {
 
         // whether to use reinforcement learning for predicate association computation
         // top-K rule interestingness
-        String predicatesHashIDFile = "D:/REE/tmp/airports/topk/airports_topk/airports_predicates.txt";
+        String predicatesHashIDFile = "D:/REE/tmp/ncvoter/topk/ncvoter_topk/ncvoter_predicates.txt"; //"D:/REE/tmp/airports/topk/airports_topk/airports_predicates.txt";
         String topKOption = "allFiltering"; // { allFiltering, partialFiltering, noFiltering }
-        String tokenToIDFile = "D:/REE/tmp/airports/topk/airports_topk/tokenVobs.txt";;
-        String interestingnessModelFile = "D:/REE/tmp/airports/topk/airports_topk/interestingnessModel.txt";
-        String filterRegressionFile = "D:/REE/tmp/airports/topk/airports_topk/filterRegressionModel.txt";
+        String tokenToIDFile = "D:/REE/tmp/ncvoter/topk/ncvoter_topk/tokenVobs.txt"; //"D:/REE/tmp/airports/topk/airports_topk/tokenVobs.txt";;
+        String interestingnessModelFile = "D:/REE/tmp/ncvoter/topk/ncvoter_topk/interestingnessModel.txt"; // "D:/REE/tmp/airports/topk/airports_topk/interestingnessModel.txt";
+        String filterRegressionFile = "D:/REE/tmp/ncvoter/topk/ncvoter_topk/filterRegressionModel.txt"; // "D:/REE/tmp/airports/topk/airports_topk/filterRegressionModel.txt";
 
         Dir directory = new Dir(directory_path, relation_num_ratio);
 

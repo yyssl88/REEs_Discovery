@@ -104,12 +104,14 @@ public class InterestingnessModel implements Serializable {
             SimpleMatrix matrix = new SimpleMatrix(mat);
             matrices.add(matrix);
         }
+
         // assign to matrices
         this.tokensEmbedMatrix = matrices.get(0);
         this.weightPredicates = matrices.get(1);
         this.weightREEsEmbed = matrices.get(2);
         this.weightInterest = matrices.get(3);
-        this.weightUBSubj = matrices.get(4);
+        this.weightObjSubj = matrices.get(4);
+        this.weightUBSubj = matrices.get(5);
         // weights of features are non-negative
         this.weightObjSubj = this.weightObjSubj.elementMult(this.weightObjSubj);
         this.weightUBSubj = this.weightUBSubj.elementMult(this.weightUBSubj);
@@ -303,8 +305,12 @@ public class InterestingnessModel implements Serializable {
                 continue;
             }
             String[] info = line.split(" "); // the first one is the token, and the second one is the ID
-            String token = info[0];
-            int ID = Integer.parseInt(info[1].trim());
+            String token = ""; // info[0];
+            for (int z = 0; z < info.length - 1; z++) {
+                token += info[z] + " ";
+            }
+            token = token.trim();
+            int ID = Integer.parseInt(info[info.length - 1].trim());
             if (!vobsIDs.containsKey(token)) {
                 vobsIDs.put(token, ID);
             }
@@ -342,8 +348,12 @@ public class InterestingnessModel implements Serializable {
                 continue;
             }
             String[] info = line.split(" "); // the first one is the token, and the second one is the ID
-            String token = info[0];
-            int ID = Integer.parseInt(info[1].trim());
+            String token = ""; // info[0];
+            for (int z = 0; z < info.length - 1; z++) {
+                token += info[z] + " ";
+            }
+            token = token.trim();
+            int ID = Integer.parseInt(info[info.length - 1].trim());
             if (!vobsIDs.containsKey(token)) {
                 vobsIDs.put(token, ID);
             }
