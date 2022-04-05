@@ -394,7 +394,7 @@ public class Lattice implements KryoSerializable {
                 double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates()), 1.0, tt, null, topKOption);
 //                curr_ub = ub;
 //                logger.info("#### KthScore: {}, ub: {}, curr_ub: {}", KthScore, ub, curr_ub);
-                if (ub < KthScore) {
+                if (ub <= KthScore) {
                     removeKeys.add(key);
                     continue;
                 }
@@ -410,24 +410,20 @@ public class Lattice implements KryoSerializable {
                 if (supp_ratios.containsKey(current)) {
                     double ub = interestingness.computeUB(supp_ratios.get(current), 1.0, tt, rhs, topKOption);
                     if (ub <= KthScore) {
-                        removeKeys.add(key);
+                        //removeKeys.add(key);
+                        // cannot remove the key, but the rhs
+                        lv.getRHSs().remove(rhs);
                         break;
                     }
                 }
                 if (supp_ratios.containsKey(tt)) {
                     double ub = interestingness.computeUB(supp_ratios.get(tt), 1.0, tt, rhs, topKOption);
-//                    if (curr_ub == 0.0) {
-//                        curr_ub = ub;
-//                    } else {
-//                        curr_ub = curr_ub < ub ? curr_ub : ub;
-//                    }
-//                    logger.info("#### KthScore: {}, ub: {}, curr_ub: {}", KthScore, ub, curr_ub);
                     if (ub <= KthScore) {
                         // remove the RHS predicate (p_0) if it did not meet the value of UB
-                        // lv.getRHSs().remove(rhs);
+                        lv.getRHSs().remove(rhs);
 
                         // if at least one RHS UB does not satisfy, remove the lattice vertex, -- new ADDED, need to re-test and re-think
-                        removeKeys.add(key);
+                        // removeKeys.add(key);
                         break;
                     }
                 }
