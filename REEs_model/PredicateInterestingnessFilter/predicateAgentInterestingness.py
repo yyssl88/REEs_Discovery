@@ -20,6 +20,7 @@ class Predicate(object):
         self.operand1 = None
         self.operand2 = None
         self.constant = None
+        print("Predicate String : ", predicate_str)
         res = self.parsePredicate(predicate_str)
         self.predicateStr = predicate_str
         self.index1 = res[0]
@@ -69,7 +70,8 @@ class Predicate(object):
                 'similar')] != 'similar':
             ss = predicate[predicate.find("(") + 1:predicate.find(")")]
             for i in range(1, len(ss), 1):
-                if ss[:i].isalpha and ss[i:].isdigit:
+                if ss[:i].isalpha() and ss[i:].isdigit():
+                    print(ss, i, ss[:i], ss[i:], ss[:i].isalpha, ss[i:].isdigit)
                     return None
 
         res = None
@@ -100,7 +102,7 @@ class Predicate(object):
         operand1_new = operand1_[0] + RELATION_ATTRIBUTE + operand1_[2]
         operator_ = res[1]
         operand2_ = res[2].split(".")
-        if len(operand2_) < 3:
+        if len(operand2_) != 3 or (len(operand2_) > 1 and operand2_[1][:1] != 't'):
             index2_ = index1_
             operand2_new = res[2]
         else:
