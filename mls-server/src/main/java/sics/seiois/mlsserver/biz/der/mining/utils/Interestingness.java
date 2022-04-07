@@ -208,17 +208,20 @@ public class Interestingness implements Serializable {
 
     public double computeInterestingness(DenialConstraint ree) {
         ArrayList<Predicate> pSel = new ArrayList<>();
+        Predicate rhs = ree.getRHS();
         for (Predicate p : ree.getPredicateSet()) {
+            if (p.equals(rhs)) {
+                continue;
+            }
             pSel.add(p);
         }
-        Predicate rhs = ree.getRHS();
         double[][] objFeas = new double[1][this.featuresNum - 1];
         // 1. support
         objFeas[0][0] = ree.getSupport() * 1.0 / (this.allCount * this.allCount);
         // 2. confidence
         objFeas[0][1] = ree.getConfidence();
         // 3. conciseness
-        objFeas[0][2] = 1.0 / ree.getPredicateSet().size();
+        objFeas[0][2] = 1.0 / pSel.size();
         return this.computeInterestingnessNN(pSel, rhs, objFeas);
     }
 
