@@ -389,16 +389,16 @@ public class Lattice implements KryoSerializable {
             PredicateSet current = lv.getPredicates();
 
             // first check all predicates in lv, prune all
-            if (supp_ratios.containsKey(lv.getPredicates())) {
-                PredicateSet tt = new PredicateSet(current);
-                double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates()), 1.0, tt, null, topKOption);
-//                curr_ub = ub;
-//                logger.info("#### KthScore: {}, ub: {}, curr_ub: {}", KthScore, ub, curr_ub);
-                if (ub <= KthScore) {
-                    removeKeys.add(key);
-                    continue;
-                }
-            }
+//            if (supp_ratios.containsKey(lv.getPredicates())) {
+//                PredicateSet tt = new PredicateSet(current);
+//                double ub = interestingness.computeUB(supp_ratios.get(lv.getPredicates()), 1.0, tt, null, topKOption);
+////                curr_ub = ub;
+////                logger.info("#### KthScore: {}, ub: {}, curr_ub: {}", KthScore, ub, curr_ub);
+//                if (ub <= KthScore) {
+//                    removeKeys.add(key);
+//                    continue;
+//                }
+//            }
 
             // loop all RHSs to check whether some of them can be pruned based on the interestingness UB
             for (Predicate rhs : lv.getRHSs()) {
@@ -657,7 +657,7 @@ public class Lattice implements KryoSerializable {
             // add newP
             pSet.add(newP);
             if (f1 == false && f2 == false) {
-                double UBScore = interestingness.computeUB(1, 1.0, pSet, rhs, topKOption);
+                double UBScore = interestingness.computeUB(interestingness.getAllCount(), 1.0, pSet, rhs, topKOption);
                 if (UBScore > kth) {
                     validRHSs.add(rhs);
                 }

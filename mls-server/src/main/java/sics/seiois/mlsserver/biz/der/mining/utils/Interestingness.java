@@ -64,6 +64,10 @@ public class Interestingness implements Serializable {
         }
     }
 
+    public long getAllCount() {
+        return this.allCount;
+    }
+
     // set count for a REE
     public void updateCounter(PredicateSet ps) {
         HashSet<String> keys = new HashSet<>();
