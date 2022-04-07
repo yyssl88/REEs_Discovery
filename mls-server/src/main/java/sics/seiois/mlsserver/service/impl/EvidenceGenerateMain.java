@@ -583,6 +583,8 @@ public class EvidenceGenerateMain {
         }
         logger.info("#### allPredicates size: {}", allPredicates.size());
 
+        logger.info("#### allPredicates: {}", allPredicates);
+
 //        writeAllPredicatesToFile(allPredicates, reeFinderEvidSet.getInput().getName());
 
         int maxOneRelationNum = reeFinderEvidSet.getInput().getMaxTupleOneRelation();
@@ -744,6 +746,19 @@ public class EvidenceGenerateMain {
             return allTablePredicates;
         }
         return new ArrayList<>();
+    }
+
+    public static void writeAllPredicatesToFile(List<Predicate> allPredicates, String table_name) {
+        try {
+            BufferedWriter out = new BufferedWriter(new FileWriter("/opt/allPredicates_" + table_name + ".txt"));
+            for (Predicate p : allPredicates) {
+                out.write(p.toString());
+                out.write("\n");
+            }
+            out.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     public static void writeRuleToHDFS(FileSystem hdfs, List<RuleResult> finalRR, String path) throws IOException {
