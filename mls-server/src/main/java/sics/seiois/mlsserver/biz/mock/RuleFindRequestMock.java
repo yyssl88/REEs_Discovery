@@ -1768,8 +1768,8 @@ public class RuleFindRequestMock {
         table1.setTableName("inspection");
         table1.setTableDataPath("hdfs:///tmp/zhangjun/inspection__" + generateDataMark(options) + ".csv");
 
-        String header = "Inspection_ID,DBA_Name,AKA_Name,License,Facility_Type,Risk,Address,City,State,Zip,Inspection_Date,Inspection_Type,Results,Violations,Latitude,Longitude,Location,Historical_Wards_2003_2015,Zip_Codes,Community_Areas,Census_Tracts,Wards";
-        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+        String header = "Inspection_ID,DBA_Name,AKA_Name,License,Facility_Type,Risk,Address,City,State,Zip,Inspection_Date,Inspection_Type,Results,Violations,Latitude,Longitude,Location";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
         return table1;
