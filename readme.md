@@ -7,8 +7,4 @@
 --- The source code of dynamic predicate filtering and rule interestingness
 
 ### Datasets:
---- Only contain a small dataset Airport
-
---- Others are in the following link:
-
-https://drive.google.com/drive/folders/1oUv3tglQXjGdBWbmIwUMlsbexYYfplI-?usp=sharing
+--- contain a small dataset Airport
