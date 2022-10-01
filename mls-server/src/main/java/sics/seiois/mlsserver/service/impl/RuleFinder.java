@@ -153,7 +153,8 @@ public class RuleFinder {
                     .addFile(requestJsonFilePath)
                     .addFile(fpath + "/conf/predict.conf")
                     // TODO: 优化路径
-                    .addSparkArg("--archives", ResourceManager.getArchivesFilePath())
+//                    .addSparkArg("--archives", ResourceManager.getArchivesFilePath())
+                    .addSparkArg("--archives", "")
                     .addSparkArg("--jars", jarPath)
                     .setDeployMode("cluster");
        /*     if(predicateConfig.isDistributeBranchFlag()) {

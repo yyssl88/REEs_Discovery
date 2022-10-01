@@ -1,5 +1,6 @@
 package sics.seiois.mlsserver.biz.der.mining;
 
+//import sics.seiois.mlsserver.biz.der.mining.utils.PriorityQueue;
 import gnu.trove.list.array.TIntArrayList;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.hadoop.conf.Configuration;
@@ -66,6 +67,7 @@ public class ParallelRuleDiscoverySampling {
     private static final PredicateProviderIndex predicateProviderIndex = PredicateProviderIndex.getInstance();
 
     private PriorityQueue<DenialConstraint> topKREEsTemp;
+    private ArrayList<DenialConstraint> topKREEsList;
     private DenialConstraint[] topKREEs;
     private Double[] topKREEScores;
     // the k-th UB score
@@ -322,10 +324,12 @@ public class ParallelRuleDiscoverySampling {
                 } else if (o1.getInterestingnessScore() > o2.getInterestingnessScore()) {
                     return -1;
                 } else {
-                    return 0;
+//                    return -1;
+                    return o1.toString().compareTo(o2.toString());
                 }
             }
         });
+        this.topKREEsList = new ArrayList<>();
         this.topKREEs = new DenialConstraint[this.K];
         this.topKREEScores = new Double[this.K];
         for (int i = 0; i < this.K; i++) {
@@ -1306,7 +1310,7 @@ public class ParallelRuleDiscoverySampling {
                 }
                 // check interestingness UB
                 for (Predicate rhs : task.getRHSs()) {
-                    double ub = interestingness.computeUB(suppOne * 1.0 / this.allCount, 1.0, task.getCurrrent(), rhs, topKOption);
+                    double ub = interestingness.computeUB(suppOne * 1.0, 1.0, task.getCurrrent(), rhs, topKOption);
                     if (ub <= KthScore) {
                         task.getRHSs().remove(rhs);
                     }
@@ -2163,6 +2167,7 @@ public class ParallelRuleDiscoverySampling {
         store the current top-K interesting REEs
      */
     private void maintainTopKRules(DenialConstraintSet rees) {
+        // original - use priorityQueue in java.util
         for (DenialConstraint ree : rees) {
             topKREEsTemp.add(ree);
         }
@@ -2183,6 +2188,62 @@ public class ParallelRuleDiscoverySampling {
                 topKREEsTemp.add(this.topKREEs[i]);
             }
         }
+
+//        // method-2: not good
+//        Comparator<DenialConstraint> comparatorAge =new Comparator <DenialConstraint>(){
+//            public int compare(DenialConstraint p1, DenialConstraint p2){
+//                if (p1.getInterestingnessScore() > p2.getInterestingnessScore())
+//                    return -1;
+//                else if (p1.getInterestingnessScore() < p2.getInterestingnessScore())
+//                    return 1;
+//                else
+//                    return 0;
+//            }
+//        };
+//        for (DenialConstraint ree : rees) {
+//            this.topKREEsList.add(ree);
+//        }
+//        this.topKREEsList.sort(comparatorAge);
+////        ArrayList<DenialConstraint> topKREEsListTemp = new ArrayList<>();
+//        int min_size = this.K;
+//        if (this.K > this.topKREEsList.size()) {
+//            min_size = this.topKREEsList.size();
+//        }
+//        for (int i = 0; i < min_size; i++) {
+//            topKREEs[i] = this.topKREEsList.get(i);
+//            topKREEScores[i] = topKREEs[i].getInterestingnessScore();
+//        }
+//        this.topKREEsList.clear();
+//        for (int i = 0; i < this.K; i++) {
+//            if (this.topKREEs[i] != null) {
+//                this.topKREEsList.add(this.topKREEs[i]);
+//            }
+//        }
+
+//        // method-3: use self-defined class
+//        for (DenialConstraint ree : rees) {
+//            topKREEsTemp.add(ree, ree.getInterestingnessScore());
+//        }
+//        // score the current top-K REEs and their corresponding interesting scores
+//        int idx = 0;
+//        while (topKREEsTemp.hasNext()) {
+//            if (idx == this.K) {
+//                break;
+//            }
+//            topKREEs[idx] = topKREEsTemp.peek();
+//            topKREEsTemp.removeFirst();
+//            topKREEScores[idx] = topKREEs[idx].getInterestingnessScore();
+//            // update counters
+//            interestingness.updateCounter(topKREEs[idx].getPredicateSet());
+//            idx = idx + 1;
+//        }
+//        topKREEsTemp.clear();
+//
+//        for (int i = 0; i < this.K; i++) {
+//            if (this.topKREEs[i] != null) {
+//                topKREEsTemp.add(this.topKREEs[i], this.topKREEs[i].getInterestingnessScore());
+//            }
+//        }
     }
 
     private double getKthInterestingnessScore() {
@@ -2360,6 +2421,14 @@ public class ParallelRuleDiscoverySampling {
         }
         rees.setTotalTpCount(allCount*allCount);
         return rees;
+    }
+
+    public ArrayList<DenialConstraint> getTopKREEs_new() {
+        ArrayList<DenialConstraint> final_results = new ArrayList<>();
+        for (int i = 0; i < this.K; i++) {
+            final_results.add(this.topKREEs[i]);
+        }
+        return final_results;
     }
 
     /**

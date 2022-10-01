@@ -408,7 +408,7 @@ public class Lattice implements KryoSerializable {
                 PredicateSet tt = new PredicateSet(current);
                 tt.remove(rhs);
                 if (supp_ratios.containsKey(current)) {
-                    double ub = interestingness.computeUB(supp_ratios.get(current), 1.0, tt, rhs, topKOption);
+                    double ub = interestingness.computeUB(supp_ratios.get(current) * interestingness.getAllCount(), 1.0, tt, rhs, topKOption);
                     if (ub <= KthScore) {
                         //removeKeys.add(key);
                         // cannot remove the key, but the rhs
@@ -417,7 +417,7 @@ public class Lattice implements KryoSerializable {
                     }
                 }
                 if (supp_ratios.containsKey(tt)) {
-                    double ub = interestingness.computeUB(supp_ratios.get(tt), 1.0, tt, rhs, topKOption);
+                    double ub = interestingness.computeUB(supp_ratios.get(tt) * interestingness.getAllCount(), 1.0, tt, rhs, topKOption);
                     if (ub <= KthScore) {
                         // remove the RHS predicate (p_0) if it did not meet the value of UB
                         lv.getRHSs().remove(rhs);

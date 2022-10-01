@@ -155,7 +155,8 @@ public class TestLatticeTopK {
 
             parallelRuleDiscoverySampling.levelwiseRuleDiscoveryLocal();
             // Get top-K rules
-            DenialConstraintSet rees = parallelRuleDiscoverySampling.getTopKREEs();
+//            DenialConstraintSet rees = parallelRuleDiscoverySampling.getTopKREEs();
+            ArrayList<DenialConstraint> rees = parallelRuleDiscoverySampling.getTopKREEs_new();
 
             System.out.printf("Total running time: %s\n", System.currentTimeMillis() - runTime);
             System.out.printf("# of All REEs %s\n", rees.size());
@@ -166,8 +167,8 @@ public class TestLatticeTopK {
                 if (ree == null) {
                     continue;
                 }
-                System.out.printf("REE: %s, supp=%d, conf=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence());
-                String oo = String.format("REE: %s, supp=%d, conf=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence());
+                System.out.printf("REE: %s, supp=%d, conf=%f, score=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence(), ree.getInterestingnessScore());
+                String oo = String.format("REE: %s, supp=%d, conf=%f, score=%f\n", ree.toString(), ree.getSupport(),ree.getConfidence(), ree.getInterestingnessScore());
                 osw.write(oo);
                 c_ree++;
             }

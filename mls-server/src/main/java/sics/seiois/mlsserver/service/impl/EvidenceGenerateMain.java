@@ -655,7 +655,22 @@ public class EvidenceGenerateMain {
         parallelRuleDiscovery.levelwiseRuleDiscovery(taskId, spark, sparkContextConfig);
         long duringTime = System.currentTimeMillis() - startMineTime;
         // Get top-K rules
-        DenialConstraintSet rees = parallelRuleDiscovery.getTopKREEs();
+//        DenialConstraintSet rees = parallelRuleDiscovery.getTopKREEs();
+        ArrayList<DenialConstraint> rees = parallelRuleDiscovery.getTopKREEs_new();
+
+        // sort REEs with the same scores
+//        rees.sort(new Comparator<DenialConstraint>() {
+//            @Override
+//            public int compare(DenialConstraint o1, DenialConstraint o2) {
+//                if (o1.getInterestingnessScore() < o2.getInterestingnessScore()) {
+//                    return 1;
+//                } else if (o1.getInterestingnessScore() > o2.getInterestingnessScore()) {
+//                    return -1;
+//                } else {
+//                    return o1.toString().compareTo(o2.toString());
+//                }
+//            });
+//        }
 
         timeInfo.append("REE Discovery Time : ").append(duringTime).append("\n");
         logger.info("#### REE Discovery Time: {}", duringTime);
@@ -665,7 +680,7 @@ public class EvidenceGenerateMain {
             if (ree == null) {
                 continue;
             }
-            timeInfo.append("Rule : ").append(ree.toString()).append(", supp: ").append(ree.getSupport()).append(", conf:").append(ree.getConfidence()).append("\n");
+            timeInfo.append("Rule : ").append(ree.toString()).append(", supp: ").append(ree.getSupport()).append(", conf:").append(ree.getConfidence()).append(", score:").append(ree.getInterestingnessScore()).append("\n");
         }
 
         String outTxtPath = PredicateConfig.MLS_TMP_HOME + taskId + "/rule_all/" +  outputResultFile; //"experiment_results";
@@ -694,7 +709,7 @@ public class EvidenceGenerateMain {
             reeIndex++;
             RuleResult rule = new RuleResult();
             rule.setID(reeIndex);
-            rule.setRowSize(rees.getTotalTpCount());
+//            rule.setRowSize(rees.getTotalTpCount());
             rule.setSupport(ree.getSupport());
             rule.setUnsupport(ree.getViolations());
             rule.setInnerRule(ree.toInnerString());

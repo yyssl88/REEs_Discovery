@@ -238,7 +238,7 @@ public class Interestingness implements Serializable {
             subjectiveScore = this.computeUBSubjectiveScore(X, p_0);
         }
 //        double supp_ub = support_ratio_ofX;
-        double supp_ub = support_ratio_ofX / allCount; //Math.sqrt(allCount);
+        double supp_ub = support_ratio_ofX / allCount / allCount; //Math.sqrt(allCount);
         double confidence_ub = 1.0f;
         // double diver_ub = this.computeDeiversity(X);
         double succ_ub = 1.0 / X.size();
