@@ -251,6 +251,8 @@ public class RuleFinder {
         String tokenToIDFile = argsMap.get("tokenToIDFile");
         String filterRegressionFile = argsMap.get("filterRegressionFile");
 
+        String useConfHeuristic = argsMap.get("useConfHeuristic");
+
         numOfProcessors = numOfProcessors_;
 
         StringBuffer otherParam = new StringBuffer();
@@ -299,6 +301,9 @@ public class RuleFinder {
         otherParam.append("tokenToIDFile=" + tokenToIDFile + ';');
         otherParam.append("filterRegressionFile=" + filterRegressionFile + ';');
         otherParam.append("interestingnessModelFile=" + interestingnessModelFile + ';');
+
+        // use confidence to heuristically prune. If confidence of a node decrease, then do not expand this node
+        otherParam.append("useConfHeuristic=" + useConfHeuristic + ';');
 
 //        RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset);
         RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset, taskID);

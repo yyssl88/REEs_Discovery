@@ -330,7 +330,7 @@ public class EvidenceGenerateMain {
         if (ifRL == 0) {
             parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, 10000, maxTupleNum,
                     support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
-                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+                    1, 1, 1, 1, 1, 0, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, false);
         } else {
             int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
             int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));
@@ -624,10 +624,12 @@ public class EvidenceGenerateMain {
         String interestingnessModelFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "interestingnessModelFile");
         String filterRegressionFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "filterRegressionFile");
 
+        boolean useConfHeuristic = Boolean.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "useConfHeuristic"));
+
         ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                 support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                 w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
-                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
+                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs, useConfHeuristic);
 
 //            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
 //            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));

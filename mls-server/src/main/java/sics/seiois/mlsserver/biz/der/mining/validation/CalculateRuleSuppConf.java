@@ -515,7 +515,7 @@ public class CalculateRuleSuppConf {
 
             this.parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(this.allPredicates, 10000, this.maxTupleNum,
                     this.support, (float) this.confidence, this.maxOneRelationNum, this.input, this.allCount,
-                    0, 0, 0, 0, 0, 0, 0, 0, 0, filter_enum_number);
+                    0, 0, 0, 0, 0, 0, 0, 0, 0, filter_enum_number, false);
 
             this.table_name = "";
             for (String name : this.input.getNames()) {

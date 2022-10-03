@@ -117,6 +117,10 @@ public class ParallelRuleDiscoverySampling {
     private HashMap<String, Integer> predicateDQNHashIDs = null;
     private boolean ifDQN;
 
+    private boolean useConfHeuristic;
+    private HashMap<IBitSet, HashMap<Predicate, Double>> confidence_last_round;
+    private HashMap<IBitSet, HashMap<Predicate, Double>> confidence_current_round;
+
     // set the DQNMLP
     void loadDQNModel(MLPFilterClassifier dqnmlp) throws IOException {
         if (dqnmlp == null) {
@@ -260,7 +264,7 @@ public class ParallelRuleDiscoverySampling {
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits,
-                                         int filter_enum_number) {
+                                         int filter_enum_number, boolean useConfHeuristic) {
         this.allPredicates = predicates;
         this.K = K;
         this.maxTupleNum = maxTupleNum;
@@ -279,6 +283,12 @@ public class ParallelRuleDiscoverySampling {
         this.if_cluster_workunits = if_cluster_workunits;
 
         this.filter_enum_number = filter_enum_number;
+
+        this.useConfHeuristic = useConfHeuristic;
+        if (this.useConfHeuristic) {
+            this.confidence_last_round = new HashMap<>();
+            this.confidence_current_round = new HashMap<>();
+        }
 
         // set support for each predicate;
         HashMap<String, HashMap<Integer, Long>> statistic = new HashMap<>();
@@ -356,10 +366,10 @@ public class ParallelRuleDiscoverySampling {
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
-                                         boolean ifDQN, MLPFilterClassifier dqnmlp) throws IOException {
+                                         boolean ifDQN, MLPFilterClassifier dqnmlp, boolean useConfHeuristic) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
-                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, useConfHeuristic);
 
         this.ifDQN = ifDQN;
         this.loadDQNModel(dqnmlp);
@@ -370,10 +380,10 @@ public class ParallelRuleDiscoverySampling {
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
-                                         boolean ifDQN, MLPFilterClassifier dqnmlp, String predicateHashIDsFile) throws IOException {
+                                         boolean ifDQN, MLPFilterClassifier dqnmlp, String predicateHashIDsFile, boolean useConfHeuristic) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
-                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, useConfHeuristic);
 
         this.ifDQN = ifDQN;
         this.loadDQNModel(dqnmlp, predicateHashIDsFile);
@@ -389,10 +399,10 @@ public class ParallelRuleDiscoverySampling {
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
                                          String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
-                                         FileSystem hdfs) throws IOException {
+                                         FileSystem hdfs, boolean useConfHeuristic) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
-                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, useConfHeuristic);
 
         // topKOption is the indicator to switch different ablation study
         this.topKOption = topKOption;
@@ -404,10 +414,10 @@ public class ParallelRuleDiscoverySampling {
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
                                          String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
-                                         String predicateHashIDsFile) throws IOException {
+                                         String predicateHashIDsFile, boolean useConfHeuristic) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
-                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number);
+                w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, useConfHeuristic);
 
         // topKOption is the indicator to switch different ablation study
         this.topKOption = topKOption;
@@ -1236,6 +1246,8 @@ public class ParallelRuleDiscoverySampling {
                 // collect supports of candidate rules
 //            HashMap<IBitSet, Double> candSupports = this.getCandidateSupportRatios(messages);
                 this.getCandidateXSupportRatios(currentSupports, messages);
+                // record confidences in this round, for pruning in the next round
+                this.saveConfidenceCurrentRound(messages);
                 // collect invalid X
                 this.addInvalidX(messages);
                 // collective valid X -> p_0
@@ -1250,7 +1262,13 @@ public class ParallelRuleDiscoverySampling {
                     }
                     workUnits_init = remainTasks;
                 }
+            }
 
+            if (this.useConfHeuristic) {
+                // collect invalid X by conf heuristic
+                this.addInvalidX_by_conf_heuristic();
+                // update confidence_last_round and confidence_current_round
+                this.updateConfidenceInfo_afterRound();
             }
 
             if (this.ifRL == 1 && this.ifOnlineTrainRL == 0 && this.ifOfflineTrainStage == 1 && ifReachN) {
@@ -2273,7 +2291,6 @@ public class ParallelRuleDiscoverySampling {
                 }
             }
             if (this.if_conf_filter == 1) {
-
                 HashMap<Predicate, Long> allRHSSupports = message.getAllCurrentRHSsSupport();
                 for (Map.Entry<Predicate, Long> entry : allRHSSupports.entrySet()) {
                     if (entry.getValue() * 1.0 / message.getCurrentSupp() < this.conf_filter_thr) {
@@ -2283,6 +2300,45 @@ public class ParallelRuleDiscoverySampling {
                             ArrayList<Predicate> tArr = new ArrayList<>();
                             tArr.add(entry.getKey());
                             this.invalidXRHSs.put(kkps.getBitset(), tArr);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private void addInvalidX_by_conf_heuristic() {
+        if (!this.useConfHeuristic) {
+            return;
+        }
+        if (this.confidence_last_round.size() == 0) {
+            return;
+        }
+        for (Map.Entry<IBitSet, HashMap<Predicate, Double>> entry_last : this.confidence_last_round.entrySet()) {
+            for (Map.Entry<IBitSet, HashMap<Predicate, Double>> entry_current : this.confidence_current_round.entrySet()) {
+                if (!entry_last.getKey().isSubSetOf(entry_current.getKey())) {
+                    continue;
+                }
+                for (Map.Entry<Predicate, Double> info_last : entry_last.getValue().entrySet()) {
+                    for (Map.Entry<Predicate, Double> info_current : entry_current.getValue().entrySet()) {
+                        if (!info_current.getKey().equals(info_last.getKey())) {
+                            continue;
+                        }
+                        if (info_current.getValue() >= info_last.getValue()) {
+                            continue;
+                        }
+                        // add nodes with confidence decrease into invalidXRHSs
+                        // (1) add X^p0 into invalidX
+                        PredicateSet temp = new PredicateSet(entry_current.getKey());
+                        temp.add(info_current.getKey());
+                        this.invalidX.add(temp.getBitset());
+                        // (2) add X and p0 into invalidXRHSs
+                        if (this.invalidXRHSs.containsKey(entry_current.getKey())) {
+                            this.invalidXRHSs.get(entry_current.getKey()).add(info_current.getKey());
+                        } else {
+                            ArrayList<Predicate> tArr = new ArrayList<>();
+                            tArr.add(info_current.getKey());
+                            this.invalidXRHSs.put(entry_current.getKey(), tArr);
                         }
                     }
                 }
@@ -2402,10 +2458,8 @@ public class ParallelRuleDiscoverySampling {
 
                 if (!results.containsKey(kkkps)) {
                     if (rhs.isConstant()) {
-                        // results.put(kkkps, entry.getValue() * maxOneRelationNum * 1.0 / this.allCount);
                         results.put(kkkps, entry.getValue() * maxOneRelationNum * 1.0 / this.allCount);
                     } else {
-                        // results.put(kkkps, entry.getValue() * 1.0 / this.allCount);
                         results.put(kkkps, entry.getValue() * 1.0 / this.allCount);
                     }
                 }
@@ -2413,6 +2467,34 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
+    private void saveConfidenceCurrentRound(List<Message> messages) {
+        if (!this.useConfHeuristic) {
+            return;
+        }
+        if (messages == null) {
+            return;
+        }
+        for (Message message : messages) {
+            PredicateSet kkps = message.getCurrentSet();
+            long currentSupp = message.getCurrentSupp();
+            HashMap<Predicate, Long> allRHSSupports = message.getAllCurrentRHSsSupport();
+            for (Map.Entry<Predicate, Long> entry : allRHSSupports.entrySet()) {
+                double conf = entry.getValue() * 1.0 / currentSupp;
+                if (this.confidence_current_round.containsKey(kkps.getBitset())) {
+                    this.confidence_current_round.get(kkps.getBitset()).put(entry.getKey(), conf);
+                } else {
+                    HashMap<Predicate, Double> tMap = new HashMap<>();
+                    tMap.put(entry.getKey(), conf);
+                    this.confidence_current_round.put(kkps.getBitset(), tMap);
+                }
+            }
+        }
+    }
+
+    private void updateConfidenceInfo_afterRound() {
+        this.confidence_last_round.putAll(this.confidence_current_round);
+        this.confidence_current_round.clear();
+    }
 
     public DenialConstraintSet getTopKREEs() {
         DenialConstraintSet rees = new DenialConstraintSet();

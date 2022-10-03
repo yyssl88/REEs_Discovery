@@ -151,7 +151,7 @@ public class TestLatticeTopK {
             log.info("filter_enum_number: {}", filter_enum_number);
             parallelRuleDiscoverySampling = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum, support, (float)errorThreshold,
                     maxOneRelationNum, input, allCount, w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, 0.001f, if_cluster_workunits, filter_enum_number,
-                    topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, predicatesHashIDFile);
+                    topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, predicatesHashIDFile, false);
 
             parallelRuleDiscoverySampling.levelwiseRuleDiscoveryLocal();
             // Get top-K rules
