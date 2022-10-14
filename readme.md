@@ -26,7 +26,7 @@ Before building the projects, the following prerequisites need to be installed:
 
 ## mls-server    
 This code is for REEs discovery.
-Below we give an toy example.
+Below we give a toy example.
 
 1. Put the datasets into HDFS:
 ```
@@ -45,7 +45,11 @@ hdfs dfs -put filterRegressionModel.txt /tmp/rulefind/interestingness/airports_t
 hdfs dfs -put airports_predicates.txt /tmp/rulefind/interestingness/airports_topk/
 ```
 4. Compile and build applications with IDE, such as IntelliJ IDEA. Choose *sics.seiois.mlsserver.service.impl.RuleFinder* as the main class.
-If your path is, for example, *mls-server/out/artifacts/mls_server/*, then put all the *.jar files from this path into [example/lib/](https://github.com/yyssl88/REEs_Discovery/tree/top-k/mls-server/example/lib/)
+If your path is, for example, *mls-server/out/artifacts/mls_server/*, then put all the *.jar files from this path into example/
+```
+mkdir -p example/lib/
+mv out/artifacts/mls_server/*.jar example/lib/
+```
 5. After all these preparation, run the toy example:
 ```
 cd example/scripts/
