@@ -44,11 +44,19 @@ hdfs dfs -put interestingnessModel.txt /tmp/rulefind/interestingness/airports_to
 hdfs dfs -put filterRegressionModel.txt /tmp/rulefind/interestingness/airports_topk/
 hdfs dfs -put airports_predicates.txt /tmp/rulefind/interestingness/airports_topk/
 ```
-4. Compile and build applications with IDE, such as IntelliJ IDEA. Choose *sics.seiois.mlsserver.service.impl.RuleFinder* as the main class.
-If your path is, for example, *mls-server/out/artifacts/mls_server/*, then put all the *.jar files from this path into example/
+4. Download all the dependencies from Google Drive link:
+https://drive.google.com/drive/folders/1xup0eVNB84BgJz3GSrFCy9X_bG2GF8Lm?usp=sharing, then move the directory lib/ into mls-server/example/:
 ```
-mkdir -p example/lib/
-mv out/artifacts/mls_server/*.jar example/lib/
+cd mls-server/
+mv lib/ example/
+```
+5. Compile and build the project:
+```
+mvn package
+```
+Then move and replace the **mls-server-0.1.1.jar** from mls-server/target/ to example/lib/:
+```
+mv target/mls_server-0.1.1.jar example/lib/
 ```
 5. After all these preparation, run the toy example:
 ```
