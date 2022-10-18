@@ -11,6 +11,8 @@ active learning. Based on the bi-criteria model, we develop a top-𝑘
 algorithm to discover top-ranked REEs, and an any-time algorithm
 for successive discovery via lazy evaluation. 
 
+For more details, see the **Discovering Top-k Rules using Subjective and Objective Criteria** paper. 
+
 The codes mainly include two parts:
 1. mls-server: rule discovery;  
 2. REEs_model: interestingness model;  
@@ -36,7 +38,7 @@ hdfs dfs -put airports.csv /data_path/
 ```
 set the path of line 2004 in src/main/java/sics/seiois/mlsserver/biz/mock/RuleFindRequestMock.java to be hdfs:///data_path/airports.csv
 ```
-3. put the files related to interestingness model into HDFS:
+3. Put the files related to interestingness model, from datasets/, into HDFS:
 ```
 hdfs dfs mkdir -p /tmp/rulefind/interestingness/airports_topk/
 hdfs dfs -put tokenVobs.txt /tmp/rulefind/interestingness/airports_topk/

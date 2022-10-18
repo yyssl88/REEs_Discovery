@@ -29,11 +29,6 @@ exp=(
 )
 
 
-objectiveFea1=0.3
-objectiveFea2=0.2
-objectiveFea3=0.2
-objectiveFea4=0.2
-subjectiveFea=0.1
 filterEnumNumber=10
 
 
@@ -74,13 +69,12 @@ echo -e "information : "${tailFile}
 outputFile_ptopkminer='outputResult_'${task[${dataID}]}"_ptopkminer_"${expOption}${tailFile}
 outputFile_ptopkminernop='outputResult_'${task[${dataID}]}"_ptopkminer_nop_"${expOption}${tailFile}
 outputFile_ptopkminernoL='outputResult_'${task[${dataID}]}"_ptopkminer_noL_"${expOption}${tailFile}
-outputFile_dcfinder='outputResult_'${task[${dataID}]}"_dcfinder_"${expOption}${tailFile}
 
 
 
 echo -e "---------- PTopk-Miner algorithm ----------"
 
-./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=${tnum} ifPrune=1 confFilterThr=${confFilterThr} objectiveFea1=${objectiveFea1} objectiveFea2=${objectiveFea2} objectiveFea3=${objectiveFea3} objectiveFea4=${objectiveFea4} subjectiveFea=${subjectiveFea} outputResultFile=${outputFile_ptopkminer} algOption="discoveryNew" numOfProcessors=${processor} MLOption=1 ifRL=0 ifOnlineTrainRL=0 ifOfflineTrainStage=0 ifClusterWorkunits=0 filterEnumNumber=${filterEnumNumber} ifDQN=false ifConfFilter=0 tokenToIDFile=${tokenToIDFile} interestingnessModelFile=${interestingnessModelFile} filterRegressionFile=${filterRegressionFile} topKOption="allFiltering" useConfHeuristic=true
+./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=${tnum} ifPrune=1 confFilterThr=${confFilterThr} outputResultFile=${outputFile_ptopkminer} algOption="discoveryNew" numOfProcessors=${processor} MLOption=1 ifClusterWorkunits=0 filterEnumNumber=${filterEnumNumber} ifDQN=false ifConfFilter=0 tokenToIDFile=${tokenToIDFile} interestingnessModelFile=${interestingnessModelFile} filterRegressionFile=${filterRegressionFile} topKOption="allFiltering" useConfHeuristic=true
 
 rm ${resFile}${outputFile_ptopkminer}
 hdfs dfs -get "/tmp/rulefind/"${task[${dataID}]}"/rule_all/"${outputFile_ptopkminer} ${resFile}
@@ -90,7 +84,7 @@ hdfs dfs -get "/tmp/rulefind/"${task[${dataID}]}"/rule_all/"${outputFile_ptopkmi
 
 echo -e "---------- PTopk-Miner-noL algorithm ----------"
 
-./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=${tnum} ifPrune=0 confFilterThr=${confFilterThr} objectiveFea1=${objectiveFea1} objectiveFea2=${objectiveFea2} objectiveFea3=${objectiveFea3} objectiveFea4=${objectiveFea4} subjectiveFea=${subjectiveFea} outputResultFile=${outputFile_ptopkminernoL} algOption="discoveryNew" numOfProcessors=${processor} MLOption=1 ifRL=0 ifOnlineTrainRL=0 ifOfflineTrainStage=0 ifClusterWorkunits=0 filterEnumNumber=${filterEnumNumber} ifDQN=false ifConfFilter=0 tokenToIDFile=${tokenToIDFile} interestingnessModelFile=${interestingnessModelFile} filterRegressionFile=${filterRegressionFile} topKOption="partialFiltering"
+./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=${tnum} ifPrune=0 confFilterThr=${confFilterThr} outputResultFile=${outputFile_ptopkminernoL} algOption="discoveryNew" numOfProcessors=${processor} MLOption=1 ifClusterWorkunits=0 filterEnumNumber=${filterEnumNumber} ifDQN=false ifConfFilter=0 tokenToIDFile=${tokenToIDFile} interestingnessModelFile=${interestingnessModelFile} filterRegressionFile=${filterRegressionFile} topKOption="partialFiltering"
 
 rm ${resFile}${outputFile_ptopkminernoL}
 hdfs dfs -get "/tmp/rulefind/"${task[${dataID}]}"/rule_all/"${outputFile_ptopkminernoL} ${resFile}
@@ -100,18 +94,9 @@ hdfs dfs -get "/tmp/rulefind/"${task[${dataID}]}"/rule_all/"${outputFile_ptopkmi
 
 echo -e "---------- PTopk-Miner-nop algorithm ----------"
 
-./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=${tnum} ifPrune=0 confFilterThr=${confFilterThr} objectiveFea1=${objectiveFea1} objectiveFea2=${objectiveFea2} objectiveFea3=${objectiveFea3} objectiveFea4=${objectiveFea4} subjectiveFea=${subjectiveFea} outputResultFile=${outputFile_ptopkminernop} algOption="discoveryNew" numOfProcessors=${processor} MLOption=1 ifRL=0 ifOnlineTrainRL=0 ifOfflineTrainStage=0 ifClusterWorkunits=0 filterEnumNumber=${filterEnumNumber} ifDQN=false ifConfFilter=0 tokenToIDFile=${tokenToIDFile} interestingnessModelFile=${interestingnessModelFile} filterRegressionFile=${filterRegressionFile} topKOption="noFiltering"
+./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=${tnum} ifPrune=0 confFilterThr=${confFilterThr} outputResultFile=${outputFile_ptopkminernop} algOption="discoveryNew" numOfProcessors=${processor} MLOption=1 ifClusterWorkunits=0 filterEnumNumber=${filterEnumNumber} ifDQN=false ifConfFilter=0 tokenToIDFile=${tokenToIDFile} interestingnessModelFile=${interestingnessModelFile} filterRegressionFile=${filterRegressionFile} topKOption="noFiltering"
 
 rm ${resFile}${outputFile_ptopkminernop}
 hdfs dfs -get "/tmp/rulefind/"${task[${dataID}]}"/rule_all/"${outputFile_ptopkminernop} ${resFile}
 
-
-
-
-echo -e "---------- DCFinder algorithm ----------"
-
-./run.sh  support=${supp} confidence=${conf} taskID=${task[${dataID}]} highSelectivityRatio=0 interestingness=1.5 skipEnum=false dataset=${task[${dataID}]} topK=${topK} round=1 maxTuplePerREE=2 ifPrune=1 confFilterThr=${confFilterThr} objectiveFea1=${objectiveFea1} objectiveFea2=${objectiveFea2} objectiveFea3=${objectiveFea3} objectiveFea4=${objectiveFea4} subjectiveFea=${subjectiveFea} outputResultFile=${outputFile_dcfinder} algOption="discoveryES" numOfProcessors=${processor} MLOption=0
-
-rm ${resFile}${outputFile_dcfinder}
-hdfs dfs -get "/tmp/rulefind/"${task[${dataID}]}"/rule_all/"${outputFile_dcfinder} ${resFile}
 
