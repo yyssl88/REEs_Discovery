@@ -592,15 +592,15 @@ public class EvidenceGenerateMain {
         double confidence = sparkContextConfig.getFtr();
         int ifPrune = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifPrune"));
 
-        // parameters of interestingness model
-        float w_supp = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea1"));
-        float w_conf = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea2"));
-        float w_diver = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea3"));
-        float w_succ = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea4"));
-        float w_sub = Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"subjectiveFea"));
+        // parameters of interestingness model // no use for sampling
+        float w_supp = 0; // Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea1"));
+        float w_conf = 0; // Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea2"));
+        float w_diver = 0; // Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea3"));
+        float w_succ = 0; // Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"objectiveFea4"));
+        float w_sub = 0; // Float.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"subjectiveFea"));
 
         // whether use RL to prune
-        int ifRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifRL"));
+        int ifRL = 0; // Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifRL"));
 
         // use confidence to filter work units
         int if_conf_filter = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "ifConfFilter"));

@@ -66,7 +66,7 @@ Then move and replace the **mls-server-0.1.1.jar** from mls-server/target/ to ex
 ```
 mv target/mls_server-0.1.1.jar example/lib/
 ```
-5. After all these preparation, run the toy example:
+6. After all these preparation, run the toy example:
 ```
 cd example/scripts/
 
