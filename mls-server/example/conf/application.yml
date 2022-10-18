@@ -1,0 +1,38 @@
+server:
+  port: 19500
+spring:
+  application:
+    name: mls-server
+  mvc:
+    throw-exception-if-no-handler-found: true
+  resources:
+    add-mappings: false
+  datasource:
+    url: jdbc:postgresql://192.168.3.65:5432/rml_meta
+    username: rml
+    password: rmlPoD@2020
+    driver-class-name: org.postgresql.Driver
+    dbcp2:
+      min-idle: 5
+      initial-size: 5
+      max-total: 5
+      max-wait-millis: 200
+
+mybatis:
+  type-aliases-package: sics.seiois.mlsserver.model.entity
+  config-location: classpath:mybatis/mybatis.cfg.xml
+  mapper-locations: classpath:mybatis/mappers/*.xml
+
+swagger:
+  enable: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://192.168.3.92:19100/eureka
+
+    healthcheck:
+      enabled: true
+  instance:
+    lease-expiration-duration-in-seconds: 30
+    lease-renewal-interval-in-seconds: 10
