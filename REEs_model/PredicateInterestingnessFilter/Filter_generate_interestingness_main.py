@@ -4,20 +4,17 @@ import sys
 sys.path.append('../../REEs_model')
 from DQNInterest_mlp import DeepQNetwork
 from REEs_model.Filter_mlp import FilterRegressor
-from interestingnessFixedEmbeds import * 
+from interestingnessFixedEmbedsWithObj import *
+from REEs_model.parameters import *
 import argparse
 import logging
 import time
-import numpy as np
-import jpype
 import json
 import os
 
 import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
 
-MAX_LHS_PREDICATES = 7
-MAX_RHS_PREDICATES = 1
 
 def main():
     start = time.time()
@@ -36,6 +33,7 @@ def main():
     parser.add_argument('-dqn_model_path', '--dqn_model_path', type=str, default="model/model.ckpt")
     parser.add_argument('-filter_dir', '--filter_dir', type=str, default="FilterData/")
     parser.add_argument('-epochs', '--epochs', type=int, default=200)
+    parser.add_argument('-optionIfObj', '--optionIfObj', type=bool, default=True)
 
     parser.add_argument('-predicates_path', '--predicates_path', type=str, default="allPredicates/predicates_airport.txt")
 
@@ -71,7 +69,7 @@ def main():
     vob_size = 0
     tokenVobs = defaultdict(int)
     for line in open(arg_dict['vobs_file']):
-        token, count = line.split()[0], int(line.split()[1])
+        token, count = ' '.join(line.split()[:-1]), int(line.split()[-1])
         tokenVobs[token] = count
 
     vob_size = len(tokenVobs.keys())
@@ -90,6 +88,15 @@ def main():
         json.dump(statistic, f)
         print('Load json successfully ...')
 
+
+    # load the rule interestingness model
+    InterestingnessModel = InterestingnessEmbedsWithObj(vob_size, arg_dict['token_embed_dim'], arg_dict['hidden_size'],
+                                  arg_dict['rees_embed_dim'], MAX_LHS_PREDICATES,
+                                  MAX_RHS_PREDICATES, 3, arg_dict['optionIfObj'], arg_dict['learning_rate'], arg_dict['epochs'], arg_dict['batch_size'])
+    InterestingnessModel.loadModel(arg_dict['interestingness_model_path'])
+
+    print("The interestingness model is ", InterestingnessModel.vob_size)
+
     pAgent = PredicateAgentInterestingness(p_num, predicateStrArr)
     model = DeepQNetwork(p_num, p_num * 2,
                          learning_rate=arg_dict["learning_rate"],
@@ -105,23 +112,13 @@ def main():
     end = time.time()
     print("finish training, using time: ", str(end - start), arg_dict["model_path"])
 
-    # load the rule interestingness model
-    InterestingnessModel = InterestingnessEmbeds(vob_size, arg_dict['token_embed_dim'], arg_dict['hidden_size'],
-                                  arg_dict['rees_embed_dim'], MAX_LHS_PREDICATES,
-                                  MAX_RHS_PREDICATES, arg_dict['learning_rate'], arg_dict['epochs'], arg_dict['batch_size'])
-    InterestingnessModel.loadModel(arg_dict['interestingness_model_path'])
-
-
     ### train the FilterClassifier
     filterRegressor = FilterRegressor(p_num * 2, arg_dict['learning_rate'], arg_dict['hidden_dim'],
                                         arg_dict['epochs'], arg_dict['batch_size'])
 
     start = time.time()
-    trainData, validData, trainLabels, validLabels = filterRegressor.generateAllTrainingInstances(pAgent,
-                                                                                                   model,
-                                                                                                   InterestingnessModel,
-                                                                                                   MAX_LHS_PREDICATES,
-                                                                                                   arg_dict['combine_num'])
+    trainData, validData, trainLabels, validLabels = filterRegressor.generateAllTrainingInstances(pAgent, model, InterestingnessModel, MAX_LHS_PREDICATES, tokenVobs, arg_dict['combine_num'])
+    end = time.time()
     print("TEST!!!!!! finish generating Filter Data, using time: ", str(end - start))
     # save training data
     filterRegressor.saveFilterData(arg_dict['filter_dir'], trainData, validData, trainLabels, validLabels)

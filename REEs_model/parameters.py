@@ -17,5 +17,5 @@ def __eval__(predictions, labels):
 
 def __evalR__(predictions, labels):
     mae = metrics.mean_absolute_error(labels, predictions)
-    mse = metrics.mean_square_error(labels, predictions)
+    mse = metrics.mean_squared_error(labels, predictions)
     return mae, mse
