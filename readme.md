@@ -20,7 +20,7 @@ The codes mainly include two parts:
 ## Installation
 Before building the projects, the following prerequisites need to be installed:
 * Java JDK 1.8
-* Maven ---
+* Maven
 * transformers
 * tensorflow
 * pytorch
