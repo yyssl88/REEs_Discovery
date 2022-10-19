@@ -23,14 +23,24 @@ class InterestingnessEmbedsWithObj(object):
                  optionIfOBJ,
                  lr,
                  epochs,
-                 batch_size):
+                 batch_size,
+                 pretrain_matrix=None):
         # setup rule representation
-        self.reesRepr = REEsRepr(vob_size,
+        if pretrain_matrix.any() == None:
+            self.reesRepr = REEsRepr(vob_size,
                                  token_embedding_size,
                                  hidden_size,
                                  rees_embedding_size,
                                  max_predicates_lhs,
                                  max_predicates_rhs)
+        else:
+            self.reesRepr = REEsRepr(vob_size,
+                                 token_embedding_size,
+                                 hidden_size,
+                                 rees_embedding_size,
+                                 max_predicates_lhs,
+                                 max_predicates_rhs, pretrain_matrix)
+
 
         # interestingness weights for NN
         self.weight_interest = tf.Variable(tf.random_normal([rees_embedding_size, 1]), trainable=True)
@@ -112,6 +122,7 @@ class InterestingnessEmbedsWithObj(object):
 
     def combine_obj_sub_interestingness(self, obj_features, sub_features):
         features = tf.concat([obj_features, sub_features], axis=1)
+        #weights_feas = tf.nn.relu(self.weights_sub_obj) #tf.multiply(self.weights_sub_obj, self.weights_sub_obj)
         weights_feas = tf.multiply(self.weights_sub_obj, self.weights_sub_obj)
         score = tf.matmul(features, weights_feas)
         return score
@@ -133,15 +144,16 @@ class InterestingnessEmbedsWithObj(object):
         self.label_ph = tf.placeholder(dtype=tf.float32, shape=[None, 2],
                                                 name='label')
 
-        if self.optionIFObj:
-            self.object_features_left = tf.placeholder(dtype=tf.float32, shape=[None, self.num_objective_features], name='objective_features_left')
-            self.object_features_right = tf.placeholder(dtype=tf.float32, shape=[None, self.num_objective_features], name='objective_features_right')
+        #if self.optionIFObj:
+        self.object_features_left = tf.placeholder(dtype=tf.float32, shape=[None, self.num_objective_features], name='objective_features_left')
+        self.object_features_right = tf.placeholder(dtype=tf.float32, shape=[None, self.num_objective_features], name='objective_features_right')
 
         # construct the rule interestingness model
         ree_embed_left = self.reesRepr.encode(self.lhs_vec_ph_left, self.rhs_vec_ph_left)
         ree_embed_right = self.reesRepr.encode(self.lhs_vec_ph_right, self.rhs_vec_ph_right)
         if self.optionIFObj:
-            weight_ub = tf.multiply(self.weight_ub_sub, self.weight_ub_sub)
+            #weight_ub = tf.multiply(self.weight_ub_sub, self.weight_ub_sub)
+            weight_ub = self.weight_ub_sub
             self.subjective_left = weight_ub - tf.nn.relu(tf.matmul(ree_embed_left, self.weight_interest)) #tf.sigmoid(tf.matmul(ree_embed_left, self.weight_interest))
             self.interestingness_left = self.combine_obj_sub_interestingness(self.object_features_left, self.subjective_left)
             self.subjective_right = weight_ub - tf.nn.relu(tf.matmul(ree_embed_right, self.weight_interest)) #tf.sigmoid(tf.matmul(ree_embed_right, self.weight_interest))
@@ -155,7 +167,8 @@ class InterestingnessEmbedsWithObj(object):
 
         # predictions
         self.logits, self.predictions = self.inference_classification(self.interestingness_left, self.interestingness_right)
-        self.loss = self.loss_compute(self.predictions, self.label_ph)
+        #self.loss = self.loss_compute(self.predictions, self.label_ph)
+        self.loss = self.loss_compute(self.logits, self.label_ph)
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
         #self.optimizer = tf.keras.optimizers.Adam(learning_rate=self.learning_rate)
         self.train_op = self.optimizer.minimize(self.loss)
@@ -168,6 +181,8 @@ class InterestingnessEmbedsWithObj(object):
         train_num = len(train_pair_ids)
         start_id = batch_size * batch_id
         end_id = batch_size * (batch_id + 1)
+        if end_id <= start_id:
+            start_id, end_id = 0, batch_size
         batch_train_pair_ids = train_pair_ids[start_id: end_id]
         batch_train_labels = train_labels[start_id: end_id]
         # generate real training data
@@ -236,9 +251,13 @@ class InterestingnessEmbedsWithObj(object):
 
         start_total = 0  # time.time()
         for epoch in range(self.epochs):
+            np.random.seed(epoch * 1234)
+            np.random.shuffle(train_pair_ids)
+            np.random.seed(epoch * 1234)
+            np.random.shuffle(train_labels)
             start_train = time.time()
             ## Generate Training Batch
-            num_batch = len(train_pair_ids) // self.batch_size + 1
+            num_batch = len(train_pair_ids) // self.batch_size #+ 1
             for batch_id in range(num_batch):
                 batch_lhs_left, batch_obj_left, batch_rhs_left, batch_lhs_right, batch_obj_right, batch_rhs_right, train_batch_labels = \
                     self.generate_batch(

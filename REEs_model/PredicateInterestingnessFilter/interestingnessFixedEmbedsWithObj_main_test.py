@@ -29,7 +29,7 @@ def main():
     parser.add_argument('-token_embed_dim', '--token_embed_dim', type=int, default=768)
     parser.add_argument('-hidden_size', '--hidden_size', type=int, default=200)
     parser.add_argument('-rees_embed_dim', '--rees_embed_dim', type=int, default=100)
-    parser.add_argument('-epochs', '--epochs', type=int, default=400)
+    parser.add_argument('-epochs', '--epochs', type=int, default=500)
     parser.add_argument('-model_file', '--model_file', type=str, default='../REEs_model_data/Pod_test_data/rule2000/interestingness_model')
     parser.add_argument('-model_txt_file', '--model_txt_file', type=str, default='../REEs_model_data/Pod_test_data/rule2000/interestingness_model')
     parser.add_argument('-vobs_file', '--vobs_file', type=str, default='../REEs_model_data/Pod_test_data/rule2000/vobs.txt')

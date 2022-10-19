@@ -12,7 +12,8 @@ class REEsRepr(object):
                  hidden_size,
                  rees_embedding_size,
                  max_predicates_lhs,
-                 max_predicates_rhs):
+                 max_predicates_rhs,
+                 pretrained_matrix=None):
         self.vob_size = vob_size
         self.token_embedding_size = token_embedding_size
         self.hidden_size = hidden_size
@@ -22,8 +23,9 @@ class REEsRepr(object):
 
         # self.tokensEmbeddMatrix = tf.Variable(tf.random_normal([self.vob_size, self.token_embedding_size]), trainable=True)
         self.tokensEmbedMatrix = tf.keras.layers.Embedding(self.vob_size,
-                                                           self.token_embedding_size, trainable=True)
+                                                           self.token_embedding_size, weights=[pretrained_matrix], trainable=True)
                                                            #input_size=self.max_predicates_lhs * TOKENS_OF_PREDICATE)
+        #self.tokensEmbedMatrix.set_weights(pretrained_matrix)
         self.weightPredicates = tf.Variable(tf.random_normal([3, self.token_embedding_size]), trainable=True)
 
         self.weightREEsEmbeds = tf.Variable(tf.random_normal([self.token_embedding_size * 2, self.rees_embedding_size]), trainable=True)
@@ -34,6 +36,27 @@ class REEsRepr(object):
         #embeds = self.tokensEmbedMatrix(dummy_input)
         [w2, w3] = sess.run([self.weightPredicates, self.weightREEsEmbeds])
         return w2, w3
+
+    def clauseEmbed_2(self, embeddingsC, predicates_num, actfunc=tf.nn.relu):
+        # 1. encode LHS
+        # embeddings_lrhs = embeddingsC.reshape(
+        embeddings_lrhs = tf.reshape(embeddingsC,
+            [-1, predicates_num, TOKENS_OF_PREDICATE, self.token_embedding_size])
+        # 1.1 get "t0" and "A"
+        embeddings_lrhs_operands1 = embeddings_lrhs[:, :, 0:1, :] + embeddings_lrhs[:, :, 1:2, :]
+        # 1.2 get "t1" and "B"
+        embeddings_lrhs_operands2 = embeddings_lrhs[:, :, 3:4, :] + embeddings_lrhs[:, :, 4:5, :]
+        # 1.3 get operator
+        embeddings_lrhs_operator = embeddings_lrhs[:, :, 2:3, :]
+        embeddings_lrhs = tf.concat([embeddings_lrhs_operands1, embeddings_lrhs_operands2], axis=2)
+        embeddings_lrhs = tf.concat([embeddings_lrhs, embeddings_lrhs_operator], axis=2)
+        # embeddings_lrhs:           shape [batch_size, maxPredicatesLHS, 3, tokenEmbeddingSize]
+        # predicate_embeddings:     shape [batch_size, maxPredicateLHS, tokenEmbeddingSize]
+        predicate_embeddings = actfunc(tf.reduce_mean(tf.multiply(embeddings_lrhs, self.weightPredicates), 2))
+        # shape [batch_size, tokenEmbeddingSize]
+        embeddings_lrhs = tf.reduce_mean(predicate_embeddings, 1)
+        return embeddings_lrhs
+
 
     def clauseEmbed(self, embeddingsC, predicates_num, actfunc=tf.nn.relu):
         # 1. encode LHS

@@ -1,0 +1,487 @@
+rule,support_ratio,confidence,conciseness
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.longitude_deg == t1.longitude_deg,3062,0.9409956976029502,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.iso_country == t1.iso_country,3392,0.9877693651718114,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iata_code == t1.iata_code,7128,0.8988650693568726,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,3098,0.8886976477337923,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.iata_code == t1.iata_code,96890,0.9623942151058842,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,2984,0.9959946595460614,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,3044,0.9832041343669251,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.type == t1.type,26884,0.8508671983795417,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.iso_region == t1.iso_region,2922,0.9462435233160622,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == t1.iso_country  ->  t0.wikipedia_link == t1.wikipedia_link,3817002,0.9131754133211099,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.scheduled_service == t1.scheduled_service,384376950,0.9609900353008007,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,14151610,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.local_code == t1.local_code,260864,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code  ->  t0.home_link == t1.home_link,229206028,0.9100014453237947,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.name == t1.name  ->  t0.keywords == t1.keywords,4228,0.9433288710397144,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.wikipedia_link == t1.wikipedia_link,4122,0.9635343618513323,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.keywords == t1.keywords,40292,0.914937099777465,0.25
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2802,0.9964438122332859,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,22194214,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,422569696,0.9703219859808866,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2842,0.9391936549900859,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code  ->  t0.wikipedia_link == t1.wikipedia_link,217579234,0.8638403585635371,1.0
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,24162142,0.9222528823763861,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iso_country == t1.iso_country,435494302,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2800,0.9957325746799431,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region  ->  t0.scheduled_service == t1.scheduled_service,22951604,0.9520821306963511,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.iso_country == t1.iso_country  ->  t0.wikipedia_link == t1.wikipedia_link,435494302,0.8033151329071749,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,260864,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.local_code == t1.local_code,3136,0.9974554707379135,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.gps_code == t1.gps_code,4266528,0.9225136835568556,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2826,0.9922752808988764,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.keywords == t1.keywords ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,3671116,0.902422476713762,0.25
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iata_code == t1.iata_code,188,0.9791666666666666,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.gps_code == t1.gps_code,2792,0.8880407124681934,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,2782,0.9224137931034483,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.scheduled_service == t1.scheduled_service  ->  t0.iso_country == t1.iso_country,24931074,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == t1.iso_country ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,4111380,0.9003638351297337,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_country == t1.iso_country,2840,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2808,0.9310344827586207,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.name == t1.name,3044,0.9832041343669251,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,4026,0.9535765040265277,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality  ->  t0.iso_country == t1.iso_country,183232,0.9998362999421593,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.scheduled_service == t1.scheduled_service,399940164,0.9999000000405021,0.5
+airports(t0) ^ airports(t1) ^ t0.type == t1.type  ->  t0.scheduled_service == t1.scheduled_service,1334027300,0.9516873436557366,1.0
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.name == t1.name  ->  t0.keywords == t1.keywords,11720,0.9584560026169447,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.iso_country == t1.iso_country,9328484,0.9362650183047979,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft  ->  t0.home_link == t1.home_link,59730824,0.9424767049891059,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.keywords == t1.keywords,2942,0.9527202072538861,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.iso_region == t1.iso_region,2828,0.9345670852610707,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,4918,0.9240886884629839,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2778,0.9679442508710802,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,12231084,0.8642892222157055,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2794,0.9957234497505346,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,10050730,0.8588834744705389,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.continent == t1.continent,19887158,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,435452566,0.8033071472426999,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,6175542,0.9299543089924035,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.iso_country == t1.iso_country,100676,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.local_code == t1.local_code,2950,0.9781167108753316,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.name == t1.name,3424,0.9822145725760184,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,3030,0.9812176165803109,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_region == t1.iso_region,2828,0.9376657824933687,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,5542,0.9361486486486487,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft  ->  t0.iata_code == t1.iata_code,57218246,0.9028314083752819,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.wikipedia_link == t1.wikipedia_link,8000438,0.8029740127673908,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.wikipedia_link == t1.wikipedia_link,9111360,0.9144730952190735,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.keywords == t1.keywords ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,51844848,0.9032518520942141,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,76412,0.9018293402572879,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,54466,0.8942632909729747,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,2862,0.8334304018637158,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,10452,0.8547595682041217,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,3082,0.9954780361757106,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.municipality == t1.municipality,2842,0.9179586563307494,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.wikipedia_link == t1.wikipedia_link,451583756,0.9999058912114893,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent  ->  t0.home_link == t1.home_link,914150186,0.9081334062375114,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region  ->  t0.continent == t1.continent,24095676,0.999540709514199,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_region == t1.iso_region  ->  t0.local_code == t1.local_code,880390,0.9059094697632302,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.keywords == t1.keywords,8000438,0.8029740127673908,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,300762,0.8822949607786768,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,190719182,0.8342028392673803,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.local_code == t1.local_code ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,3618,0.9300771208226221,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2792,0.9950106913756237,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,2860,0.8204245553643144,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality  ->  t0.continent == t1.continent,183262,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,18229994,0.9543314306725887,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,2792,0.9041450777202072,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.name == t1.name,3330,0.9697146185206756,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.iso_country == t1.iso_country,4594876,0.9935094728657565,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.scheduled_service == t1.scheduled_service,19151990,0.9630330286509515,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,22194214,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,3710,0.9517701385325809,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iata_code == t1.iata_code,6558,0.9283691959229898,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == US  ->  t0.wikipedia_link == t1.wikipedia_link,542074806,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,2848,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.iata_code == t1.iata_code,337953168,0.8449248240466486,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,244556,0.9374846663395485,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,136,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,59286,0.9734016353068663,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,3890,0.8679161088799643,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.iata_code == t1.iata_code,3442,0.9873780837636259,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,78808,0.9301073999763956,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code  ->  t0.scheduled_service == t1.scheduled_service,2314467642,0.9922446718449229,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,2834,0.9950842696629213,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.longitude_deg == t1.longitude_deg,3354,0.9621342512908778,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.home_link == t1.home_link,21038,0.9821661998132586,1.0
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code  ->  t0.wikipedia_link == t1.wikipedia_link,1996978424,0.8561326004501866,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.municipality == t1.municipality,2808,0.9859550561797753,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,60906,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft  ->  t0.scheduled_service == t1.scheduled_service,60684644,0.9575267757993245,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.iso_country == t1.iso_country,228624470,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.type == t1.type ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.keywords == t1.keywords,864768876,0.8059296736075546,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.municipality == t1.municipality,2782,0.9914468995010691,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,3548,0.9102103642893792,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality  ->  t0.iso_country == t1.iso_country,183262,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.iso_country == t1.iso_country,86928,0.8634431244785251,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.iso_region == t1.iso_region,2780,0.9886201991465149,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country  ->  t0.home_link == t1.home_link,545547990,0.9187280242705548,1.0
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code  ->  t0.iata_code == t1.iata_code,231786934,0.9202482447240481,1.0
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2842,0.9485981308411215,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iso_country == t1.iso_country,5612,0.9272967614011897,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,5630,0.9510135135135135,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.municipality == t1.municipality,2862,0.9552736982643525,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.continent == t1.continent,228611812,0.9999446340980036,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,2792,0.9950106913756237,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,864648,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2792,0.9041450777202072,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.wikipedia_link == t1.wikipedia_link,497089324,0.9999103018350493,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.municipality == t1.municipality,2974,0.9860742705570292,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2800,0.9978617248752673,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.name == t1.name  ->  t0.keywords == t1.keywords,10452,0.9498364231188658,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code  ->  t0.home_link == t1.home_link,648850952,0.8692285625710058,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,2846,0.9992977528089888,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.keywords == t1.keywords,9963508,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR  ->  t0.continent == t1.continent,60906,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.scheduled_service == t1.scheduled_service  ->  t0.home_link == t1.home_link,2627678976,0.9152513295348406,1.0
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == US  ->  t0.continent == t1.continent,6153076,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,24162142,0.9222528823763861,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.iso_country == t1.iso_country,4624894,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,5612,0.9291390728476822,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2914,0.9204042956411876,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,451626258,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_region == t1.iso_region,3166,0.8122113904566445,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == US ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.iso_region == t1.iso_region,2080,0.8346709470304976,0.25
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.scheduled_service == t1.scheduled_service  ->  t0.wikipedia_link == t1.wikipedia_link,24931074,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code  ->  t0.scheduled_service == t1.scheduled_service,247687498,0.9833771962080967,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.iso_country == t1.iso_country,520005374,0.9999123201331118,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2862,0.9268134715025906,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2770,0.9591412742382271,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.keywords == t1.keywords ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,864768876,0.8303932238949111,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,19226,0.8975723622782447,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.continent == t1.continent,399980162,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.scheduled_service == t1.scheduled_service,480778612,0.9671008083061466,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2800,0.9978617248752673,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2794,0.9935988620199147,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.continent == t1.continent,25892832,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == t1.iso_country  ->  t0.wikipedia_link == t1.wikipedia_link,456527104,0.9293449710842472,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,2812,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,7060,0.8902900378310215,1.0
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2838,0.937871777924653,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.name == t1.name,2786,0.9299065420560748,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,3026,0.8304061470911087,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.iso_country == t1.iso_country,399980162,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.iso_region == t1.iso_region  ->  t0.wikipedia_link == t1.wikipedia_link,2372578,0.9443600176088993,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.iata_code == t1.iata_code,4362026,0.9431623730187113,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2854,0.9462864721485411,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.iso_region == t1.iso_region,3196,0.9306930693069307,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.longitude_deg == t1.longitude_deg,3098,0.9853689567430025,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == t1.iso_country ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,528718,0.9083877396742492,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.scheduled_service == t1.scheduled_service,9111360,0.9144730952190735,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.continent == t1.continent,3926,0.9177185600748013,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,200020604,0.8748871194758812,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,18822600,0.9464700788317768,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.iso_region == t1.iso_region,2774,0.9885958660014256,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2816,0.9750692520775623,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.scheduled_service == t1.scheduled_service,497089324,0.9999103018350493,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,864592,0.9999352337598653,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.continent == t1.continent,451583756,0.9999058912114893,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,2800,0.9957325746799431,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,10758,0.9776444929116684,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality  ->  t0.iata_code == t1.iata_code,154816,0.8447796051554605,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2798,0.9971489665003563,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.continent == t1.continent,6608,0.9729093050647821,1.0
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality  ->  t0.keywords == t1.keywords,30720058,0.8721513184222994,1.0
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.municipality == t1.municipality,3266,0.8378655720882504,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.iso_region == t1.iso_region  ->  t0.wikipedia_link == t1.wikipedia_link,14412164,0.8216814243045719,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,391836,0.9174123762028518,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,2794,0.9674515235457064,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.scheduled_service == t1.scheduled_service  ->  t0.wikipedia_link == t1.wikipedia_link,23995576,0.9624766265584868,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.name == t1.name,2962,0.9820954907161804,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,360598378,0.8313440152928149,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,3100,0.9860050890585241,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.type == t1.type,598912,0.9000105191975355,0.25
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.latitude_deg == t1.latitude_deg,2786,0.9299065420560748,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2828,0.9792243767313019,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,2862,0.9552736982643525,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.iata_code == t1.iata_code,4416546,0.9549507513037055,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,6796,0.9626062322946176,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.gps_code == t1.gps_code,2828,0.8235294117647058,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.gps_code == t1.gps_code,2800,0.9831460674157303,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,674419582,0.9431475712126782,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country  ->  t0.scheduled_service == t1.scheduled_service,566792706,0.9545051077070991,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.iso_country == t1.iso_country,384376950,0.9609900353008007,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.municipality == t1.municipality,3062,0.9409956976029502,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link  ->  t0.scheduled_service == t1.scheduled_service,2627678976,0.8884275575813535,1.0
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.continent == t1.continent,2968,0.9840848806366048,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.continent == t1.continent,260864,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,3167998,0.9055888703972301,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.continent == t1.continent,497133916,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.iso_region == t1.iso_region ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,84,0.9333333333333333,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.elevation_ft == t1.elevation_ft,2794,0.8586355255070682,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.continent == t1.continent,2854,0.9077608142493638,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.continent == t1.continent,520050972,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.type == t1.type  ->  t0.keywords == t1.keywords,213074574,0.835796352868085,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.continent == t1.continent,7064,0.8907944514501892,1.0
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,11786,0.9638534510958456,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_region == t1.iso_region,2816,0.9887640449438202,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.iso_country == t1.iso_country,190719182,0.8342028392673803,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iso_country == t1.iso_country,24162142,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,3472,0.9959839357429718,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.home_link == t1.home_link,6572,0.9676089517078916,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.iso_region == t1.iso_region,3184,0.9133677567412507,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,2826,0.9922752808988764,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.scheduled_service == t1.scheduled_service,4624894,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.name == t1.name,2952,0.9853137516688919,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.iata_code == t1.iata_code,19930,0.9304388422035481,1.0
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,3710,0.9517701385325809,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == BR  ->  t0.continent == t1.continent,22194214,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg  ->  t0.type == t1.type,3714,0.9040895813047711,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == US  ->  t0.continent == t1.continent,864592,0.9999352337598653,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.iso_country == t1.iso_country  ->  t0.wikipedia_link == t1.wikipedia_link,24162142,0.9222528823763861,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.iso_region == t1.iso_region ^ t0.keywords == t1.keywords ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,6018084,0.9070127474355921,0.25
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iata_code == t1.iata_code,6124,0.9016489988221437,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.iso_country == t1.iso_country,3470,0.9954102122776821,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.type == t1.type  ->  t0.iso_country == t1.iso_country,5014,0.9421270199173243,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,5470,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_country == t1.iso_country,2994,0.9927055702917772,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.keywords == t1.keywords,42170,0.9587577300836668,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iata_code == t1.iata_code,6374,0.9409506938293475,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.wikipedia_link == t1.wikipedia_link,520005374,0.9999123201331118,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,21893620,0.9864561998005426,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,3780,0.8953102794883941,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.elevation_ft == t1.elevation_ft,2828,0.8112449799196787,0.5
+airports(t0) ^ airports(t1) ^ t0.keywords == t1.keywords ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,17140,0.9074544684455739,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.iso_region == t1.iso_region,99676,0.9900671460924153,0.5
+airports(t0) ^ airports(t1) ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,1996978424,0.8860755832573236,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country  ->  t0.continent == t1.continent,593335400,0.9992042309087773,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.municipality == t1.municipality,2808,0.8629379225568531,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.gps_code == t1.gps_code,2794,0.8014916810097533,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.continent == t1.continent,3474,0.9965576592082617,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.keywords == t1.keywords,42720,0.9159912517689438,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.gps_code == t1.gps_code,3122,0.9930025445292621,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.longitude_deg == t1.longitude_deg,2808,0.9310344827586207,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.wikipedia_link == t1.wikipedia_link,434035922,0.8346026550643578,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.wikipedia_link == t1.wikipedia_link,422569696,0.9356623724035107,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region  ->  t0.iso_country == t1.iso_country,24106746,0.9999999170356781,1.0
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.keywords == t1.keywords,3296,0.9045005488474204,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,3266,0.9510774606872452,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,2842,0.9485981308411215,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,323492,0.9489741438486767,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,6153076,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.gps_code == t1.gps_code,2828,0.91343669250646,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.continent == t1.continent,24162142,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.keywords == t1.keywords,7310,0.9218158890290038,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.name == t1.name,3122,0.9930025445292621,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2806,0.9777003484320558,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,13774392,0.9266053145027162,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.continent == t1.continent,399940164,0.9999000000405021,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.latitude_deg == t1.latitude_deg  ->  t0.continent == t1.continent,2840,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,3644,0.8130298973672467,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,2269890,0.916370480298291,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.latitude_deg == t1.latitude_deg,2808,0.9372496662216289,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.elevation_ft == t1.elevation_ft ^ t0.gps_code == t1.gps_code  ->  t0.local_code == t1.local_code,8929220,0.909492591214899,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,70676,0.9299963155955576,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.name == t1.name,2782,0.9224137931034483,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent  ->  t0.scheduled_service == t1.scheduled_service,917782748,0.9117420593373522,1.0
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.continent == t1.continent,497089324,0.9999103018350493,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.latitude_deg == t1.latitude_deg  ->  t0.local_code == t1.local_code,182,0.9479166666666666,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.home_link == t1.home_link,4552062,0.9842521796175221,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2800,0.9957325746799431,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.continent == t1.continent,520005374,0.9999123201331118,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.scheduled_service == t1.scheduled_service,18822600,0.9464700788317768,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.iso_country == t1.iso_country,228611812,0.9999446340980036,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,14225140,0.8408615065961906,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,2808,0.9372496662216289,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.scheduled_service == t1.scheduled_service,24807192,0.9580717937690245,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.iata_code == t1.iata_code,22118910,0.8542483881253313,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.iata_code == t1.iata_code,8406722,0.8437512169408606,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.type == t1.type,2962,0.9820954907161804,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.scheduled_service == t1.scheduled_service,9328484,0.9362650183047979,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_country == t1.iso_country,3144,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,456527104,0.9633080020525999,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,6328,0.9341600236197225,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_region == t1.iso_region,2922,0.9293893129770993,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.type == t1.type,2854,0.9462864721485411,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,253768,0.9727980863591756,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.latitude_deg == t1.latitude_deg,3066,0.9903100775193798,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.continent == t1.continent,4416546,0.9549507513037055,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.latitude_deg == t1.latitude_deg  ->  t0.type == t1.type,160,0.8333333333333334,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality  ->  t0.scheduled_service == t1.scheduled_service,32531352,0.9235744781751358,1.0
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == US  ->  t0.wikipedia_link == t1.wikipedia_link,435452566,0.8033071472426999,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,2364,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.municipality == t1.municipality  ->  t0.continent == t1.continent,183232,0.9998362999421593,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.iata_code == t1.iata_code,17049932,0.8573337628232249,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2796,0.9239920687376074,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,25892832,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,352276960,0.8441007425438218,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,5765238,0.8681679956944259,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_country == t1.iso_country,192,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.wikipedia_link == t1.wikipedia_link,428883398,0.8627120061548968,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == t1.iso_country ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,7427652,0.9178711509516501,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,2828,0.9929775280898876,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2764,0.9570637119113573,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.latitude_deg == t1.latitude_deg  ->  t0.continent == t1.continent,192,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.municipality == t1.municipality,2786,0.9907539118065434,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code  ->  t0.home_link == t1.home_link,2194037918,0.9406147636093104,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.gps_code == t1.gps_code,4362026,0.9431623730187113,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft  ->  t0.wikipedia_link == t1.wikipedia_link,55558586,0.8766440768862299,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,100676,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.continent == t1.continent,100676,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,10452,0.9498364231188658,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.elevation_ft == t1.elevation_ft,3266,0.9510774606872452,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region  ->  t0.home_link == t1.home_link,21984600,0.9119687151497996,1.0
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,24103192,0.9308828018503345,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_region == t1.iso_region,2868,0.9572763684913218,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2770,0.9591412742382271,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == t1.iso_country ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,1123032,0.8999072072259768,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.wikipedia_link == t1.wikipedia_link,4266528,0.9225136835568556,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.wikipedia_link == t1.wikipedia_link,19946,0.9311858076563959,1.0
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == US  ->  t0.iata_code == t1.iata_code,451583756,0.8330653832305204,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.continent == t1.continent,9963508,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.iso_country == t1.iso_country,19151990,0.9630330286509515,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,721074,0.9434979902022359,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,542074806,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,6796,0.9534231200897868,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.municipality == t1.municipality,2976,0.9637305699481865,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,2910,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2792,0.9226701916721745,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.iso_country == t1.iso_country,14151610,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,14865436,0.8214521986864666,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_country == t1.iso_country,6768,0.9580973952434881,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.type == t1.type,19544,0.9124183006535947,1.0
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,26199042,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2794,0.9935988620199147,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.municipality == t1.municipality,2980,0.9946595460614153,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.iso_country == t1.iso_country,19887158,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,497133916,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,194466270,0.8505925459335127,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,13501370,0.9540518711298573,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,21893620,0.9864561998005426,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.name == t1.name,2834,0.9950842696629213,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2828,0.9929775280898876,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iata_code == t1.iata_code,2580,0.9084507042253521,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.type == t1.type,2828,0.8994910941475827,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.keywords == t1.keywords ^ t0.local_code == t1.local_code ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,8527944,0.9007025906565012,0.25
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,451583756,0.9999058912114893,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,634566,0.8575842020904229,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.gps_code == t1.gps_code ^ t0.iso_country == t1.iso_country  ->  t0.local_code == t1.local_code,2018276,0.9573610427262369,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,428883398,0.8627120061548968,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country  ->  t0.iata_code == t1.iata_code,491235352,0.8272630321574652,1.0
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.continent == t1.continent,6558,0.92003367003367,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,3400,0.9900990099009901,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.wikipedia_link == t1.wikipedia_link,4624894,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR  ->  t0.keywords == t1.keywords,60906,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.continent == t1.continent,451626258,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,3080,0.9974093264248705,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.type == t1.type  ->  t0.continent == t1.continent,5464,0.922972972972973,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.iso_country == t1.iso_country,434035922,0.8346026550643578,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,2952,0.9853137516688919,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region  ->  t0.iata_code == t1.iata_code,20081626,0.8330292414389531,1.0
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,6052,0.8910482921083628,1.0
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,3330,0.9697146185206756,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,28318820,0.803979478136525,1.0
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.latitude_deg == t1.latitude_deg,2800,0.81537565521258,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.local_code == t1.local_code,244556,0.9374846663395485,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,213317958,0.8367510395570114,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.scheduled_service == t1.scheduled_service  ->  t0.iso_country == t1.iso_country,520050972,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,130,0.9558823529411765,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,4002,0.9741966893865628,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,6070172,0.8043062955390753,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.iso_country == t1.iso_country,331804532,0.8295524716548317,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,96850,0.9619969009495808,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,3044,0.8864298194525335,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == t1.iso_country ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,2190544,0.8147520532975874,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iata_code == t1.iata_code,4008,0.9756572541382668,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.iso_country == t1.iso_country,18822600,0.9464700788317768,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,2800,0.9957325746799431,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.gps_code == t1.gps_code,2764,0.9570637119113573,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.continent == t1.continent,14151610,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_region == t1.iso_region  ->  t0.wikipedia_link == t1.wikipedia_link,18229994,0.9077947174197946,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.scheduled_service == t1.scheduled_service,20990,0.9799253034547152,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR  ->  t0.keywords == t1.keywords,31526,0.9977845296873021,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.scheduled_service == t1.scheduled_service  ->  t0.iata_code == t1.iata_code,2314467642,0.8061561575267052,1.0
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.local_code == t1.local_code,3175634,0.9077716611105934,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.scheduled_service == t1.scheduled_service  ->  t0.continent == t1.continent,24931074,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.continent == t1.continent,6508,0.9218130311614731,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,2794,0.9957234497505346,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.iso_country == t1.iso_country,9963508,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,3418,0.937980241492865,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.municipality == t1.municipality,2854,0.9077608142493638,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.iata_code == t1.iata_code,441693278,0.8884794695842075,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.keywords == t1.keywords,228611812,0.9999446340980036,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.scheduled_service == t1.scheduled_service,4594876,0.9935094728657565,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.continent == t1.continent,228624470,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.local_code == t1.local_code,2806,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == BR  ->  t0.iata_code == t1.iata_code,22194214,0.8471383800980203,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,25892832,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,422569696,0.9356623724035107,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_region == t1.iso_region ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,1029922,0.9354644160534218,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.scheduled_service == t1.scheduled_service  ->  t0.iso_country == t1.iso_country,23995576,0.9624766265584868,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,192,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == US  ->  t0.iso_country == t1.iso_country,480778612,0.9671008083061466,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.type == t1.type,3098,0.9853689567430025,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality ^ t0.type == t1.type  ->  t0.local_code == t1.local_code,15126642,0.8358862349979543,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == t1.iso_country ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,474116,0.8145763177788469,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,1436911366,0.9084593627750623,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,399940164,0.9999000000405021,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == BR ^ t0.iso_region == t1.iso_region  ->  t0.type == t1.type,7104,0.8487455197132616,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.home_link == t1.home_link,2155791842,0.9565423896545464,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.municipality == t1.municipality,3032,0.9576753000631711,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.scheduled_service == t1.scheduled_service,6594,0.9708480565371025,1.0
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.municipality == t1.municipality,2860,0.9482758620689655,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.scheduled_service == t1.scheduled_service,7686,0.9692307692307692,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,331804532,0.8295524716548317,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,7552760,0.9416509449723244,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.latitude_deg == t1.latitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,6508,0.921291053227633,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.name == t1.name  ->  t0.iso_country == t1.iso_country,10824,0.9836423118865867,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.continent == t1.continent,435494302,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.keywords == t1.keywords  ->  t0.wikipedia_link == t1.wikipedia_link,19887158,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.type == t1.type,4052,0.9471715755025713,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2794,0.9047927461139896,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.gps_code == t1.gps_code  ->  t0.wikipedia_link == t1.wikipedia_link,31527760,0.9092766419680394,0.5
+airports(t0) ^ airports(t1) ^ t0.home_link == t1.home_link ^ t0.iso_country == BR  ->  t0.iso_country == t1.iso_country,24103192,0.9308828018503345,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.latitude_deg == t1.latitude_deg  ->  t0.municipality == t1.municipality,3134,0.9968193384223919,0.5
+airports(t0) ^ airports(t1) ^ t0.continent == t1.continent ^ t0.iso_country == BR  ->  t0.wikipedia_link == t1.wikipedia_link,26199042,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.longitude_deg == t1.longitude_deg,2782,0.9693379790940767,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2802,0.9964438122332859,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality ^ t0.type == t1.type ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.keywords == t1.keywords,14550470,0.9069811481175171,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.gps_code == t1.gps_code ^ t0.iso_country == BR ^ t0.iso_region == t1.iso_region  ->  t0.type == t1.type,2788,0.9508867667121419,0.25
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.local_code == t1.local_code  ->  t0.continent == t1.continent,4624894,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.iso_country == US  ->  t0.continent == t1.continent,864648,1.0,0.5
+airports(t0) ^ airports(t1) ^ t0.iata_code == t1.iata_code ^ t0.local_code == t1.local_code ^ t0.municipality == t1.municipality  ->  t0.wikipedia_link == t1.wikipedia_link,18382230,0.9079950976188716,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.type == t1.type  ->  t0.keywords == t1.keywords,194466270,0.8505925459335127,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.longitude_deg == t1.longitude_deg,2950,0.9781167108753316,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft  ->  t0.local_code == t1.local_code,53663196,0.8467372247411917,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.latitude_deg == t1.latitude_deg,2794,0.9024547803617571,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,6040,0.889281507656066,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.name == t1.name,3066,0.9903100775193798,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iso_country == t1.iso_country,435452566,0.9999041640733108,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,110,0.8088235294117647,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,132,0.9705882352941176,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.name == t1.name  ->  t0.elevation_ft == t1.elevation_ft,2798,0.9971489665003563,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.latitude_deg == t1.latitude_deg,2816,0.9750692520775623,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.local_code == t1.local_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,3770,0.9671626475115443,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.latitude_deg == t1.latitude_deg  ->  t0.local_code == t1.local_code,2860,0.9482758620689655,0.5
+airports(t0) ^ airports(t1) ^ t0.type == t1.type  ->  t0.home_link == t1.home_link,1270724632,0.9065275872135401,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.local_code == t1.local_code  ->  t0.home_link == t1.home_link,9831376,0.9867384057904104,0.5
+airports(t0) ^ airports(t1) ^ t0.municipality == t1.municipality  ->  t0.home_link == t1.home_link,32631754,0.9264249199507417,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.iso_country == t1.iso_country,6774,0.8542244640605297,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.type == t1.type,2828,0.9929775280898876,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.iata_code == t1.iata_code,21893620,0.9061125458165091,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg  ->  t0.home_link == t1.home_link,7690,0.969735182849937,1.0
+airports(t0) ^ airports(t1) ^ t0.keywords == t1.keywords  ->  t0.home_link == t1.home_link,2027478974,0.9239287616641725,1.0
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.type == t1.type  ->  t0.wikipedia_link == t1.wikipedia_link,22409666,0.91883043319995,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.elevation_ft == t1.elevation_ft,2920,0.9746328437917223,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_region == t1.iso_region,2960,0.9560723514211886,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.keywords == t1.keywords,18888,0.8817927170868347,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.gps_code == t1.gps_code,2768,0.8506453595574678,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,2794,0.9024547803617571,0.5
+airports(t0) ^ airports(t1) ^ t0.longitude_deg == t1.longitude_deg  ->  t0.keywords == t1.keywords,6300,0.9275618374558304,1.0
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,3354,0.9621342512908778,0.5
+airports(t0) ^ airports(t1) ^ t0.name == t1.name  ->  t0.continent == t1.continent,20160,0.9411764705882353,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.longitude_deg == t1.longitude_deg  ->  t0.wikipedia_link == t1.wikipedia_link,130,0.9558823529411765,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.iso_country == US ^ t0.iso_region == t1.iso_region  ->  t0.wikipedia_link == t1.wikipedia_link,228546,0.9033724386541867,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.iso_region == t1.iso_region ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.name == t1.name,2886,0.8869084204056545,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.longitude_deg == t1.longitude_deg  ->  t0.name == t1.name,2828,0.9929775280898876,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.municipality == t1.municipality ^ t0.name == t1.name  ->  t0.iso_region == t1.iso_region,2794,0.9735191637630662,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.local_code == t1.local_code  ->  t0.iata_code == t1.iata_code,3986,0.9317438055165965,0.5
+airports(t0) ^ airports(t1) ^ t0.latitude_deg == t1.latitude_deg ^ t0.municipality == t1.municipality  ->  t0.type == t1.type,3424,0.9822145725760184,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == US ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.continent == t1.continent,435452566,0.9999041640733108,0.5
+airports(t0) ^ airports(t1) ^ t0.gps_code == t1.gps_code ^ t0.longitude_deg == t1.longitude_deg  ->  t0.local_code == t1.local_code,2920,0.9746328437917223,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.longitude_deg == t1.longitude_deg  ->  t0.iso_country == t1.iso_country,3088,0.9974160206718347,0.5
+airports(t0) ^ airports(t1) ^ t0.elevation_ft == t1.elevation_ft ^ t0.municipality == t1.municipality  ->  t0.local_code == t1.local_code,7497642,0.9347790310249747,0.5
+airports(t0) ^ airports(t1) ^ t0.wikipedia_link == t1.wikipedia_link  ->  t0.scheduled_service == t1.scheduled_service,2227585472,0.9883978077261092,1.0
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.type == t1.type  ->  t0.iso_country == t1.iso_country,13501370,0.9540518711298573,0.5
+airports(t0) ^ airports(t1) ^ t0.iso_country == BR ^ t0.iso_region == t1.iso_region ^ t0.type == t1.type  ->  t0.iata_code == t1.iata_code,1577108,0.9267435041315709,0.3333333333333333
+airports(t0) ^ airports(t1) ^ t0.keywords == t1.keywords  ->  t0.scheduled_service == t1.scheduled_service,1943051606,0.8854549355149868,1.0
