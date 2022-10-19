@@ -10,6 +10,7 @@ task=(
 
 tid=$1
 cid=$2 ## cross validation
+dirpath=$3
 
 mkdir ${dirpath}'/REEs_model_data/revision/labeled_data_400/'${task[${tid}]}'/train'
 
