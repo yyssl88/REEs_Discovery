@@ -29,10 +29,10 @@ else
 
   echo -e "sequence_name: "${sequence_name}
 
-  hdfs dfs -mkdir /tmp/zhangjun/RL_model/
+  hdfs dfs -mkdir /tmp/datasets_discovery/RL_model/
 
-  hdfs dfs -rm /tmp/zhangjun/RL_model/${sequence_name}
+  hdfs dfs -rm /tmp/datasets_discovery/RL_model/${sequence_name}
 
-  hdfs dfs -put ${model_path}${sequence_name} /tmp/zhangjun/RL_model/
+  hdfs dfs -put ${model_path}${sequence_name} /tmp/datasets_discovery/RL_model/
 
 fi

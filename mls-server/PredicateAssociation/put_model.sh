@@ -19,18 +19,18 @@ else
   echo -e ${model_path}
   echo -e ${data_name}
 
-  hdfs dfs -mkdir /tmp/zhangjun/RL_model/
+  hdfs dfs -mkdir /tmp/datasets_discovery/RL_model/
 
-  hdfs dfs -rm -r /tmp/zhangjun/RL_model/${data_name}/
+  hdfs dfs -rm -r /tmp/datasets_discovery/RL_model/${data_name}/
 
-  hdfs dfs -mkdir /tmp/zhangjun/RL_model/${data_name}/
+  hdfs dfs -mkdir /tmp/datasets_discovery/RL_model/${data_name}/
 
-  hdfs dfs -put ${model_path}${data_name}/checkpoint /tmp/zhangjun/RL_model/${data_name}/
+  hdfs dfs -put ${model_path}${data_name}/checkpoint /tmp/datasets_discovery/RL_model/${data_name}/
 
-  hdfs dfs -put ${model_path}${data_name}/model.ckpt.index /tmp/zhangjun/RL_model/${data_name}/
+  hdfs dfs -put ${model_path}${data_name}/model.ckpt.index /tmp/datasets_discovery/RL_model/${data_name}/
 
-  hdfs dfs -put ${model_path}${data_name}/model.ckpt.meta /tmp/zhangjun/RL_model/${data_name}/
+  hdfs dfs -put ${model_path}${data_name}/model.ckpt.meta /tmp/datasets_discovery/RL_model/${data_name}/
 
-  hdfs dfs -put ${model_path}${data_name}/model.ckpt.data-00000-of-00001 /tmp/zhangjun/RL_model/${data_name}/
+  hdfs dfs -put ${model_path}${data_name}/model.ckpt.data-00000-of-00001 /tmp/datasets_discovery/RL_model/${data_name}/
 
 fi

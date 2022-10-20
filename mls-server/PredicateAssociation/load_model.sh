@@ -25,12 +25,12 @@ else
   rm ${model_path}${data_name}/*
   echo -e "rm ${model_path}${data_name}/*"
 
-  hdfs dfs -get /tmp/zhangjun/RL_model/${data_name}/checkpoint ${model_path}${data_name}/
+  hdfs dfs -get /tmp/datasets_discovery/RL_model/${data_name}/checkpoint ${model_path}${data_name}/
 
-  hdfs dfs -get /tmp/zhangjun/RL_model/${data_name}/model.ckpt.index ${model_path}${data_name}/
+  hdfs dfs -get /tmp/datasets_discovery/RL_model/${data_name}/model.ckpt.index ${model_path}${data_name}/
 
-  hdfs dfs -get /tmp/zhangjun/RL_model/${data_name}/model.ckpt.meta ${model_path}${data_name}/
+  hdfs dfs -get /tmp/datasets_discovery/RL_model/${data_name}/model.ckpt.meta ${model_path}${data_name}/
 
-  hdfs dfs -get /tmp/zhangjun/RL_model/${data_name}/model.ckpt.data-00000-of-00001 ${model_path}${data_name}/
+  hdfs dfs -get /tmp/datasets_discovery/RL_model/${data_name}/model.ckpt.data-00000-of-00001 ${model_path}${data_name}/
 
 fi
