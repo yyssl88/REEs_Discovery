@@ -5,7 +5,7 @@ import sys
 import os
 #sys.path.append("../")
 from REEs_model.utils import convert_to_onehot
-from REEs_model.parameters import __eval__
+from REEs_model.parameters import __eval__, __evalR__
 from sklearn.model_selection import train_test_split
 import time
 
@@ -203,21 +203,19 @@ class FilterRegressor(object):
                 l2 = tf.nn.relu(tf.matmul(l1, self.w2) + self.b2)
             # final layer
             with tf.variable_scope('l3'):
-                self.w3 = tf.get_variable('w3', [n_l1, 2], initializer=w_initializer, collections=c_names)
+                self.w3 = tf.get_variable('w3', [n_l1, 1], initializer=w_initializer, collections=c_names)
                 self.b3 = tf.get_variable('b3', [1, 1], initializer=b_initializer, collections=c_names)
                 self.predictions = tf.matmul(l2, self.w3) + self.b3
 
         # loss function
-        self.loss = tf.reduce_mean(tf.losses.mean_squared_error(predictions=pweredictions, labels=self.labels))
+        self.loss = tf.reduce_mean(tf.losses.mean_squared_error(predictions=self.predictions, labels=self.labels))
         self.optimizer = tf.train.AdamOptimizer(learning_rate=self.learning_rate)
         self.train_op = self.optimizer.minimize(self.loss)
 
-    def generateAllTrainingInstances(self, pComb, DQN, validator, max_lhs_predicates, N=200):
-        rawTrainData = pComb.selectMultiPathsRandom(validator, N)
-        allData, allLabels = pComb.generateTrainingInstances(rawTrainData, DQN, validator, max_lhs_predicates)
+    def generateAllTrainingInstances(self, pComb, DQN, validator, max_lhs_predicates, tokenVobs, N):
+        rawTrainData = pComb.selectMultiPathsRandom(validator, tokenVobs, N)
+        allData, allLabels = pComb.generateTrainingInstances(rawTrainData, DQN, validator, max_lhs_predicates, tokenVobs)
 
-        # transfer label to one-hot
-        allLabels = convert_to_onehot(allLabels)
         trainData, validData, trainLabels, validLabels = train_test_split(allData, allLabels, train_size=0.9, random_state=42)
         return trainData, validData, trainLabels, validLabels
 

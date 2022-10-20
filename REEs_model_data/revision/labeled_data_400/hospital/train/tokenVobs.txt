@@ -1,0 +1,37 @@
+PAD 0
+t0 1
+t1 2
+= 3
+hospital 4
+City 5
+Provider_Number 6
+Hospital_Name 7
+Phone_Number 8
+ZIP_Code 9
+Emergency_Service 10
+'Yes' 11
+Condition 12
+'Heart Failure' 13
+State 14
+'TX' 15
+Hospital_Type 16
+'Acute Care Hospitals' 17
+StateAvg 18
+Hospital_Owner 19
+'Voluntary non-profit - Private' 20
+Measure_Code 21
+'Pneumonia' 22
+County_Name 23
+'No' 24
+'Surgical Infection Prevention' 25
+'Proprietary' 26
+Measure_Name 27
+'Voluntary non-profit - Church' 28
+'Voluntary non-profit - Other' 29
+'Heart Attack' 30
+'Government - Hospital District or Authority' 31
+'CA' 32
+Sample 33
+'Critical Access Hospitals' 34
+'Government - Local' 35
+'0 patients' 36

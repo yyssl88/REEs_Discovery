@@ -1,0 +1,626 @@
+rule,support_ratio,confidence,conciseness
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t0.p_index <= t1.p_index,0.00047091412742382264,0.8947368421052632,0.3333333333333333
+aminer(t0) ^ t0.published_papers = '2' ^ t0.h_index = '2'  ->  t0.h_index = '1',0.00013850415512465375,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.research_interests = t1.research_interests  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers = '1',5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.p_index = t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.p_index >= t1.p_index  ->  t0.citations <= t1.citations,2.770083102493075e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.p_index = t1.p_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index = '0.0000',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t1.p_index = '0.0000'  ->  t0.h_index = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index = t1.p_index  ->  t0.published_papers = '1',0.0001662049861495845,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index = t1.p_index  ->  t0.h_index = t1.h_index,0.0001662049861495845,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.citations <= t1.citations,0.0001662049861495845,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '2' ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.p_index = t1.p_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations = t1.citations ^ t0.p_index = t1.p_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,0.0001939058171745152,0.875,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index = '0.0000',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,0.0009418282548476453,0.8717948717948718,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t1.citations = '3',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '1' ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',0.000221606648199446,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.h_index = t1.h_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t1.citations = '0',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.citations = t1.citations  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^ t0.citations = '0' ^ t0.p_index = '0.3333'  ->  t0.p_index = '0.0000',0.002326869806094183,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index <= t1.h_index  ->  t0.citations <= t1.citations,0.003545706371191136,0.992248062015504,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.00221606648199446,0.8988764044943821,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.h_index = '2'  ->  t1.citations = '0',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index <= t1.p_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002908587257617729,0.8536585365853658,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.research_interests = t1.research_interests,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t1.p_index = '0.0000',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.0017728531855955676,0.8767123287671232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',0.0001939058171745152,0.875,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0001662049861495845,0.8571428571428571,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index <= t1.p_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0002770083102493075,0.9090909090909092,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t1.p_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.p_index = t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.p_index = t1.p_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.h_index <= t1.h_index,0.001329639889196676,0.9056603773584906,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.published_papers >= t1.published_papers  ->  t1.p_index = '0.3333',0.0001662049861495845,0.8571428571428571,0.25
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.00221606648199446,0.9638554216867471,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.h_index = '2'  ->  t1.citations = '0',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index = t1.p_index  ->  t0.citations <= t1.citations,0.0022991689750692518,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.published_papers = '2',8.310249307479225e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.p_index <= t1.p_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.0000'  ->  t0.h_index = '0',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t0.p_index <= t1.p_index,0.003878116343490305,0.9333333333333332,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t1.p_index = '0.0000',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations = t1.citations  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.p_index = t1.p_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.p_index = t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations  ->  t1.p_index = '0.3333',0.0001662049861495845,0.8571428571428571,0.25
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t1.p_index = '0.3333'  ->  t0.citations <= t1.citations,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.author_name = t1.author_name,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index <= t1.h_index  ->  t0.citations <= t1.citations,8.310249307479225e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.research_interests = t1.research_interests,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers = t1.published_papers,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '2' ^ t0.published_papers <= t1.published_papers  ->  t0.h_index = '1',0.0004155124653739612,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index >= t1.h_index  ->  t1.citations = '0',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.p_index = t1.p_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.0000'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.venue = t1.venue  ->  t0.year = t1.year,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.published_papers >= t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.0017728531855955676,0.8767123287671232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations <= t1.citations  ->  t1.published_papers = '14',0.0003601108033240997,0.9285714285714286,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t0.p_index <= t1.p_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index = '0.0000',0.00221606648199446,0.9195402298850576,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t0.h_index = '0',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.p_index = t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t0.h_index = '1',0.0008033240997229918,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_title = t1.paper_title  ->  t0.paper_affiliations = t1.paper_affiliations,0.000332409972299169,0.8571428571428571,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index <= t1.p_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.00030470914127423825,0.9166666666666666,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t0.h_index = '0',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.citations = t1.citations,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,2.770083102493075e-05,1.0,0.2
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '0'  ->  t1.p_index = '0.0000',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.author_id = t1.author_id,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.00221606648199446,0.9638554216867471,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index <= t1.p_index ^ t0.h_index >= t1.h_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index >= t1.p_index  ->  t1.citations = '0',0.002659279778393352,0.8648648648648649,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t1.p_index = '0.3333'  ->  t0.h_index = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.citations = t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index <= t1.h_index  ->  t1.published_papers = '14',8.310249307479225e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.h_index = '1'  ->  t1.citations = '0',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t1.citations = '0',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.research_interests = t1.research_interests  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.001994459833795014,0.96,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t1.p_index = '0.3333',0.0001662049861495845,0.8571428571428571,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index <= t1.p_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.002631578947368421,0.8796296296296297,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.venue = t1.venue  ->  t0.paper_id = t1.paper_id,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations  ->  t0.h_index = '1',0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_id = t1.paper_id  ->  t0.year = t1.year,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.h_index = '0',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.p_index <= t1.p_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.h_index = '1',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_id = t1.paper_id  ->  t0.author = t1.author,0.000332409972299169,0.8571428571428571,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.citations = t1.citations,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.citations <= t1.citations,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index = t1.p_index  ->  t0.published_papers <= t1.published_papers,0.0001662049861495845,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.p_index = t1.p_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index <= t1.p_index  ->  t0.h_index <= t1.h_index,0.0017451523545706372,0.9,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.3333' ^ t0.published_papers <= t1.published_papers  ->  t0.h_index = t1.h_index,0.00013850415512465375,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index >= t1.p_index  ->  t0.h_index = '0',0.002659279778393352,0.8648648648648649,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.author_id = t1.author_id,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.p_index <= t1.p_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0001662049861495845,0.8571428571428571,0.25
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0018836565096952906,0.9066666666666666,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index >= t1.p_index ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.0034903047091412744,0.8811188811188811,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.h_index = '1'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index = t1.p_index  ->  t0.published_papers = '1',0.00013850415512465375,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index >= t1.h_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.citations = t1.citations,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,0.000332409972299169,0.9230769230769232,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index = '0',0.000110803324099723,1.0,1.0
+aminer(t0) ^ t0.published_papers = '14' ^ t0.citations = '0'  ->  t0.p_index = '0.0000',0.002326869806094183,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations = t1.citations ^ t0.p_index = t1.p_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index >= t1.h_index  ->  t1.p_index = '0.0000',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t1.p_index = '0.3333'  ->  t0.h_index <= t1.h_index,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.published_papers >= t1.published_papers  ->  t1.p_index = '0.0000',0.00221606648199446,0.9195402298850576,0.25
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.h_index = '0',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '0'  ->  t0.p_index <= t1.p_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index <= t1.h_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index <= t1.p_index ^ t0.published_papers >= t1.published_papers  ->  t0.h_index <= t1.h_index,0.0018282548476454294,0.8684210526315791,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index <= t1.h_index  ->  t0.p_index <= t1.p_index,0.0034626038781163434,0.9689922480620154,0.5
+aminer(t0) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.003434903047091413,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.venue = t1.venue  ->  t0.author = t1.author,0.000332409972299169,0.8571428571428571,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.author_name = t1.author_name  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.author_name = t1.author_name ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.author_name = t1.author_name,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers >= t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.002659279778393352,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index <= t1.h_index  ->  t0.p_index <= t1.p_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.author_id = t1.author_id  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index = '1',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations = t1.citations  ->  t0.h_index = t1.h_index,0.002631578947368421,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers = t1.published_papers  ->  t1.p_index = '0.0000',0.0028808864265927976,0.8965517241379308,0.25
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.p_index = t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t1.citations = '0',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index = t1.p_index,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations ^ t0.h_index >= t1.h_index  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.00221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index = '0.0000',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.h_index = '1'  ->  t0.h_index = '0',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t1.citations = '3',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.published_papers <= t1.published_papers ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.citations <= t1.citations,0.0013850415512465374,0.8771929824561403,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^ t0.citations = '3' ^ t0.p_index = '0.0000'  ->  t0.citations = '0',0.0034903047091412744,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.h_index = '1'  ->  t0.h_index = '0',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '1' ^ t0.p_index = t1.p_index  ->  t0.published_papers = '1',8.310249307479225e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.venue = t1.venue  ->  t0.paper_title = t1.paper_title,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.0000',0.0017728531855955676,0.8767123287671232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '2' ^ t0.published_papers = '1'  ->  t0.h_index = t1.h_index,0.0004155124653739612,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.author = t1.author  ->  t0.paper_title = t1.paper_title,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index >= t1.h_index  ->  t1.citations = '0',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index = t1.p_index  ->  t0.h_index = t1.h_index,0.0022991689750692518,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t1.p_index = '0.3333'  ->  t0.h_index = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.author_id = t1.author_id  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333'  ->  t0.published_papers = '1',0.0016620498614958448,0.9230769230769232,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '2' ^ t0.published_papers <= t1.published_papers  ->  t0.h_index = t1.h_index,0.0004155124653739612,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers = '1',0.000110803324099723,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.p_index = t1.p_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t1.citations = '0'  ->  t0.h_index = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations ^ t0.h_index = t1.h_index  ->  t1.p_index = '0.3333',8.310249307479225e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t1.p_index = '0.3333'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index <= t1.p_index ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers = t1.published_papers  ->  t1.citations = '0',0.0028808864265927976,0.8965517241379308,0.25
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.p_index >= t1.p_index  ->  t0.citations <= t1.citations,2.770083102493075e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.h_index = '1'  ->  t1.p_index = '0.0000',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.3333'  ->  t0.published_papers <= t1.published_papers,0.0017728531855955676,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t1.p_index = '0.0000',0.003434903047091413,1.0,0.5
+aminer(t0) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.h_index = '1'  ->  t0.h_index = '0',0.0037396121883656506,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t1.p_index = '0.0000',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index >= t1.h_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_id = t1.paper_id  ->  t0.paper_affiliations = t1.paper_affiliations,0.000332409972299169,0.8571428571428571,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.0017728531855955676,0.8767123287671232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t1.p_index = '0.0000',0.00221606648199446,0.9195402298850576,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers >= t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.0000',0.002659279778393352,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.h_index = '0',0.003434903047091413,1.0,0.5
+aminer(t0) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.h_index = '0',0.003434903047091413,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t1.p_index = '0.3333',8.310249307479225e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.0000'  ->  t0.published_papers = '1',0.001329639889196676,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.0000'  ->  t0.h_index <= t1.h_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations ^ t0.h_index >= t1.h_index  ->  t0.p_index = t1.p_index,0.00221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index <= t1.p_index ^ t0.published_papers = t1.published_papers  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0028808864265927976,0.8739495798319328,0.25
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_title = t1.paper_title  ->  t0.paper_id = t1.paper_id,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers <= t1.published_papers ^ t0.p_index >= t1.p_index  ->  t0.h_index = '0',0.0018282548476454294,0.8684210526315791,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.h_index = '1'  ->  t1.citations = '0',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index <= t1.p_index ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers = t1.published_papers  ->  t0.h_index = '0',0.0028808864265927976,0.8965517241379308,0.25
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index <= t1.h_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.003545706371191136,0.992248062015504,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations  ->  t1.p_index = '0.0000',0.00221606648199446,0.9195402298850576,0.25
+aminer(t0) ^aminer(t1) ^ t0.published_papers >= t1.published_papers ^ t0.citations >= t1.citations ^ t0.h_index = t1.h_index  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.research_interests = t1.research_interests  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.00221606648199446,0.8988764044943821,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.published_papers = t1.published_papers,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '2'  ->  t1.published_papers = '14',2.770083102493075e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.author_id = t1.author_id  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index = '0'  ->  t0.citations <= t1.citations,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author = t1.author  ->  t0.paper_id = t1.paper_id,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations  ->  t1.p_index = '0.0000',0.0018836565096952906,0.9066666666666666,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index >= t1.p_index  ->  t1.citations = '0',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index <= t1.p_index ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.published_papers <= t1.published_papers,2.770083102493075e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index >= t1.h_index  ->  t1.p_index = '0.0000',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t1.p_index = '0.3333'  ->  t0.h_index <= t1.h_index,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.published_papers = '2',2.770083102493075e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333'  ->  t0.h_index = '1',0.003545706371191136,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index >= t1.p_index  ->  t0.h_index = '0',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.citations = t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index <= t1.p_index  ->  t0.h_index = '0',0.002908587257617729,0.8536585365853658,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers = '1',5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index = t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers >= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.h_index = t1.h_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t1.citations = '0',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t1.citations = '3',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.h_index = t1.h_index ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '1'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t1.p_index = '0.0000',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t1.p_index = '0.0000',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations  ->  t0.h_index = '1',0.0013850415512465374,0.9090909090909092,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t1.p_index = '0.3333'  ->  t1.citations = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.citations = t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.venue = t1.venue  ->  t0.paper_affiliations = t1.paper_affiliations,0.000332409972299169,0.8571428571428571,1.0
+aminer(t0) ^ t0.published_papers = '14' ^ t0.p_index = '0.0000'  ->  t0.citations = '0',0.002326869806094183,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t0.h_index <= t1.h_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index >= t1.p_index ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.0034903047091412744,0.8811188811188811,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.h_index = t1.h_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index = '0.0000',0.00221606648199446,0.9195402298850576,0.25
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.citations = t1.citations,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index <= t1.h_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,8.310249307479225e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.author_name = t1.author_name  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author = t1.author  ->  t0.paper_affiliations = t1.paper_affiliations,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.h_index <= t1.h_index,0.00013850415512465375,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index <= t1.p_index ^ t0.published_papers = t1.published_papers  ->  t0.h_index = '0',0.0028808864265927976,0.8739495798319328,0.25
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_id = t1.author_id  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.0000'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers >= t1.published_papers  ->  t0.citations <= t1.citations,8.310249307479225e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.h_index <= t1.h_index,0.001329639889196676,0.9230769230769232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '1'  ->  t0.h_index = '2',0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index <= t1.p_index ^ t0.citations >= t1.citations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.00013850415512465375,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations <= t1.citations  ->  t0.h_index = '2',0.0003601108033240997,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers  ->  t0.h_index = '2',0.0001939058171745152,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index = t1.p_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.002659279778393352,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.author = t1.author  ->  t0.venue = t1.venue,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations = t1.citations,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '1' ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t1.p_index = '0.3333'  ->  t1.p_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t1.citations = '0',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations ^ t0.p_index <= t1.p_index ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.00221606648199446,0.8602150537634409,0.2
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.published_papers <= t1.published_papers ^ t0.citations <= t1.citations  ->  t0.h_index = '0',0.00221606648199446,0.9195402298850576,0.25
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.h_index <= t1.h_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations  ->  t0.h_index <= t1.h_index,0.0018836565096952906,0.9066666666666666,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.citations = t1.citations,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t1.p_index = '0.0000',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.citations = t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.published_papers >= t1.published_papers ^ t0.citations >= t1.citations  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^ t0.published_papers = '1' ^ t0.h_index = '2'  ->  t0.h_index = '1',2.770083102493075e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.paper_title = t1.paper_title  ->  t0.year = t1.year,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t0.p_index <= t1.p_index,0.0016620498614958448,0.9090909090909092,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_title = t1.paper_title  ->  t0.venue = t1.venue,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.published_papers = '1',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.h_index = '1'  ->  t1.p_index = '0.0000',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.published_papers <= t1.published_papers  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0015789473684210526,0.8769230769230769,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '0'  ->  t0.published_papers = '1',0.001329639889196676,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '1' ^ t0.p_index >= t1.p_index  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.citations <= t1.citations,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_id = t1.paper_id  ->  t0.paper_title = t1.paper_title,0.00038781163434903045,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index = '0'  ->  t1.citations = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t1.p_index = '0.0000',0.000110803324099723,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.h_index <= t1.h_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index = t1.p_index  ->  t0.citations = t1.citations,0.00221606648199446,0.9638554216867471,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.p_index = t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.citations <= t1.citations,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.h_index = t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers >= t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.002659279778393352,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index = t1.p_index  ->  t1.published_papers = '14',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index = t1.p_index  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.p_index = t1.p_index  ->  t0.h_index = '1',0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '2'  ->  t0.p_index <= t1.p_index,2.770083102493075e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '2' ^ t0.published_papers = '1'  ->  t0.h_index = '1',0.0004155124653739612,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers <= t1.published_papers ^ t0.p_index >= t1.p_index  ->  t1.citations = '0',0.0018282548476454294,0.8684210526315791,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index = t1.h_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.author_id = t1.author_id,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.author_name = t1.author_name ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index = t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.published_papers = t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,2.770083102493075e-05,1.0,0.2
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '2'  ->  t0.h_index = '1',0.0008310249307479224,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index <= t1.h_index  ->  t0.published_papers = '1',0.001329639889196676,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t0.h_index <= t1.h_index,0.003545706371191136,0.8533333333333334,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index <= t1.h_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.h_index = '0',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.h_index = '1',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t0.citations = t1.citations,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.h_index = '2'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '0'  ->  t1.citations = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '1' ^ t1.p_index = '0.3333'  ->  t0.citations <= t1.citations,0.00030470914127423825,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations  ->  t0.h_index = t1.h_index,0.0007202216066481994,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.h_index = t1.h_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index <= t1.h_index  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0021606648199445984,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t1.citations = '0',0.000110803324099723,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t1.citations = '3',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_id = t1.author_id  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.h_index = t1.h_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.research_interests = t1.research_interests,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.h_index = '2'  ->  t0.h_index = '0',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index >= t1.h_index  ->  t1.p_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.citations <= t1.citations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0038227146814404428,0.92,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index = '0.0000',0.000110803324099723,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.h_index = '0',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.h_index = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '2'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,2.770083102493075e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.h_index = '1',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations = t1.citations ^ t0.p_index = t1.p_index  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.citations = t1.citations  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_name = t1.author_name  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '1' ^ t0.citations >= t1.citations  ->  t0.p_index <= t1.p_index,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.0000',0.002659279778393352,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.h_index = '2'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations <= t1.citations ^ t0.p_index <= t1.p_index  ->  t0.h_index <= t1.h_index,8.310249307479225e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index = t1.p_index  ->  t0.h_index <= t1.h_index,0.00221606648199446,0.9638554216867471,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.published_papers = '1',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t1.p_index = '0.0000',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t1.citations = '0'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t1.p_index = '0.3333'  ->  t0.h_index = t1.h_index,0.0006094182825484765,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.published_papers = t1.published_papers,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.published_papers = '1' ^ t1.p_index = '0.3333'  ->  t0.h_index = t1.h_index,0.00013850415512465375,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations = t1.citations  ->  t0.published_papers <= t1.published_papers,0.00030470914127423825,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.p_index = t1.p_index  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_name = t1.author_name  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index <= t1.h_index  ->  t0.citations <= t1.citations,0.0018836565096952906,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t1.p_index = '0.3333'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_id = t1.author_id ^ t0.author_name = t1.author_name ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.author_name = t1.author_name,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations >= t1.citations ^ t0.p_index = t1.p_index  ->  t0.published_papers <= t1.published_papers,0.00013850415512465375,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index = '0'  ->  t1.citations = '0',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.published_papers >= t1.published_papers  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0001662049861495845,0.8571428571428571,0.25
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers >= t1.published_papers ^ t0.p_index = t1.p_index  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.published_papers >= t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.citations = '0',0.0017728531855955676,0.8767123287671232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.h_index = '2'  ->  t1.p_index = '0.0000',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.author_id = t1.author_id  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index = t1.p_index ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers <= t1.published_papers ^ t0.p_index >= t1.p_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0018282548476454294,0.8684210526315791,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.published_papers = '2'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.paper_title = t1.paper_title  ->  t0.author = t1.author,0.000332409972299169,0.8571428571428571,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index >= t1.p_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.citations <= t1.citations  ->  t0.h_index = '0',0.0018836565096952906,0.9066666666666666,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t1.citations = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.h_index = '2'  ->  t0.h_index = '0',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index = t1.h_index,0.0001662049861495845,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.published_papers = '2',5.540166204986149e-05,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.published_papers = '1',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.citations >= t1.citations ^ t0.h_index = t1.h_index  ->  t1.p_index = '0.3333',5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations  ->  t0.h_index = '0',0.00221606648199446,0.9195402298850576,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.citations = t1.citations  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t0.p_index <= t1.p_index,0.002631578947368421,0.8715596330275229,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.published_papers <= t1.published_papers,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.published_papers >= t1.published_papers ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.0000',0.0017728531855955676,0.8767123287671232,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.research_interests = t1.research_interests  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.published_papers = t1.published_papers,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.h_index = '1'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.0037396121883656506,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '0'  ->  t1.p_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.author_name = t1.author_name  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.research_interests = t1.research_interests  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index = '0'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t0.h_index = '0',0.002659279778393352,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.0000',0.00221606648199446,0.8988764044943821,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.0000' ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.h_index >= t1.h_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.author_name = t1.author_name  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.author_name = t1.author_name  ->  t0.h_index = t1.h_index,0.000332409972299169,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.published_papers >= t1.published_papers  ->  t0.p_index_with_unequal_a_index = '0.0000',0.00221606648199446,0.9195402298850576,0.25
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t1.p_index = '0.0000'  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t1.citations = '0',0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t1.p_index = '0.3333'  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.0015789473684210526,0.8769230769230769,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers = t1.published_papers  ->  t0.h_index <= t1.h_index,0.0014404432132963988,0.8666666666666667,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.citations <= t1.citations,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.research_interests = t1.research_interests,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index  ->  t1.p_index = '0.0000',0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t1.p_index = '0.0000'  ->  t0.h_index <= t1.h_index,0.003434903047091413,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.author_name = t1.author_name  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.author_id = t1.author_id  ->  t0.published_papers <= t1.published_papers,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.published_papers = t1.published_papers  ->  t0.h_index = '0',0.0028808864265927976,0.8965517241379308,0.25
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.h_index >= t1.h_index ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index ^ t0.p_index >= t1.p_index  ->  t0.h_index <= t1.h_index,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index = '0'  ->  t1.p_index = '0.0000',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index = t1.p_index  ->  t0.h_index = t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '0' ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.h_index >= t1.h_index  ->  t1.citations = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t0.published_papers = '1',0.001329639889196676,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.author_name = t1.author_name  ->  t0.p_index <= t1.p_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.citations <= t1.citations ^ t0.published_papers >= t1.published_papers  ->  t0.h_index = '0',0.00221606648199446,0.9195402298850576,0.25
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.research_interests = t1.research_interests  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations = t1.citations ^ t0.p_index = t1.p_index  ->  t0.published_papers = t1.published_papers,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = t1.h_index ^ t0.p_index >= t1.p_index  ->  t0.published_papers = '2',0.000221606648199446,0.8888888888888888,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.h_index = '2'  ->  t0.h_index = '0',0.002908587257617729,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t0.author_id = t1.author_id  ->  t0.p_index_with_unequal_a_index = '0.0000',0.000221606648199446,1.0,1.0
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.citations = t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_affiliations = t1.author_affiliations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.citations = t1.citations,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t1.citations = '0' ^ t0.author_affiliations = t1.author_affiliations  ->  t0.p_index <= t1.p_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.published_papers = '1' ^ t0.p_index >= t1.p_index  ->  t0.p_index_with_unequal_a_index = '0.0000',0.002659279778393352,0.8648648648648649,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '1' ^ t0.h_index = '1' ^ t0.p_index <= t1.p_index  ->  t1.citations = '0',0.002908587257617729,0.8536585365853658,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_name = t1.author_name  ->  t0.citations <= t1.citations,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.h_index = '0'  ->  t1.citations = '0',0.0034903047091412744,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.published_papers = '2' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.citations <= t1.citations,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.citations = '3' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.author_id = t1.author_id,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.p_index = '0.3333' ^ t0.p_index_with_unequal_a_index = t1.p_index_with_unequal_a_index  ->  t0.h_index = t1.h_index,5.540166204986149e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '2' ^ t0.p_index <= t1.p_index ^ t0.published_papers >= t1.published_papers  ->  t0.citations <= t1.citations,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.published_papers <= t1.published_papers ^ t0.author_name = t1.author_name ^ t0.author_affiliations = t1.author_affiliations ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000110803324099723,1.0,0.25
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.h_index = '2'  ->  t1.p_index = '0.0000',0.002908587257617729,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.p_index_with_unequal_a_index = '0.0000'  ->  t0.h_index = '0',0.002326869806094183,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t1.citations = '3'  ->  t0.h_index = '1',0.000664819944598338,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index >= t1.p_index ^ t0.author_affiliations = t1.author_affiliations  ->  t0.h_index <= t1.h_index,0.000110803324099723,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.h_index = '1' ^ t0.citations = t1.citations ^ t0.p_index = t1.p_index  ->  t0.author_name = t1.author_name,5.540166204986149e-05,1.0,0.3333333333333333
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index = '0.0000' ^ t0.published_papers = '2'  ->  t0.citations = t1.citations,0.00221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t1.published_papers = '14' ^ t0.h_index <= t1.h_index  ->  t0.p_index <= t1.p_index,8.310249307479225e-05,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.citations <= t1.citations ^ t0.research_interests = t1.research_interests  ->  t0.p_index_with_unequal_a_index <= t1.p_index_with_unequal_a_index,0.000221606648199446,1.0,0.5
+aminer(t0) ^aminer(t1) ^ t0.p_index_with_unequal_a_index >= t1.p_index_with_unequal_a_index ^ t0.author_id = t1.author_id  ->  t0.p_index <= t1.p_index,0.000221606648199446,1.0,0.5

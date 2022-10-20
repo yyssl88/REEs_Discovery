@@ -1,0 +1,2 @@
+model_checkpoint_path: "/data/yaoshuw/REEs_model_data/revision/labeled_data_400/airports/train_3/model/"
+all_model_checkpoint_paths: "/data/yaoshuw/REEs_model_data/revision/labeled_data_400/airports/train_3/model/"

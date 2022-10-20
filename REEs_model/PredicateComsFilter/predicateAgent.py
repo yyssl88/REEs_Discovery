@@ -353,7 +353,7 @@ class PredicateAgent(object):
         selectedPIDs_new = copy.deepcopy(selectedPIDs)
         while True:
             # choose action
-            observation = self.generateFeature(selectedPIDs, rhsPID)
+            observation = self.generateFeature(selectedPIDs_new, rhsPID)
             action = DQN.choose_action(observation, rhsPID, self.predicatesArr)
             if action == -1:
                 break
