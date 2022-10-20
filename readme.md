@@ -102,13 +102,19 @@ Below we give a toy example.
 
 1. Put the datasets into HDFS:
 ```
-hdfs dfs -put airports.csv /data_path/
+hdfs dfs -mkdir /tmp/datasets_discovery/
+hdfs dfs -put airports.csv /tmp/datasets_discovery/
 ```
-2. Then revise the data path in code:
-```
-set the path of line 2004 in src/main/java/sics/seiois/mlsserver/biz/mock/RuleFindRequestMock.java to be hdfs:///data_path/airports.csv
-```
-3. Put the files related to interestingness model, from datasets/, into HDFS:
+
+[comment]: <> (2. Then revise the data path in code:)
+
+[comment]: <> (```)
+
+[comment]: <> (set the path of line 2004 in src/main/java/sics/seiois/mlsserver/biz/mock/RuleFindRequestMock.java to be hdfs:///data_path/airports.csv)
+
+[comment]: <> (```)
+
+2. Put the files related to interestingness model, from datasets/, into HDFS:
 ```
 hdfs dfs mkdir -p /tmp/rulefind/interestingness/airports_topk/
 hdfs dfs -put tokenVobs.txt /tmp/rulefind/interestingness/airports_topk/
@@ -116,13 +122,13 @@ hdfs dfs -put interestingnessModel.txt /tmp/rulefind/interestingness/airports_to
 hdfs dfs -put filterRegressionModel.txt /tmp/rulefind/interestingness/airports_topk/
 hdfs dfs -put airports_predicates.txt /tmp/rulefind/interestingness/airports_topk/
 ```
-4. Download all the dependencies from Google Drive link:
+3. Download all the dependencies from Google Drive link:
 https://drive.google.com/drive/folders/1xup0eVNB84BgJz3GSrFCy9X_bG2GF8Lm?usp=sharing, then move the directory lib/ into mls-server/example/:
 ```
 cd mls-server/
 mv lib/ example/
 ```
-5. Compile and build the project:
+4. Compile and build the project:
 ```
 mvn package
 ```
