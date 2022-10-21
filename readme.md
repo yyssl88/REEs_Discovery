@@ -1,15 +1,5 @@
 # REE Discovery
-This project studies two questions about rule discovery. Can we
-characterize the usefulness of rules using quantitative criteria? How
-can we discover rules using those criteria? As a testbed, we consider
-entity enhancing rules (REEs), which subsume common association
-rules and data quality rules as special cases. We characterize REEs
-using a bi-criteria model, with both objective measures such as
-support and confidence, and subjective measures for the user’s
-needs; we learn the subjective measure and the weight vectors via
-active learning. Based on the bi-criteria model, we develop a top-𝑘
-algorithm to discover top-ranked REEs, and an any-time algorithm
-for successive discovery via lazy evaluation. 
+This project studies two questions about rule discovery. Can we characterize the usefulness of rules using quantitative criteria? How can we discover rules using those criteria? As a testbed, we consider entity enhancing rules (REEs), which subsume common association rules and data quality rules as special cases. We characterize REEs using a bi-criteria model, with both objective measures such as support and confidence, and subjective measures for the user’s needs; we learn the subjective measure and the weight vectors via active learning. Based on the bi-criteria model, we develop a top-𝑘 algorithm to discover top-ranked REEs, and an any-time algorithm for successive discovery via lazy evaluation. 
 
 For more details, see the **Discovering Top-k Rules using Subjective and Objective Criteria** paper. 
 
@@ -105,14 +95,6 @@ Below we give a toy example.
 hdfs dfs -mkdir /tmp/datasets_discovery/
 hdfs dfs -put airports.csv /tmp/datasets_discovery/
 ```
-
-[comment]: <> (2. Then revise the data path in code:)
-
-[comment]: <> (```)
-
-[comment]: <> (set the path of line 2004 in src/main/java/sics/seiois/mlsserver/biz/mock/RuleFindRequestMock.java to be hdfs:///data_path/airports.csv)
-
-[comment]: <> (```)
 
 2. Put the files related to interestingness model, from datasets/, into HDFS:
 ```

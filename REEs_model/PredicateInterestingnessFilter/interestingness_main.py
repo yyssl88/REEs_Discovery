@@ -16,7 +16,7 @@ def main():
     parser.add_argument('-model_file', '--model_file', type=str, default='../REEs_model_data/Pod_test_data/rule2000/interestingness_model')
     parser.add_argument('-batch_size', '--batch_size', type=int, default=32)
 
-    os.environ["TFHUB_CACHE_DIR"] = '/home/yaoshuw/cache_pretrained_models'
+    os.environ["TFHUB_CACHE_DIR"] = '/home/user/cache_pretrained_models'
     args = parser.parse_args()
     arg_dict = args.__dict__
     for k, v in sorted(arg_dict.items()):

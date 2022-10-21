@@ -961,14 +961,14 @@ public class Predicate implements PartitionRefiner, de.metanome.algorithm_integr
 //        result = prime * result + ((operand1 == null) ? 0 : operand1.hashCode());
 //        result = prime * result + ((operand2 == null) ? 0 : operand2.hashCode());
 //
-//        // added by Yaoshu
+//        // added by yyssl88
 //        result = prime * result + this.index1;
 //        result = prime * result + this.index2;
 //
 //        if (this.constant != null) {
 //            result = prime * result + this.constant.hashCode();
 //        }
-//        // added by Yaoshu
+//        // added by yyssl88
 //        if (this.mlOption != null) {
 //            result = prime * result + this.mlOption.hashCode();
 //        }
@@ -992,7 +992,7 @@ public class Predicate implements PartitionRefiner, de.metanome.algorithm_integr
 //            return false;
 //        Predicate other = (Predicate) obj;
 //
-//        // added by Yaoshu
+//        // added by yyssl88
 //        if (this.index1 != other.getIndex1() || this.index2 != other.getIndex2())
 //            return false;
 //        if (operand1.equals(other.operand1) && this.constant != null && op == other.op

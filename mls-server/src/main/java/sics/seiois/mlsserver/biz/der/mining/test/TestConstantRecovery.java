@@ -123,8 +123,8 @@ public class TestConstantRecovery {
         // whether to use reinforcement learning for predicate association computation
         int ifRL = 0;
 //        String PI_path = "/opt/anaconda3/envs/py36/bin/python";
-//        String PI_path = "C:\\Users\\hanzy\\Anaconda3\\envs\\py36\\python.exe"; // python interpreter path
-        String PI_path = "C:\\Users\\wangys\\Anaconda3\\python.exe"; // ""C:\\Users\\hanzy\\Anaconda3\\envs\\py36\\python.exe"; // python interpreter path
+//        String PI_path = "C:\\Users\\user\\Anaconda3\\envs\\py36\\python.exe"; // python interpreter path
+        String PI_path = "C:\\Users\\user\\Anaconda3\\python.exe"; // ""C:\\Users\\user\\Anaconda3\\envs\\py36\\python.exe"; // python interpreter path
         String RL_code_path = "./PredicateAssociation/";
         int N = 10;
         int DeltaL = 3;

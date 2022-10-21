@@ -328,7 +328,7 @@ public class DenialConstraint {
     private double cosine;
     private double coverage;
     private long violations; //如果这条是x->y。那么violations代表x->!y 的数量。容错率就是support/(support+violations)
-    // added by Yaoshu
+    // added by yyssl88
     private Predicate predicate_l_0;
 
     private String rule;
