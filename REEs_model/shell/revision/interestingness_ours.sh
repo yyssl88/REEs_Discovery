@@ -14,6 +14,9 @@ dirpath=$3
 
 mkdir ${dirpath}'/REEs_model_data/revision/labeled_data_400/'${task[${tid}]}'/train'
 
+# construct result directory
+mkdir ${dirpath}'/REEs_model_data/revision/results/'
+
 # 1. Our model
 echo -e "---------------------------------------------- TRAIN the rule interestingness model -------------------------------------------------------------------"
 result_file=${dirpath}'/REEs_model_data/revision/results/result_ROUND'${cid}'_Mbi_'${task[${tid}]}'.txt'

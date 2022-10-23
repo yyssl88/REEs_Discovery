@@ -12,8 +12,9 @@ Before building the projects, the following prerequisites need to be installed:
 * Java JDK 1.8
 * Maven
 * transformers
-* tensorflow
-* pytorch
+* tensorflow 2.6.2
+* pytorch 1.10.2 
+* huggingface
 
 ## REEs_model
 --- The source code of dynamic predicate filtering and rule interestingness
@@ -104,8 +105,7 @@ hdfs dfs -put interestingnessModel.txt /tmp/rulefind/interestingness/airports_to
 hdfs dfs -put filterRegressionModel.txt /tmp/rulefind/interestingness/airports_topk/
 hdfs dfs -put airports_predicates.txt /tmp/rulefind/interestingness/airports_topk/
 ```
-3. Download all the dependencies from Google Drive link:
-https://drive.google.com/drive/folders/1xup0eVNB84BgJz3GSrFCy9X_bG2GF8Lm?usp=sharing, then move the directory lib/ into mls-server/example/:
+3. Download all the dependencies (https://drive.google.com/drive/folders/1Gviqt7zcaRGQho4x5i6hPnuwPmWonWFR?usp=sharing), then move the directory lib/ into mls-server/example/:
 ```
 cd mls-server/
 mv lib/ example/
@@ -128,5 +128,5 @@ The results will be shown in discoveryResults/, as 'resRootFile' in run_unit.sh 
 ## Datasets
 Only contain a small dataset Airport.
 
-The others are in the following link:
-https://drive.google.com/drive/folders/1oUv3tglQXjGdBWbmIwUMlsbexYYfplI-?usp=sharing
+The others are released in https://drive.google.com/drive/folders/1Gviqt7zcaRGQho4x5i6hPnuwPmWonWFR?usp=sharing
+

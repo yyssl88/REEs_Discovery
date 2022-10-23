@@ -1,0 +1,224 @@
+rule,support_ratio,confidence,conciseness
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == t1.date ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/08/2016 ⋀ t0.party == t1.party  ->  t0.election_phase == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == t1.date,306077682,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == t1.date,35255552,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 05/06/2008 PRIMARY ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == t1.election_phase,3873171744,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == t1.election_phase,7020053324,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/06/2012 ⋀ t0.party == t1.party  ->  t0.election_phase == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.party == t1.party  ->  t0.election_phase == t1.election_phase,36584826398,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.election_phase == t1.election_phase,7257978982,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.city == t1.city,22840268,0.8951623548356855,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.date == t1.date,2484961176,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.city == t1.city,245102508,0.817871983742513,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.election_phase == t1.election_phase,978484194,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.election_phase == t1.election_phase,2484961176,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == t1.date,53759530742,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.date == t1.date  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == t1.election_phase,36584826398,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.date == t1.date,502637086,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/06/2012 ⋀ t0.election_phase == t1.election_phase  ->  t0.election_phase == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/08/2016 ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/06/2012 ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.party == t1.party  ->  t0.election_phase == t1.election_phase,43343500126,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.election_phase == t1.election_phase  ->  t0.date == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.city == t1.city,245102508,0.817871983742513,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == t1.election_phase  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city == t1.city,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.city == t1.city,147393402,0.8329500611991396,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == t1.date,47371568442,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.party == t1.party  ->  t0.election_phase == t1.election_phase,47371568442,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3  ->  t0.city_id == t1.city_id,5596712032,0.8211799225775093,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == t1.date,978484194,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id  ->  t0.city_id2 == t1.city_id2,5596712010,0.9922052176475559,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.city == t1.city,8002518,0.8364286786369332,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city_id == t1.city_id,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city == t1.city,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.election_phase == t1.election_phase,20009250,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == t1.date,43343500126,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/08/2016 ⋀ t0.date == t1.date  ->  t0.election_phase == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.city == t1.city,11092234,0.8968674339524273,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.election_phase == t1.election_phase,494639402,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2014 ⋀ t0.party == t1.party  ->  t0.election_phase == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.city == t1.city,22840268,0.8951623548356855,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.election_phase == t1.election_phase,22753346,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.city == t1.city,11092234,0.8968674339524273,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.voting_intention == t1.voting_intention  ->  t0.party == t1.party,852320238664,1.0,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.election_phase == t1.election_phase,305787416,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == t1.election_phase,2484961176,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city == t1.city,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == t1.date ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.party == t1.party  ->  t0.date == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.party == t1.party  ->  t0.election_phase == t1.election_phase,4814851522,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city_id == t1.city_id,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.party == t1.party  ->  t0.date == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == t1.date,7257978982,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.election_phase == t1.election_phase,7257978982,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == t1.date,406627180,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.election_phase == t1.election_phase,14868750,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.party == t1.party  ->  t0.date == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.election_phase == t1.election_phase,494960342,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2  ->  t0.city_id3 == t1.city_id3,6815451618,0.999174001010679,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id  ->  t0.city_id3 == t1.city_id3,5596712010,0.9922052176475559,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == t1.election_phase  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city  ->  t0.county_desc == t1.county_desc,2928366110,0.985944202109367,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == t1.election_phase,66516190568,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == t1.date,304947548,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == t1.date,66516190568,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == t1.date,494960342,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.city == t1.city,147393402,0.8329500611991396,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.city == t1.city,147393402,0.8329500611991396,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.election_phase == t1.election_phase,7212041904,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == t1.date,978484194,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2014 ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.city == t1.city,8002518,0.8364286786369332,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == t1.election_phase  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.city == t1.city,11092234,0.8968674339524273,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.election_phase == t1.election_phase,9887274216,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.city == t1.city,143885360,0.813042818513057,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == t1.date,304738680,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.election_phase == t1.election_phase,40313984,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == t1.date,40334382,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.election_phase == t1.election_phase,22743102,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.party == t1.party  ->  t0.date == t1.date,47371568442,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 05/06/2008 PRIMARY ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == t1.date,3873171744,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.election_phase == t1.election_phase,269441300,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.election_phase == t1.election_phase,8110382,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.county_desc == t1.county_desc  ->  t0.city == t1.city,2919009744,0.9485966017686267,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2014 ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city  ->  t0.city_id == t1.city_id,2926272464,0.9852392977164632,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.election_phase == t1.election_phase,250370840,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id  ->  t0.county_desc == t1.county_desc,150703715610,1.0,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == t1.date,253212658,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.date == t1.date,13014520,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.election_phase == t1.election_phase,502637086,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.city == t1.city,143885360,0.813042818513057,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2008 ⋀ t0.election_phase == t1.election_phase  ->  t0.election_phase == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.election_phase == t1.election_phase,11356214,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2008 ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2008 ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.date == t1.date,22743102,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.city == t1.city,8002518,0.8364286786369332,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3  ->  t0.city_id2 == t1.city_id2,6815451618,1.0,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/06/2012 ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 05/06/2008 PRIMARY ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == t1.date,4226519782,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2014 ⋀ t0.election_phase == t1.election_phase  ->  t0.election_phase == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.election_phase == t1.election_phase,304947548,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.party == t1.party  ->  t0.date == t1.date,43343500126,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == t1.date,7212041904,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.city == t1.city,147393402,0.8329500611991396,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == t1.election_phase,43343500126,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.city == t1.city,143885360,0.813042818513057,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == t1.date,40313984,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == t1.date,9887274216,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.election_phase == t1.election_phase,146149620,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.city == t1.city,22840268,0.8951623548356855,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.election_phase == t1.election_phase,306077682,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.election_phase == t1.election_phase,149639552,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.date == t1.date,20009250,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == t1.date,48003140688,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.date == t1.date,23194552,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == t1.date,9887274216,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == t1.date,146149620,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city  ->  t0.city_id3 == t1.city_id3,2922936622,0.9841161614843433,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.election_phase == t1.election_phase,253212658,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.election_phase == t1.election_phase,35255552,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == t1.election_phase,48003140688,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == t1.date ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.date == t1.date,7257978982,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.election_phase == t1.election_phase,9887274216,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.city == t1.city,8002518,0.8364286786369332,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.city == t1.city,143885360,0.813042818513057,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.date == t1.date  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2008 ⋀ t0.party == t1.party  ->  t0.election_phase == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.date == t1.date  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.election_phase == t1.election_phase,406627180,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == t1.date ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == t1.date  ->  t0.election_phase == t1.election_phase,408138027012,0.9987600026094382,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city_id == t1.city_id,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.election_phase == t1.election_phase,40334382,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == t1.election_phase,4814851522,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.date == t1.date,459228644,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.county_id == t1.county_id  ->  t0.city == t1.city,2919009744,0.9485966017686267,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2008 ⋀ t0.date == t1.date  ->  t0.election_phase == 11/04/2008,1008172514016,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.election_phase == t1.election_phase,7212041904,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == t1.date,7020053324,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.election_phase == t1.election_phase  ->  t0.date == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2  ->  t0.city_id == t1.city_id,5596712032,0.8205016287914095,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.date == t1.date,14850514,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.date == t1.date,8110382,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.date == t1.date,14868750,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.election_phase == t1.election_phase,459228644,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == t1.date,250370840,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 05/06/2008 PRIMARY ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == t1.election_phase,4226519782,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city  ->  t0.city_id2 == t1.city_id2,2922936622,0.9841161614843433,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city_id == t1.city_id,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/04/2014 ⋀ t0.date == t1.date  ->  t0.election_phase == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.election_phase == t1.election_phase,978484194,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.election_phase == t1.election_phase  ->  t0.date == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == t1.election_phase  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/08/2016 ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.date == t1.date  ->  t0.city == t1.city,594353356,0.8266314110557593,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.election_phase == t1.election_phase,502637086,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == t1.date,7212041904,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == t1.date,269441300,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.party == t1.party  ->  t0.date == t1.date,4814851522,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city  ->  t0.county_id == t1.county_id,2928366110,0.985944202109367,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == t1.date,2484961176,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.party == t1.party  ->  t0.date == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == t1.date,36584826398,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.city == t1.city,5610474,0.9066978462493193,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.date == t1.date,22753346,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc  ->  t0.county_id == t1.county_id,150703715610,1.0,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == t1.date,4814851522,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.election_phase == t1.election_phase,14850514,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == t1.date,149639552,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city == t1.city,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.city == t1.city,11092234,0.8968674339524273,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.party == t1.party  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.election_phase == t1.election_phase,47371568442,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.city_id == t1.city_id,4323942,0.9050213030304807,0.25
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.election_phase == t1.election_phase,459228644,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.city == t1.city,245102508,0.817871983742513,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == t1.election_phase,3473446068,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == t1.election_phase  ->  t0.date == t1.date,408138026982,1.0,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.date == t1.date,494639402,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/06/2012 ⋀ t0.date == t1.date  ->  t0.election_phase == 11/06/2012,938826033408,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.date == 11/08/2016 ⋀ t0.election_phase == t1.election_phase  ->  t0.election_phase == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/04/2008 GENERAL  ->  t0.date == t1.date,305787416,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 05/06/2008 PRIMARY ⋀ t0.party == t1.party  ->  t0.date == t1.date,4226519782,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.date == t1.date,502637086,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_id == t1.county_id ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.city == t1.city,22840268,0.8951623548356855,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/06/2012 GENERAL ⋀ t0.party == t1.party  ->  t0.date == t1.date,36584826398,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2014 GENERAL ⋀ t0.voting_intention == t1.voting_intention  ->  t0.date == 11/04/2014,343229596912,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 05/06/2008 PRIMARY ⋀ t0.party == t1.party  ->  t0.election_phase == t1.election_phase,4226519782,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/04/2014 GENERAL  ->  t0.election_phase == t1.election_phase,23194552,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id3 == t1.city_id3 ⋀ t0.election_phase == 11/06/2012 GENERAL  ->  t0.election_phase == t1.election_phase,304738680,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/08/2016 GENERAL ⋀ t0.election_phase == t1.election_phase  ->  t0.date == 11/08/2016,1087608690624,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.party == t1.party  ->  t0.voting_intention == t1.voting_intention,852320238664,1.0,1.0
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/04/2008 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.election_phase == t1.election_phase,53759530742,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id2 == t1.city_id2 ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/08/2016 GENERAL  ->  t0.city == t1.city,245102508,0.817871983742513,0.3333333333333333
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.county_desc == t1.county_desc ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.date == t1.date,459228644,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.election_phase == 11/02/2010 GENERAL ⋀ t0.way_of_voting == t1.way_of_voting  ->  t0.date == t1.date,3473446068,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city_id == t1.city_id ⋀ t0.election_phase == 05/06/2008 PRIMARY  ->  t0.election_phase == t1.election_phase,13014520,1.0,0.5
+ncvoter(t0) ⋀ ncvoter(t1) ⋀ t0.city == t1.city ⋀ t0.election_phase == 11/02/2010 GENERAL  ->  t0.date == t1.date,11356214,1.0,0.5
