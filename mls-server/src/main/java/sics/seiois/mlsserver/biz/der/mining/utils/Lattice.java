@@ -645,7 +645,7 @@ public class Lattice implements KryoSerializable {
             boolean f1 = false, f2 = false;
             if (suppRatios.containsKey(pSet)) {
                 f1 = true;
-                double UBScore = interestingness.computeUB(suppRatios.get(pSet), 1.0, pSet, rhs, topKOption);
+                double UBScore = interestingness.computeUB(suppRatios.get(pSet) * interestingness.getAllCount(), 1.0, pSet, rhs, topKOption);
                 if (UBScore > kth) {
                     validRHSs.add(rhs);
                 }
@@ -653,7 +653,7 @@ public class Lattice implements KryoSerializable {
             pSet.remove(newP);
             if (suppRatios.containsKey(pSet)) {
                 f2 = true;
-                double UBScore = interestingness.computeUB(suppRatios.get(pSet), 1.0, pSet, rhs, topKOption);
+                double UBScore = interestingness.computeUB(suppRatios.get(pSet) * interestingness.getAllCount(), 1.0, pSet, rhs, topKOption);
                 if (UBScore > kth) {
                     validRHSs.add(rhs);
                 }
@@ -662,7 +662,7 @@ public class Lattice implements KryoSerializable {
             // add newP
             pSet.add(newP);
             if (f1 == false && f2 == false) {
-                double UBScore = interestingness.computeUB(interestingness.getAllCount(), 1.0, pSet, rhs, topKOption);
+                double UBScore = interestingness.computeUB(interestingness.getAllCount() * interestingness.getAllCount(), 1.0, pSet, rhs, topKOption);
                 if (UBScore > kth) {
                     validRHSs.add(rhs);
                 }
