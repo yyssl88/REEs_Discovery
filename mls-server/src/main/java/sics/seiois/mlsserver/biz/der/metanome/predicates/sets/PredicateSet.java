@@ -294,7 +294,7 @@ public class PredicateSet implements Iterable<Predicate>, Externalizable, KryoSe
 
     public String toREEString() {
         StringBuilder sb = new StringBuilder();
-        this.forEach(p -> sb.append(p.toREEString() + " ⋀"));
+        this.forEach(p -> sb.append(p.toREEString() + " ^"));
 
         return null != sb && sb.length() > 0 ? sb.substring(0, sb.length() - 1) : "";
     }

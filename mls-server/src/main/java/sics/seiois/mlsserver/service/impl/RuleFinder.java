@@ -80,8 +80,8 @@ public class RuleFinder {
 
             // configure spark environment
             // 16 env
-            sparkClintConfMap.put("spark.driver.memory","30G");
-            sparkClintConfMap.put("spark.executor.memory","20G");
+            sparkClintConfMap.put("spark.driver.memory","35G");
+            sparkClintConfMap.put("spark.executor.memory","25G");
             sparkClintConfMap.put("spark.executor.cores","1");
 //            sparkClintConfMap.put("spark.executor.cores","1");
 //             sparkClintConfMap.put("spark.executor.instances", "10");
@@ -120,7 +120,7 @@ public class RuleFinder {
 //            sparkLauncher.setConf("spark.executor.cores","1");
 ////            sparkLauncher.setConf("spark.executor.instances",numOfProcessors);
 //            sparkLauncher.setConf("spark.network.timeout", "360");
-            sparkLauncher.setConf("spark.executor.heartbeatInterval", "30");
+            sparkLauncher.setConf("spark.executor.heartbeatInterval", "200");
 //            sparkLauncher.setConf("spark.executor.instances", "15");
 
             String path = "hdfs:///data/models/resources.zip";

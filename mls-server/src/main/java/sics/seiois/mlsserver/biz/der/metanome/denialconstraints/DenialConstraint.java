@@ -147,7 +147,7 @@ public class DenialConstraint {
                 .append(" -> ").append(rhs.toREEString());
         for (Map.Entry<String, PredicateSetTableMsg> table : colMap.entrySet()) {
             for(Integer alias : table.getValue().getTableAlias()) {
-                tables.append(table.getKey()).append("(t").append(alias).append(") ⋀ ");
+                tables.append(table.getKey()).append("(t").append(alias).append(") ^ ");
             }
             if(null != table.getValue().getJoinSet()) {
                 for (Predicate fk : table.getValue().getJoinSet()) {
@@ -161,12 +161,12 @@ public class DenialConstraint {
                     if(!setIncludeFk) {
                         fk.setIndex_new_1(fk.getIndex1());
                         fk.setIndex_new_2(fk.getIndex2());
-                        joinCol.append(fk.toREEString()).append(" ⋀ ");
+                        joinCol.append(fk.toREEString()).append(" ^ ");
                     }
                     if(isPair) {
                         fk.setIndex_new_1(fk.getIndex1() + 1);
                         fk.setIndex_new_2(fk.getIndex2() + 1);
-                        joinCol.append(fk.toREEString()).append(" ⋀ ");
+                        joinCol.append(fk.toREEString()).append(" ^ ");
                     }
                 }
             }

@@ -856,7 +856,7 @@ public class ParallelRuleDiscoverySampling {
         int level = 0;
 
         String option = "original";
-        if (this.ifPrune == 0) {
+        if (this.ifPrune == 0) {  // if topKOption='noFiltering', ifPrune=0; Otherwise, ifPrune=1
             option = "none";
         }
 
@@ -1232,7 +1232,7 @@ public class ParallelRuleDiscoverySampling {
                                     if (ree != null) {
                                         validConstantRule.putIfAbsent(message.getCurrentSet(), new ArrayList<>());
                                         validConstantRule.get(message.getCurrentSet()).add(ree.getRHS());
-                                        logger.info("Valid REE values ###### are : {}", ree.toString());
+                                        logger.info("Valid REE values ###### are : {}, supp : {}, conf : {}", ree.toREEString(), ree.getSupport(), ree.getConfidence());
                                     }
                                 }
                                 break;
@@ -3399,7 +3399,7 @@ public class ParallelRuleDiscoverySampling {
                         // print all rules
                         for (DenialConstraint ree : rees) {
                             if (ree != null) {
-                                logger.info("Valid REE values ###### are : {}", ree.toString());
+                                logger.info("Valid REE values ###### are : {}, supp : {}, conf : {}", ree.toREEString(), ree.getSupport(), ree.getConfidence());
                             }
                         }
                         this.maintainTopKRules(rees);
@@ -3872,7 +3872,7 @@ public class ParallelRuleDiscoverySampling {
                     // print all rules
                     for (DenialConstraint ree : rees) {
                         if (ree != null) {
-                            logger.info("Valid REE values ###### are : {}", ree.toString());
+                            logger.info("Valid REE values ###### are : {}, supp : {}, conf : {}", ree.toREEString(), ree.getSupport(), ree.getConfidence());
                         }
                     }
                     this.maintainTopKRules(rees);
