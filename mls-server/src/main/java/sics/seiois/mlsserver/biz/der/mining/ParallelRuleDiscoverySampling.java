@@ -160,7 +160,7 @@ public class ParallelRuleDiscoverySampling {
     public void loadAllPredicates(String data_name) throws IOException {
 //        this.index2predicates = new HashMap<>();
         FileSystem hdfs = FileSystem.get(new Configuration());
-        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "allPredicates/" + data_name + "_predicates.txt";
+        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "interestingness/" + data_name + "_topk/" + data_name + "_predicates.txt";
         FSDataInputStream inputTxt = hdfs.open(new Path(inputTxtPath));
         BufferedInputStream bis = new BufferedInputStream(inputTxt);
         InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
