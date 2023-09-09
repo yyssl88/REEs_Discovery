@@ -171,7 +171,20 @@ public class ParallelRuleDiscoverySampling {
         while ((line = bReader.readLine()) != null) {
 //            Predicate p = PredicateBuilder.parsePredicateString(this.input, line);
 //            this.index2predicates.put(k, p);
-            this.predicateDQNHashIDs.put(line, k);
+            if (this.allPredicates.get(0).toString().contains("==")) {
+                if (!line.contains("==")) {
+                    this.predicateDQNHashIDs.put(line.replace("=", "=="), k);
+                } else {
+                    this.predicateDQNHashIDs.put(line, k);
+                }
+            } else {
+                if (line.contains("==")) {
+                    this.predicateDQNHashIDs.put(line.replace("==", "="), k);
+                } else {
+                    this.predicateDQNHashIDs.put(line, k);
+                }
+            }
+            logger.info("#### read predicate line: {}", line);
             k++;
         }
     }
@@ -226,6 +239,8 @@ public class ParallelRuleDiscoverySampling {
         } catch (IOException e) {
 
         }
+        logger.info("#### predicateDQNHashIDs: {}", this.predicateDQNHashIDs);
+
         // reconstruct the interestingness object
         this.interestingness = new Interestingness(tokenToIDFile, interestingnessModelFile,
                 filterRegressionFile, this.allPredicates, this.allCount, hdfs, this.predicateDQNHashIDs);
