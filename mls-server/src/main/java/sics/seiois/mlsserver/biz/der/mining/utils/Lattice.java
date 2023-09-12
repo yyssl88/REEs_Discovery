@@ -149,6 +149,7 @@ public class Lattice implements KryoSerializable {
 //        if (this.latticeLevel.get(key).getRHSs().size() == 0 || this.latticeLevel.get(key) == null ||
 //        this.latticeLevel.get(key).getPredicates() == null || this.latticeLevel.get(key).getRHSs() == null) {
 //            this.latticeLevel.remove(key);
+//            this.allLatticeVertexBits.remove(key);
 //        }
     }
 
@@ -159,6 +160,7 @@ public class Lattice implements KryoSerializable {
         IBitSet key = tmp_ps.getBitset();
         if (this.latticeLevel.containsKey(key)) {
             this.latticeLevel.remove(key);
+            this.allLatticeVertexBits.remove(key);
         }
     }
 
@@ -186,6 +188,7 @@ public class Lattice implements KryoSerializable {
         // prune invalid lattice vertex
         for (IBitSet key : removedKeys) {
             this.latticeLevel.remove(key);
+            this.allLatticeVertexBits.remove(key);
         }
 
     }
@@ -263,7 +266,6 @@ public class Lattice implements KryoSerializable {
         for (IBitSet key : this.latticeLevel.keySet()) {
             IBitSet t = this.latticeLevel.get(key).getPredicates().getBitset();
             if (invalidX.contains(t)) {
-                // this.latticeLevel.remove(key);
                 removedKeys.add(key);
             }
             // remove valid rules
@@ -280,6 +282,7 @@ public class Lattice implements KryoSerializable {
         // remove some keys
         for (IBitSet key : removedKeys) {
             this.latticeLevel.remove(key);
+            this.allLatticeVertexBits.remove(key);
         }
     }
 
@@ -289,8 +292,8 @@ public class Lattice implements KryoSerializable {
         for (IBitSet key : this.latticeLevel.keySet()) {
             IBitSet t = this.latticeLevel.get(key).getPredicates().getBitset();
             if (invalidX.contains(t)) {
-                // this.latticeLevel.remove(key);
                 removedKeys.add(key);
+                continue;
             }
             // check |len| - 1 predicateset -- new ADDED, need to re-test and re-think !!!
             for (Predicate r : this.latticeLevel.get(key).getPredicates()) {
@@ -355,6 +358,7 @@ public class Lattice implements KryoSerializable {
         // remove some keys
         for (IBitSet key : removedKeys) {
             this.latticeLevel.remove(key);
+            this.allLatticeVertexBits.remove(key);
         }
     }
 
@@ -433,7 +437,6 @@ public class Lattice implements KryoSerializable {
 //                nonZeroUBScores.add(curr_ub);
 //            }
             if (lv.getRHSs().size() <= 0) {
-                // this.latticeLevel.remove(key);
                 removeKeys.add(key);
             }
         }
@@ -496,7 +499,6 @@ public class Lattice implements KryoSerializable {
             }
 
             if (lv.getRHSs().size() <= 0) {
-                // this.latticeLevel.remove(key);
                 removeKeys.add(key);
             }
         }
@@ -1062,6 +1064,7 @@ public class Lattice implements KryoSerializable {
         }
         for (IBitSet bs : removedKeys) {
             this.latticeLevel.remove(bs);
+            this.allLatticeVertexBits.remove(bs);
         }
     }
 

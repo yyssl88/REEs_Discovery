@@ -1412,6 +1412,7 @@ public class ParallelRuleDiscoverySampling {
             return null;
         }
 
+        long now = System.currentTimeMillis();
         // parallel expand lattice vertices of next level
         Lattice nextLattice = sc.parallelize(workUnitLattices, workUnitLattices.size()).map(task -> {
 
@@ -1435,7 +1436,6 @@ public class ParallelRuleDiscoverySampling {
             return latticeWorker;
 
         }).aggregate(null, new ILatticeAggFunction(), new ILatticeAggFunction());
-        long now = System.currentTimeMillis();
 
 //        Lattice nextLattice = workUnitLattices.stream().parallel().map(task -> {
 //
@@ -1463,6 +1463,8 @@ public class ParallelRuleDiscoverySampling {
         logger.info(">>>> finish runNext Lattice: {}", (System.currentTimeMillis() - now)/1000);
         // final pruning
         nextLattice.removeInvalidLatticeAndRHSs(lattice);
+
+        logger.info(">>>> next Lattice size: {}", nextLattice.size());
 
         return nextLattice;
     }
