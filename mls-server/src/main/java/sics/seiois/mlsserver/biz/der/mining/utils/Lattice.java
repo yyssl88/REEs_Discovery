@@ -814,25 +814,26 @@ public class Lattice implements KryoSerializable {
                         }
 //                    }
                 } else {
-                    // left
-                    if (p.checkIfCorrectOneRelationName(r_1)) {
-                        Predicate cp1 = predicateProviderIndex.getPredicate(p, tid_pair.left, tid_pair.left);
-                        if (lv.ifContain(cp1)) {
-                            continue;
-                        }
-                        if (!this.checkValidExtension(lv, cp1)) {
-                            continue;
-                        }
-                        if (!this.checkValidConstantPredicateExtension(lv, cp1)) {
-                            continue;
-                        }
+                    for (int idx = 0; idx < 2; idx++) {
+                        // left
+                        if (idx == 0 && p.checkIfCorrectOneRelationName(r_1)) {
+                            Predicate cp1 = predicateProviderIndex.getPredicate(p, tid_pair.left, tid_pair.left);
+                            if (lv.ifContain(cp1)) {
+                                continue;
+                            }
+                            if (!this.checkValidExtension(lv, cp1)) {
+                                continue;
+                            }
+                            if (!this.checkValidConstantPredicateExtension(lv, cp1)) {
+                                continue;
+                            }
 
-                        // LatticeVertex lv_child = new LatticeVertex(lv, cp1);
-                        // LatticeVertex lv_child = this.expandLatticeByDQN(lv, cp1, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
-                        LatticeVertex lv_child = this.expandLatticeByTopK(lv, cp1, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
-                        if (lv_child == null) {
-                            continue;
-                        }
+                            // LatticeVertex lv_child = new LatticeVertex(lv, cp1);
+                            // LatticeVertex lv_child = this.expandLatticeByDQN(lv, cp1, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                            LatticeVertex lv_child = this.expandLatticeByTopK(lv, cp1, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
+                            if (lv_child == null) {
+                                continue;
+                            }
 //                        boolean valid = this.checkValidSubSetX(lv_child, invalidX);
 //                        if (valid && (!invalidX.contains(lv_child.getPredicates().getBitset()))) {
                             nextLevel.addLatticeVertex(lv_child);
@@ -842,26 +843,26 @@ public class Lattice implements KryoSerializable {
 //                           newLatticeVertices.add(lv_child);
                             }
 //                        }
-                    }
+                        }
 
-                    // right
-                    if (p.checkIfCorrectOneRelationName(r_2)) {
-                        Predicate cp2 = predicateProviderIndex.getPredicate(p, tid_pair.right, tid_pair.right);
-                        if (lv.ifContain(cp2)) {
-                            continue;
-                        }
-                        if (!this.checkValidExtension(lv, cp2)) {
-                            continue;
-                        }
-                        if (!this.checkValidConstantPredicateExtension(lv, cp2)) {
-                            continue;
-                        }
-                        // LatticeVertex lv_child_ = new LatticeVertex(lv, cp2);
-                        // LatticeVertex lv_child_ = this.expandLatticeByDQN(lv, cp2, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
-                        LatticeVertex lv_child_ = this.expandLatticeByTopK(lv, cp2, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
-                        if (lv_child_ == null) {
-                            continue;
-                        }
+                        // right
+                        if (idx == 1 && p.checkIfCorrectOneRelationName(r_2)) {
+                            Predicate cp2 = predicateProviderIndex.getPredicate(p, tid_pair.right, tid_pair.right);
+                            if (lv.ifContain(cp2)) {
+                                continue;
+                            }
+                            if (!this.checkValidExtension(lv, cp2)) {
+                                continue;
+                            }
+                            if (!this.checkValidConstantPredicateExtension(lv, cp2)) {
+                                continue;
+                            }
+                            // LatticeVertex lv_child_ = new LatticeVertex(lv, cp2);
+                            // LatticeVertex lv_child_ = this.expandLatticeByDQN(lv, cp2, allPredicates, dqnmlp, predicatesHashIDs, ifDQN);
+                            LatticeVertex lv_child_ = this.expandLatticeByTopK(lv, cp2, KthScore, interestingness, predicatesHashIDs, suppRatios, topKOption);
+                            if (lv_child_ == null) {
+                                continue;
+                            }
 //                        boolean valid = this.checkValidSubSetX(lv_child_, invalidX);
 //                        if (valid && (!invalidX.contains(lv_child_.getPredicates().getBitset()))) {
                             nextLevel.addLatticeVertex(lv_child_);
@@ -871,6 +872,7 @@ public class Lattice implements KryoSerializable {
 //                           newLatticeVertices.add(lv_child_);
                             }
 //                        }
+                        }
                     }
 
                 }
