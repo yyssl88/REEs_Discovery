@@ -439,11 +439,19 @@ public class ParallelRuleDiscoverySampling {
         this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, predicateHashIDsFile);
     }
 
-    private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> predicates) {
+    private ArrayList<Predicate> applicationDrivenSelection(List<Predicate> all_predicates) {
         int whole_num_nonCons = 0;
         int whole_num_cons = 0;
-        for (Predicate p : predicates) {
-            if (p.isConstant()) {
+        List<Predicate> predicates = new ArrayList<>();
+
+        for (Predicate rhs : all_predicates) {
+            // when maxTupleNum <= 2, we do not consider t1 constant RHS, since it is redundant due to the symmetry!
+            if (this.maxTupleNum <= 2 && rhs.isConstant() && rhs.getIndex1() == 1) {
+                continue;
+            }
+            predicates.add(rhs);
+
+            if (rhs.isConstant()) {
                 whole_num_cons++;
             } else {
                 whole_num_nonCons++;
@@ -2369,15 +2377,20 @@ public class ParallelRuleDiscoverySampling {
         }
         for (Message message : messages) {
             PredicateSet kkps = message.getCurrentSet(); //new PredicateSet();
-            for (Predicate validRHS : message.getValidRHSs()) {
-                PredicateSet temp = new PredicateSet(kkps);
-                temp.add(validRHS);
-                if (this.validXRHSs.containsKey(temp.getBitset())) {
-                    this.validXRHSs.get(temp.getBitset()).add(validRHS);
-                } else {
-                    ArrayList<Predicate> arr = new ArrayList<>();
-                    arr.add(validRHS);
-                    this.validXRHSs.put(temp.getBitset(), arr);
+            for (int i = 0; i < message.getValidRHSs().size(); i++) {
+                Predicate validRHS = message.getValidRHSs().get(i);
+                double conf = message.getConfidences().get(i);
+                // Lemma 3.2 in paper TANE
+                if (conf == 1.0) {
+                    PredicateSet temp = new PredicateSet(kkps);
+                    temp.add(validRHS);
+                    if (this.validXRHSs.containsKey(temp.getBitset())) {
+                        this.validXRHSs.get(temp.getBitset()).add(validRHS);
+                    } else {
+                        ArrayList<Predicate> arr = new ArrayList<>();
+                        arr.add(validRHS);
+                        this.validXRHSs.put(temp.getBitset(), arr);
+                    }
                 }
                 // add valid RHSs -- new ADDED, should be re-test and re-think !!!
                 if (this.validXRHSs.containsKey(kkps.getBitset())) {

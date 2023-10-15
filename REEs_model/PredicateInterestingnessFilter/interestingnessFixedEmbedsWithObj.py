@@ -152,8 +152,8 @@ class InterestingnessEmbedsWithObj(object):
         ree_embed_left = self.reesRepr.encode(self.lhs_vec_ph_left, self.rhs_vec_ph_left)
         ree_embed_right = self.reesRepr.encode(self.lhs_vec_ph_right, self.rhs_vec_ph_right)
         if self.optionIFObj:
-            #weight_ub = tf.multiply(self.weight_ub_sub, self.weight_ub_sub)
-            weight_ub = self.weight_ub_sub
+            weight_ub = tf.multiply(self.weight_ub_sub, self.weight_ub_sub)
+            # weight_ub = self.weight_ub_sub
             self.subjective_left = weight_ub - tf.nn.relu(tf.matmul(ree_embed_left, self.weight_interest)) #tf.sigmoid(tf.matmul(ree_embed_left, self.weight_interest))
             self.interestingness_left = self.combine_obj_sub_interestingness(self.object_features_left, self.subjective_left)
             self.subjective_right = weight_ub - tf.nn.relu(tf.matmul(ree_embed_right, self.weight_interest)) #tf.sigmoid(tf.matmul(ree_embed_right, self.weight_interest))

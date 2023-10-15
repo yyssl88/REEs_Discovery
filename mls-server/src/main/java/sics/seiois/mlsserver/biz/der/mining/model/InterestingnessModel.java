@@ -137,6 +137,7 @@ public class InterestingnessModel implements Serializable {
         SimpleMatrix temp = operand1.elementMult(this.weightPredicates.extractVector(true, 0));
         temp = temp.plus(operand2.elementMult(this.weightPredicates.extractVector(true, 1)));
         temp = temp.plus(operator.elementMult(this.weightPredicates.extractVector(true, 2)));
+        temp = temp.divide(3.0); // reduce_mean
         return this.ReLU(temp);
     }
 
@@ -155,8 +156,9 @@ public class InterestingnessModel implements Serializable {
             for (int j = start, z = 0; j < end; j++, z++) {
                 embeddingListPredicate.set(z, embeddingsC.get(j));
             }
-            res.plus(this.onePredicateEmbed(embeddingListPredicate));
+            res = res.plus(this.onePredicateEmbed(embeddingListPredicate));
         }
+        res = res.divide(predicate_num * 1.0); // reduce_mean
         return res;
     }
 

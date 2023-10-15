@@ -175,29 +175,20 @@ public class HyperCube {
 
     public void getStatistic_new(boolean ifSame) {
         HashSet<TIntArrayList> commonList = new HashSet<>();
-        if (ifSame) {
-            // for (Integer value : this.lhsSupportMap0.values()) {
-            for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
-                int value = entry.getValue();
-                long count = value;
-                this.supportX += (long) (count * (count - 1));
-                this.supportXCP0 += (long)(count);
-                this.supportXCP1 += (long)(count);
-                commonList.add(entry.getKey());
+        // update support information of LHS
+        for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
+            if (!this.lhsSupportMap1.containsKey(entry.getKey())) {
+                continue;
             }
-        } else {
-            for (Map.Entry<TIntArrayList, Integer> entry : this.lhsSupportMap0.entrySet()) {
-                if (this.lhsSupportMap1.containsKey(entry.getKey())) {
-                    commonList.add(entry.getKey());
-                    long count = entry.getValue();
-                    long count1 = lhsSupportMap1.get(entry.getKey());
-                    this.supportX += (long) (count * count1);
-                    this.supportXCP0 += (long)(count);
-                    this.supportXCP1 += (long) (count1);
-                }
-            }
+            commonList.add(entry.getKey());
+            long count = entry.getValue();
+            long count1 = lhsSupportMap1.get(entry.getKey());
+            this.supportX += (long) (count * count1);
+            this.supportXCP0 += (long)(count);
+            this.supportXCP1 += (long) (count1);
         }
 
+        // update support and tuple coverage information of rules
         for (Map.Entry<TIntArrayList, HashMap<Integer, Cube>> entry : this.cubeInstances.entrySet()) {
             if (!commonList.contains(entry.getKey())) {
                 continue;
@@ -205,34 +196,22 @@ public class HyperCube {
             HashMap<Integer, Cube> tt = entry.getValue();
             for (Map.Entry<Integer, Cube> entry_ : tt.entrySet()) {
                 Cube cube = entry_.getValue();
-                // handle constant predicates as RHSs
                 for (int rhsID = 0; rhsID < this.suppRHSs.length; rhsID++) {
                     Predicate p = this.rhss.get(rhsID);
-                    // evaluate constant predicates and check whether these values equal to the constant
-                    if (p.isConstant() && p.getConstantInt().intValue() == entry_.getKey().intValue()) {
-                        if (p.getIndex1() == 0) {
-                            this.suppRHSs[rhsID] += (long) (cube.getTupleNumT0(rhsID));
-                        } else if (p.getIndex1() == 1) {
-                            this.suppRHSs[rhsID] += (long) (cube.getTupleNumT1(rhsID));
+                    // handle constant predicates as RHSs
+                    if (p.isConstant()) {
+                        // evaluate constant predicates and check whether these values equal to the constant
+                        if (p.getConstantInt().intValue() == entry_.getKey().intValue()) {
+                            if (p.getIndex1() == 0) {
+                                this.suppRHSs[rhsID] += (long) (cube.getTupleNumT0(rhsID));
+                            } else if (p.getIndex1() == 1) {
+                                this.suppRHSs[rhsID] += (long) (cube.getTupleNumT1(rhsID));
+                            }
                         }
                     }
-                }
-
-                if (!ifSame) {
-                    for (int rhsId = 0; rhsId < this.suppRHSs.length; rhsId++) {
-                        if (rhss.get(rhsId).isConstant()) {
-                            continue;
-                        } else {
-                            this.suppRHSs[rhsId] += (long) (cube.getTupleNumT0(rhsId) * cube.getTupleNumT1(rhsId));
-                        }
-                    }
-                } else {
-                    for (int rhsId = 0; rhsId < this.suppRHSs.length; rhsId++) {
-//                        this.suppRHSs[cube.getRhsID()] += (long) (cube.getTupleNumT0() * (cube.getTupleNumT0() - 1) / 2);
-                        if (rhss.get(rhsId).isConstant()) {
-                            continue;
-                        }
-                        this.suppRHSs[rhsId] += (long) (cube.getTupleNumT0(rhsId) * (cube.getTupleNumT0(rhsId) - 1));
+                    // handle non-constant predicates as RHSs
+                    else {
+                        this.suppRHSs[rhsID] += (long) (cube.getTupleNumT0(rhsID) * cube.getTupleNumT1(rhsID));
                     }
                 }
             }
