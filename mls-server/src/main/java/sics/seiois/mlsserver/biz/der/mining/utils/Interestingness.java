@@ -1,7 +1,5 @@
 package sics.seiois.mlsserver.biz.der.mining.utils;
 
-import com.google.inject.internal.cglib.core.$ObjectSwitchCallback;
-import shapeless.ops.nat;
 import sics.seiois.mlsserver.biz.der.metanome.denialconstraints.DenialConstraint;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.Predicate;
 import sics.seiois.mlsserver.biz.der.metanome.predicates.sets.PredicateSet;
@@ -9,9 +7,7 @@ import sics.seiois.mlsserver.biz.der.mining.model.InterestingnessModel;
 import sics.seiois.mlsserver.biz.der.mining.model.MLPFilterRegressor;
 
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.Path;
 import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;

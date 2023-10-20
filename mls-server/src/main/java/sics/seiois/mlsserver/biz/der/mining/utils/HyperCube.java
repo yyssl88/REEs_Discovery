@@ -190,6 +190,7 @@ public class HyperCube {
 
         // update support and tuple coverage information of rules
         for (Map.Entry<TIntArrayList, HashMap<Integer, Cube>> entry : this.cubeInstances.entrySet()) {
+            TIntArrayList xValue = entry.getKey();
             if (!commonList.contains(entry.getKey())) {
                 continue;
             }
@@ -203,9 +204,9 @@ public class HyperCube {
                         // evaluate constant predicates and check whether these values equal to the constant
                         if (p.getConstantInt().intValue() == entry_.getKey().intValue()) {
                             if (p.getIndex1() == 0) {
-                                this.suppRHSs[rhsID] += (long) (cube.getTupleNumT0(rhsID));
+                                this.suppRHSs[rhsID] += (long) (cube.getTupleNumT0(rhsID) * this.lhsSupportMap1.get(xValue));
                             } else if (p.getIndex1() == 1) {
-                                this.suppRHSs[rhsID] += (long) (cube.getTupleNumT1(rhsID));
+                                this.suppRHSs[rhsID] += (long) (cube.getTupleNumT1(rhsID) * this.lhsSupportMap0.get(xValue));
                             }
                         }
                     }

@@ -59,7 +59,7 @@ public class ParallelRuleDiscoverySampling {
 
     // max number of partition of Lattice
     public static int NUM_LATTICE = 200;
-    public static int MAX_CURRENT_PREDICTES = 7;
+    public static int MAX_CURRENT_PREDICTES = 5;
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
 

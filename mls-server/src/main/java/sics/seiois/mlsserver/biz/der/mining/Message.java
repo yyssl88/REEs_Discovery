@@ -116,7 +116,7 @@ public class Message implements Serializable {
 
     }
 
-    public void updateMessage(long support, double confidence, long maxTupleRelation) {
+    public void updateMessage_old(long support, double confidence, long maxTupleRelation) {
 //        logger.info(">>>>update show rhs: {}", this.allCurrentRHSsSupport);
         for (Map.Entry<Integer, Long> entry : this.allCurrentRHSsSupport.entrySet()) {
             Predicate rhs = PredicateSet.getPredicate(entry.getKey());
@@ -145,6 +145,35 @@ public class Message implements Serializable {
                     if (conf >= confidence) {
                         this.addValidRHS(rhs, supportXRHS, conf);
                     }
+                }
+            }
+        }
+    }
+
+    public void updateMessage(long support, double confidence, long maxTupleRelation) {
+//        logger.info(">>>>update show rhs: {}", this.allCurrentRHSsSupport);
+        for (Map.Entry<Integer, Long> entry : this.allCurrentRHSsSupport.entrySet()) {
+            Predicate rhs = PredicateSet.getPredicate(entry.getKey());
+            long supportXRHS = entry.getValue();
+//            if (rhs.isConstant()) {
+//                // t1 constant RHSs have been removed when obtaining applicationRHSs
+////                if (rhs.getIndex1() == 1) {
+////                    continue;
+////                }
+//                if (rhs.getIndex1() == 0) {
+//                    supportXRHS = supportXRHS * this.currentSuppCP1; // wrong. should sum(|t0|*|t1|) in each hypercube block
+//                } else {  // no use
+//                    supportXRHS = supportXRHS * this.currentSuppCP0; // wrong. should sum(|t0|*|t1|) in each hypercube block
+//                }
+//            }
+            if (supportXRHS < support) {
+//                logger.info(">>>> {} support : {} < {}", rhs, supportXRHS, support);
+                this.addInValidRHS(rhs);
+            } else {
+                double conf = supportXRHS * 1.0 / this.currentSupp;
+//                logger.info(">>>> {} conf : {} | {}", rhs, conf, confidence);
+                if (conf >= confidence) {
+                    this.addValidRHS(rhs, supportXRHS, conf);
                 }
             }
         }
