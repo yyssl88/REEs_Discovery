@@ -44,18 +44,21 @@ public class WorkUnits implements KryoSerializable {
         for (Predicate p : unit.getCurrrent()) {
             //p为常数谓词时，增加一个类来统计t0.A = _的总数
             if (p.isConstant()) {
-                String key = p.getOperand1().toString_(0);
+//                String key = p.getOperand1().toString_(0);
+                String key = p.getOperand1().toString_(p.getIndex1());
                 predicateMap.putIfAbsent(key, new ArrayList<>());
                 predicateMap.get(key).add(index);
+            } else {
+                predicateMap.putIfAbsent(p.toString(), new ArrayList<>());
+                predicateMap.get(p.toString()).add(index);
             }
-            predicateMap.putIfAbsent(p.toString(), new ArrayList<>());
-            predicateMap.get(p.toString()).add(index);
             this.currrent.add(p);
         }
         for (Predicate p : this.currrent) {
             if (p.isConstant()) {
                 //p为常数谓词时, t0.A = _都认为是相同进行聚合
-                String key = p.getOperand1().toString_(0);
+//                String key = p.getOperand1().toString_(0);
+                String key = p.getOperand1().toString_(p.getIndex1());
                 if (predicateMap.get(key).size() == units.size()) {
                     sameXConstSet.add(key);
                 } else if (sameXConstSet.contains(key)) {

@@ -675,8 +675,8 @@ public class MultiTuplesRuleMiningOpt {
         for (Predicate p : currrentPs) {
             if (p.isConstant()) {
                 // the map of "constantPs" already distinguishes t0 and t1
-                constantPs.putIfAbsent(p.getOperand1().toString(), new ArrayList<>());
-                constantPs.get(p.getOperand1().toString()).add(p);
+                constantPs.putIfAbsent(p.getOperand1().toString_(p.getIndex1()), new ArrayList<>());
+                constantPs.get(p.getOperand1().toString_(p.getIndex1())).add(p);
                 continue;
             }
             if (sameSet.containsPredicate(p)) {
@@ -807,7 +807,7 @@ public class MultiTuplesRuleMiningOpt {
 
 //        log.info(">>>> line count : {}", lines.size());
 //        finish:
-        int countLine = 0;
+//        int countLine = 0;
         for (int lid = 0; lid < lines.size(); lid++) {
             int line = lines.get(lid);
             //遍历常数谓词
@@ -828,14 +828,12 @@ public class MultiTuplesRuleMiningOpt {
                     for (Predicate curr : entry.getValue()) {
                         if (c != curr.getConstantInt().intValue()) {
                             // index is the script of work units
-                            for (Integer index : prdMap.get(curr.toString())) {
+                            for (Integer index : prdMap.get(curr.getOperand1().toString_(curr.getIndex1()))) {
 //                            log.info(">>>>error index: {}", index);
                                 ifConst[index.intValue()] = false;
                             }
                         }
                     }
-                } else {
-                    continue;
                 }
             }
 
@@ -934,7 +932,7 @@ public class MultiTuplesRuleMiningOpt {
                 xValues[index] = xValue;
                 ifConst[index] = true;
 
-                countLine++;
+//                countLine++;
             }
 
         }
