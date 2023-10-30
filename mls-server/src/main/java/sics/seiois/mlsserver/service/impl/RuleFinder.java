@@ -120,7 +120,7 @@ public class RuleFinder {
 //            sparkLauncher.setConf("spark.executor.cores","1");
 ////            sparkLauncher.setConf("spark.executor.instances",numOfProcessors);
 //            sparkLauncher.setConf("spark.network.timeout", "360");
-            sparkLauncher.setConf("spark.executor.heartbeatInterval", "200");
+            sparkLauncher.setConf("spark.executor.heartbeatInterval", "1000");
 //            sparkLauncher.setConf("spark.executor.instances", "15");
 
             String path = "hdfs:///data/models/resources.zip";

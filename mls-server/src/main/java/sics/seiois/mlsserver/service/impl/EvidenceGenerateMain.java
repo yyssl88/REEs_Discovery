@@ -683,6 +683,8 @@ public class EvidenceGenerateMain {
                 continue;
             }
             timeInfo.append("Rule : ").append(ree.toString()).append(", supp: ").append(ree.getSupport()).append(", conf:").append(ree.getConfidence()).append(", score:").append(ree.getInterestingnessScore()).append("\n");
+
+//            timeInfo.append("Rule : ").append(ree.toREEString()).append(", supp: ").append(ree.getSupport()).append(", conf:").append(ree.getConfidence()).append(", succ:").append(1.0 / ree.getPredicateSet().size()).append(", score:").append(ree.getInterestingnessScore()).append("\n");
         }
 
         String outTxtPath = PredicateConfig.MLS_TMP_HOME + taskId + "/rule_all/" +  outputResultFile; //"experiment_results";

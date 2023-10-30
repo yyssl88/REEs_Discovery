@@ -421,7 +421,9 @@ public class ParallelRuleDiscoverySampling {
 
         // topKOption is the indicator to switch different ablation study
         this.topKOption = topKOption;
+//        if (!this.topKOption.equals("noFiltering")) {
         this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
+//        }
     }
 
     public ParallelRuleDiscoverySampling(List<Predicate> predicates, int K, int maxTupleNum, long support,
@@ -1613,10 +1615,12 @@ public class ParallelRuleDiscoverySampling {
                             }
                             List<Predicate> rhs = validConsRuleMap.get(lhs);
 
-                            for (Predicate p : rhs) {
-                                if (unit.getRHSs().containsPredicate(p)) {
-                                    unit.getRHSs().remove(p);
-                                    logger.info(">>>> test cut: {}", p);
+                            if (rhs != null) {
+                                for (Predicate p : rhs) {
+                                    if (unit.getRHSs().containsPredicate(p)) {
+                                        unit.getRHSs().remove(p);
+                                        logger.info(">>>> test cut: {}", p);
+                                    }
                                 }
                             }
                         }
@@ -2197,6 +2201,7 @@ public class ParallelRuleDiscoverySampling {
 //            logger.info("Transform rule {} with support {} and confidence {}", ree, supp, conf);
             // compute the interestingness score of each REE rule
             double score = this.computeInterestingness(ree);
+//            double score = 2 * supp * 1.0 / allCount / allCount + conf;
             ree.setInterestingnessScore(score);
             rees.add(ree);
         }
