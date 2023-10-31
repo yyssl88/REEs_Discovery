@@ -636,18 +636,19 @@ public class MultiTuplesRuleMiningOpt {
         int[] pids = unitSet.getPids();
 
         /* if partition ID of t_0 is larger than partition ID of t_1, then discard it */
-        if (pids[pBegin.getIndex1()] > pids[pBegin.getIndex2()]) {
-            for(WorkUnit unit : units) {
-                ArrayList<Predicate> currentList = new ArrayList<>();
-                for (Predicate p : unit.getCurrrent()) {
-                    currentList.add(p);
-                }
-                Message message = new Message(currentList, 0, 0, 0);
-                // add into a list of messages
-                messages.add(message);
-            }
-            return messages;
-        }
+        // not right!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//        if (pids[pBegin.getIndex1()] > pids[pBegin.getIndex2()]) {
+//            for(WorkUnit unit : units) {
+//                ArrayList<Predicate> currentList = new ArrayList<>();
+//                for (Predicate p : unit.getCurrrent()) {
+//                    currentList.add(p);
+//                }
+//                Message message = new Message(currentList, 0, 0, 0);
+//                // add into a list of messages
+//                messages.add(message);
+//            }
+//            return messages;
+//        }
 
         PredicateSet sameSet = unitSet.getSameSet();
         ArrayList<Predicate> samePs = new ArrayList<>();
