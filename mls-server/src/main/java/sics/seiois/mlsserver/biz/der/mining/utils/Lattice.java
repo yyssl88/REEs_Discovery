@@ -306,7 +306,9 @@ public class Lattice implements KryoSerializable {
                 // removed invalid RHSs
                 if (invalidXRHSs.containsKey(temp.getBitset())) {
                     for (Predicate invalidRHS : invalidXRHSs.get(temp.getBitset())) {
-                        this.latticeLevel.get(key).getRHSs().remove(invalidRHS);
+                        if (this.latticeLevel.get(key).getRHSs().containsPredicate(invalidRHS)) {
+                            this.latticeLevel.get(key).getRHSs().remove(invalidRHS);
+                        }
                     }
                 }
                 // check 0 RHSs
