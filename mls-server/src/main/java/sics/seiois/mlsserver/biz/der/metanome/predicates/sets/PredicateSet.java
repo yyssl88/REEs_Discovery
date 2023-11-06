@@ -145,6 +145,9 @@ public class PredicateSet implements Iterable<Predicate>, Externalizable, KryoSe
     }
 
     public void remove(Predicate predicate) {
+        if (this.bitset.length() < indexProvider.getIndex(predicate).intValue()) {
+            return;
+        }
         this.bitset.clear(indexProvider.getIndex(predicate).intValue());
     }
 

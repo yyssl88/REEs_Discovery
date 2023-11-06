@@ -781,6 +781,21 @@ public class ParallelRuleDiscoverySampling {
         }
     }
 
+    private void removeNonEnumPredicates(List<Predicate> allPredicates) {
+        ArrayList<Predicate> removePredicates = new ArrayList<>();
+        for (Predicate p : allPredicates) {
+            // remove predicates with attribute such as id
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() > this.allCount * 0.8 ||
+                    p.getOperand2().getColumnLight().getUniqueConstantNumber() > this.allCount * 0.8) {
+                removePredicates.add(p);
+            }
+        }
+        logger.info("#### Filter non-enum Constant Predicates size for RHSs: {}", removePredicates.size());
+        for (Predicate p : removePredicates) {
+            allPredicates.remove(p);
+        }
+    }
+
     private void removeEnumPredicates(List<Predicate> allPredicates) {
         ArrayList<Predicate> removePredicates = new ArrayList<>();
         for (Predicate p : allPredicates) {
@@ -844,6 +859,8 @@ public class ParallelRuleDiscoverySampling {
 //        }
 
         this.prepareAllPredicatesMultiTuples();
+
+        this.removeNonEnumPredicates(this.allPredicates);
 
         List<Predicate> tmp_allPredicates = new ArrayList<>();
         for (Predicate p : this.allPredicates) {
@@ -1617,10 +1634,8 @@ public class ParallelRuleDiscoverySampling {
 
                             if (rhs != null) {
                                 for (Predicate p : rhs) {
-                                    if (unit.getRHSs().containsPredicate(p)) {
-                                        unit.getRHSs().remove(p);
-                                        logger.info(">>>> test cut: {}", p);
-                                    }
+                                    unit.getRHSs().remove(p);
+                                    logger.info(">>>> test cut: {}", p);
                                 }
                             }
                         }
@@ -3271,6 +3286,8 @@ public class ParallelRuleDiscoverySampling {
 
         this.prepareAllPredicatesMultiTuples();
 
+        this.removeNonEnumPredicates(this.allPredicates);
+
         List<Predicate> tmp_allPredicates = new ArrayList<>();
         for (Predicate p : this.allPredicates) {
             tmp_allPredicates.add(p);
@@ -3741,10 +3758,8 @@ public class ParallelRuleDiscoverySampling {
                             List<Predicate> rhs = validConsRuleMap.get(lhs);
 
                             for (Predicate p : rhs) {
-                                if (unit.getRHSs().containsPredicate(p)) {
-                                    unit.getRHSs().remove(p);
-                                    logger.info(">>>> test cut: {}", p);
-                                }
+                                unit.getRHSs().remove(p);
+                                logger.info(">>>> test cut: {}", p);
                             }
                         }
                     }
