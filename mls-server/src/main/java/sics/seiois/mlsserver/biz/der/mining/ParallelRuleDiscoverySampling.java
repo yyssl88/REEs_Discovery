@@ -121,6 +121,10 @@ public class ParallelRuleDiscoverySampling {
     private HashMap<IBitSet, HashMap<Predicate, Double>> confidence_last_round;
     private HashMap<IBitSet, HashMap<Predicate, Double>> confidence_current_round;
 
+    private int index_null_string;
+    private int index_null_double;
+    private int index_null_long;
+
     // set the DQNMLP
     void loadDQNModel(MLPFilterClassifier dqnmlp) throws IOException {
         if (dqnmlp == null) {
@@ -414,10 +418,18 @@ public class ParallelRuleDiscoverySampling {
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
                                          String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
-                                         FileSystem hdfs, boolean useConfHeuristic) throws IOException {
+                                         FileSystem hdfs, boolean useConfHeuristic,
+                                         int index_null_string, int index_null_double, int index_null_long) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
                 w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, useConfHeuristic);
+
+        this.index_null_string = index_null_string;
+        this.index_null_double = index_null_double;
+        this.index_null_long = index_null_long;
+        logger.info("index_null_string: {}", index_null_string);
+        logger.info("index_null_double: {}", index_null_double);
+        logger.info("index_null_long: {}", index_null_long);
 
         // topKOption is the indicator to switch different ablation study
         this.topKOption = topKOption;
@@ -1514,7 +1526,8 @@ public class ParallelRuleDiscoverySampling {
     public List<Message> run(ArrayList<WorkUnit> workUnits, String taskId,
                              JavaSparkContext sc, HashMap<String, Long> tupleNumberRelations, Broadcast<PredicateSetAssist> bcpsAssist) {
         BroadcastObj broadcastObj = new BroadcastObj(this.maxTupleNum, this.inputLight, this.support, this.confidence,
-                this.maxOneRelationNum, tupleNumberRelations);
+                this.maxOneRelationNum, tupleNumberRelations,
+                this.index_null_string, this.index_null_double, this.index_null_long);
         // broadcast data
         // ... left for future
 
@@ -1679,7 +1692,8 @@ public class ParallelRuleDiscoverySampling {
 //            logger.info(">>>Will do multiTuplesRuleMining! {} | {}", currentList, rhsList);
             MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(bobj.getMax_num_tuples(),
                     bobj.getInputLight(), bobj.getSupport(), bobj.getConfidence(), bobj.getMaxOneRelationNum(),
-                    unitSet.getAllCount(), bobj.getTupleNumberRelations());
+                    unitSet.getAllCount(), bobj.getTupleNumberRelations(),
+                    bobj.getIndex_null_string(), bobj.getIndex_null_double(), bobj.getIndex_null_long());
 
 //            TIntArrayList _list1 = pBegin.getOperand1().getColumnLight().getValueIntList(unitSet.getPids()[pBegin.getIndex1()]);
 //            TIntArrayList _list2 = pBegin.getOperand2().getColumnLight().getValueIntList(unitSet.getPids()[pBegin.getIndex2()]);
@@ -2104,12 +2118,12 @@ public class ParallelRuleDiscoverySampling {
         for (Predicate p : this.allPredicates) {
             String k = p.getOperand1().getColumn().toStringData();
             if (!colsMap.containsKey(k)) {
-                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand1().getColumn());
+                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand1().getColumn(), p.getOperand1().getColumn().getType());
                 colsMap.put(k, col);
             }
             k = p.getOperand2().getColumn().toStringData();
             if (!colsMap.containsKey(k)) {
-                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand2().getColumn());
+                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand2().getColumn(), p.getOperand2().getColumn().getType()   );
                 colsMap.put(k, col);
             }
         }
@@ -3652,7 +3666,8 @@ public class ParallelRuleDiscoverySampling {
 
 
                 MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(this.maxTupleNum,
-                        this.inputLight, this.support, this.confidence, maxOneRelationNum, allCount, tupleNumberRelations);
+                        this.inputLight, this.support, this.confidence, maxOneRelationNum, allCount, tupleNumberRelations,
+                        this.index_null_string, this.index_null_double, this.index_null_long);
 
                 ArrayList<Predicate> current = new ArrayList<>();
                 for (Predicate p : task.getCurrrent()) {
@@ -3799,7 +3814,8 @@ public class ParallelRuleDiscoverySampling {
 
 
                 MultiTuplesRuleMiningOpt multiTuplesRuleMining = new MultiTuplesRuleMiningOpt(this.maxTupleNum,
-                        this.inputLight, this.support, this.confidence, maxOneRelationNum, allCount, tupleNumberRelations);
+                        this.inputLight, this.support, this.confidence, maxOneRelationNum, allCount, tupleNumberRelations,
+                        this.index_null_string, this.index_null_double, this.index_null_long);
 
                 List<Message> messages = multiTuplesRuleMining.validationMap1(unitSet, pBegin);
 

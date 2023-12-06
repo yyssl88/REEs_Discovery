@@ -629,7 +629,8 @@ public class EvidenceGenerateMain {
         ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                 support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                 w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
-                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs, useConfHeuristic);
+                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs, useConfHeuristic,
+                reeFinderEvidSet.getIndex_null_string(), reeFinderEvidSet.getIndex_null_double(), reeFinderEvidSet.getIndex_null_long());
 
 //            int ifOnlineTrainRL = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOnlineTrainRL"));
 //            int ifOfflineTrainStage = Integer.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"),"ifOfflineTrainStage"));

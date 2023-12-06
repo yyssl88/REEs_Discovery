@@ -879,6 +879,18 @@ public class Input implements Serializable {
         log.debug("### raw data:{}", tableData.toString());
     }
 
+    public int getIndexNullString() {
+        return this.providerS.getIndex("");
+    }
+
+    public int getIndexNullDouble() {
+        return this.providerD.getIndex(Double.MIN_VALUE);
+    }
+
+    public int getIndexNullLong() {
+        return this.providerL.getIndex(Long.MIN_VALUE);
+    }
+
     /**
      * Collectively construct PLI indexes
      **/

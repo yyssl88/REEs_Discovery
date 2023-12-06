@@ -48,6 +48,9 @@ public class REEFinderEvidSet {
     private Input input;
     private Set<String> usefulColumns = new HashSet<>();
 
+    private int index_null_string;
+    private int index_null_double;
+    private int index_null_long;
 
     private String algOption;
 
@@ -119,6 +122,10 @@ public class REEFinderEvidSet {
 
             input.setTaskId(taskId);
 
+            this.index_null_string = input.getIndexNullString();
+            this.index_null_double = input.getIndexNullDouble();
+            this.index_null_long = input.getIndexNullLong();
+
 
             predicates = new PredicateBuilder(input, noCrossColumn, minimumSharedValue, maximumSharedValue, taskId, eidName, usefulColumns);
             log.info("####level:{}, predicate:{}", predicates.getPredicates(), PredicateSet.indexProvider);
@@ -134,5 +141,17 @@ public class REEFinderEvidSet {
             log.error("####[生成input]异常", e);
             throw new RuntimeException(e);
         }
+    }
+
+    public int getIndex_null_double() {
+        return this.index_null_double;
+    }
+
+    public int getIndex_null_long() {
+        return this.index_null_long;
+    }
+
+    public int getIndex_null_string() {
+        return this.index_null_string;
     }
 }

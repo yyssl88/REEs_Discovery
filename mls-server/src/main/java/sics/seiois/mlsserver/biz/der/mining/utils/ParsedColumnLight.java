@@ -22,6 +22,8 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
 
     private long uniqueConstantNumber;
 
+    private Class<T> type;
+
     //transient private List<Integer> valuesInt = new ArrayList<>();
     // transient private PLILight pliLight;
 
@@ -54,13 +56,18 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
         return this.uniqueConstantNumber;
     }
 
-    public ParsedColumnLight(ParsedColumn<?> col) {
+    public Class<T> getType() {
+        return this.type;
+    }
+
+    public ParsedColumnLight(ParsedColumn<?> col, Class<T> type) {
         ArrayList<Integer> usedPIDs = new ArrayList<>();
         for (int pid = 0; pid < col.getPliSections().size(); pid++) {
             usedPIDs.add(pid);
         }
         this.tableName = col.getTableName();
         this.name = col.getName();
+        this.type = type;
         // valuesInt = new ArrayList<>();
         HashSet<Integer> uniques = new HashSet<>();
 

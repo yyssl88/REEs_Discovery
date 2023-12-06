@@ -33,7 +33,7 @@ public class ColumnOperand<T extends Comparable<T>> implements Serializable {
 
     public void initialParsedColumnLight() {
         if (this.columnLight == null) {
-            this.columnLight = new ParsedColumnLight<>(column);
+            this.columnLight = new ParsedColumnLight<>(column, column.getType());
         }
     }
 
