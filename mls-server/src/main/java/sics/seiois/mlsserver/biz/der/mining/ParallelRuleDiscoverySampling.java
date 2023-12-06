@@ -2131,7 +2131,7 @@ public class ParallelRuleDiscoverySampling {
             }
             k = p.getOperand2().getColumn().toStringData();
             if (!colsMap.containsKey(k)) {
-                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand2().getColumn(), p.getOperand2().getColumn().getType()   );
+                ParsedColumnLight<?> col = new ParsedColumnLight<>(p.getOperand2().getColumn(), p.getOperand2().getColumn().getType());
                 colsMap.put(k, col);
             }
         }
