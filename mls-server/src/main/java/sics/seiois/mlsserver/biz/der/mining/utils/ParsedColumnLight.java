@@ -21,6 +21,7 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
     private String name;
 
     private long uniqueConstantNumber;
+    private long uniqueConstantNumberWithoutOnlyOneExistence;
 
     private Class<T> type;
 
@@ -56,6 +57,10 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
         return this.uniqueConstantNumber;
     }
 
+    public long getUniqueConstantNumberWithoutOnlyOneExistence() {
+        return this.uniqueConstantNumberWithoutOnlyOneExistence;
+    }
+
     public Class<T> getType() {
         return this.type;
     }
@@ -69,7 +74,8 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
         this.name = col.getName();
         this.type = type;
         // valuesInt = new ArrayList<>();
-        HashSet<Integer> uniques = new HashSet<>();
+//        HashSet<Integer> uniques = new HashSet<>();
+        HashMap<Integer, Long> uniques = new HashMap<>();
 
 //        for (int i = 0; i < col.getValueIntSize(); i++) {
 //            valuesInt.add(col.getValueInt(i));
@@ -92,7 +98,9 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
             TIntArrayList partitionValueInt = new TIntArrayList(end-begin);
             for (int t = begin; t < end; t++) {
                 partitionValueInt.add(col.getValueInt(t));
-                uniques.add(col.getValueInt(t));
+//                uniques.add(col.getValueInt(t));
+                uniques.putIfAbsent(col.getValueInt(t), 0L);
+                uniques.put(col.getValueInt(t), uniques.get(col.getValueInt(t))+1);
             }
             partitionValueInt.trimToSize();
             this.valuesIntPartitions.put(pid, partitionValueInt);
@@ -101,6 +109,13 @@ public class ParsedColumnLight<T extends Comparable<T>> implements Serializable 
         // clear value int data for col
         col.cleanValueIntBeforeBroadCast();
         this.uniqueConstantNumber = uniques.size();
+        this.uniqueConstantNumberWithoutOnlyOneExistence = 0L;
+        for (Map.Entry<Integer, Long> entry : uniques.entrySet()) {
+            if (entry.getValue() == 1) {
+                continue;
+            }
+            this.uniqueConstantNumberWithoutOnlyOneExistence++;
+        }
 
     }
 

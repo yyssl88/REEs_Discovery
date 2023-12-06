@@ -781,8 +781,12 @@ public class ParallelRuleDiscoverySampling {
             if (!p.isConstant()) {
                 continue;
             }
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number) {
+//            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number ||
+//                p.getOperand2().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number) {
+//                removePredicates.add(p);
+//            }
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumberWithoutOnlyOneExistence() <= this.filter_enum_number ||
+                    p.getOperand2().getColumnLight().getUniqueConstantNumberWithoutOnlyOneExistence() <= this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
@@ -802,7 +806,7 @@ public class ParallelRuleDiscoverySampling {
                 removePredicates.add(p);
             }
         }
-        logger.info("#### Filter non-enum Constant Predicates size for RHSs: {}", removePredicates.size());
+        logger.info("#### Filter non-enum Constant Predicates size: {}", removePredicates.size());
         for (Predicate p : removePredicates) {
             allPredicates.remove(p);
         }
@@ -814,8 +818,12 @@ public class ParallelRuleDiscoverySampling {
             if (!p.isConstant()) {
                 continue;
             }
-            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number ||
-                p.getOperand2().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number) {
+//            if (p.getOperand1().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number ||
+//                p.getOperand2().getColumnLight().getUniqueConstantNumber() <= this.filter_enum_number) {
+//                removePredicates.add(p);
+//            }
+            if (p.getOperand1().getColumnLight().getUniqueConstantNumberWithoutOnlyOneExistence() <= this.filter_enum_number ||
+                    p.getOperand2().getColumnLight().getUniqueConstantNumberWithoutOnlyOneExistence() <= this.filter_enum_number) {
                 removePredicates.add(p);
             }
         }
