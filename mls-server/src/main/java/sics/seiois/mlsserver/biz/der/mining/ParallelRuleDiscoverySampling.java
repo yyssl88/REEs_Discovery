@@ -880,22 +880,16 @@ public class ParallelRuleDiscoverySampling {
 
         this.prepareAllPredicatesMultiTuples();
 
+        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
+
         this.removeNonEnumPredicates(this.allPredicates);
 
-        List<Predicate> tmp_allPredicates = new ArrayList<>();
-        for (Predicate p : this.allPredicates) {
-            tmp_allPredicates.add(p);
-        }
-        removeEnumPredicates(tmp_allPredicates);
-        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
+        this.removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         // remove predicates that are irrelevant to RHSs
         if (this.maxTupleNum <= 2) {
             filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
         }
-
-        // remove constant predicates of enumeration type
-        removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         logger.info("Parallel Mining with Predicates size {} and Predicates {}", this.allPredicates.size(), this.allPredicates);
         int cpsize = 0;
@@ -3308,23 +3302,16 @@ public class ParallelRuleDiscoverySampling {
 
         this.prepareAllPredicatesMultiTuples();
 
+        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
+
         this.removeNonEnumPredicates(this.allPredicates);
 
-        List<Predicate> tmp_allPredicates = new ArrayList<>();
-        for (Predicate p : this.allPredicates) {
-            tmp_allPredicates.add(p);
-        }
-        // remove constant predicates of enumeration type for RHS
-        // removeEnumPredicates(tmp_allPredicates);
-        ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(tmp_allPredicates);
+        this.removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         // remove predicates that are irrelevant to RHSs
         if (this.maxTupleNum <= 2) {
             filterIrrelevantPredicates(applicationRHSs, this.allPredicates);
         }
-
-        // remove constant predicates of enumeration type for X
-        removeEnumPredicates(this.allPredicates, this.allExistPredicates);
 
         int cpsize = 0;
         int psize = 0;
