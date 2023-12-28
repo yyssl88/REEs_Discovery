@@ -880,6 +880,18 @@ public class ParallelRuleDiscoverySampling {
 
         this.prepareAllPredicatesMultiTuples();
 
+        ArrayList<Predicate> rm_preds = new ArrayList<>();
+        if (this.table_name.contains("AMiner")) {
+            for (Predicate p : this.allPredicates) {
+                if (p.isConstant() && p.getOperand1().getColumnLight().getName().contains("paper_affiliations") && p.getConstant().contains(".")) { // remove "t.paper_affiliations = ."
+                    rm_preds.add(p);
+                }
+            }
+        }
+        for (Predicate p : rm_preds) {
+            this.allPredicates.remove(p);
+        }
+
         ArrayList<Predicate> applicationRHSs = this.applicationDrivenSelection(this.allPredicates);
 
         this.removeNonEnumPredicates(this.allPredicates);
