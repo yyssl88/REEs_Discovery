@@ -665,6 +665,13 @@ public class ParallelRuleDiscoverySampling {
 //            if (!p.isConstant() && p.getOperand1().getColumnLight().getName().contains("scheduled_service")) {
 //                continue;
 //            }
+//            if (p.isConstant() && p.getOperand1().getColumnLight().getName().contains("type") && p.getConstant().contains("small_airport")) {
+//                applicationRHSs.add(p);
+//                break;
+//            }
+//            if (p.getOperand1().getColumnLight().getName().contains("Facility_Type")) {
+//                applicationRHSs.add(p);
+//            }
             applicationRHSs.add(p);
         }
 

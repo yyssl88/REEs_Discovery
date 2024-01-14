@@ -318,7 +318,7 @@ public class RuleFindRequestMock {
 //        mockWanyiMutiTable(ruleRequest);
         switch (dataset) {
             case "aminer" :
-                String directory = "hdfs:///tmp/aminer/us_csv/";
+                String directory = "hdfs:///tmp/diversified_data/aminer/";
                 ruleRequest.setDimensionID(directory);
                 mockPaperAuthor(ruleRequest);
                 break;
@@ -471,6 +471,21 @@ public class RuleFindRequestMock {
                 break;
             case "ncvoter":
                 mockNcvoter(ruleRequest);
+                break;
+            case "ncvoter_0.2":
+                mockNcvoter(ruleRequest, 0.2);
+                break;
+            case "ncvoter_0.4":
+                mockNcvoter(ruleRequest, 0.4);
+                break;
+            case "ncvoter_0.6":
+                mockNcvoter(ruleRequest, 0.6);
+                break;
+            case "ncvoter_0.8":
+                mockNcvoter(ruleRequest, 0.8);
+                break;
+            case "ncvoter_1.0":
+                mockNcvoter(ruleRequest, 1.0);
                 break;
             case "ncvoterSampling":
                 mockSampleData(ruleRequest, dataOption);
@@ -832,10 +847,11 @@ public class RuleFindRequestMock {
     private static TableInfo getTax1000w() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("tax1000w");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/tax_1000w.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/tax_1000w_range.csv");
 
         String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
-        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+//        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
         return table1;
@@ -856,7 +872,7 @@ public class RuleFindRequestMock {
     private static TableInfo getTax200w() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("tax200w");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/tax_200w.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/tax_200w_range.csv");
 
         String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
 //        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
@@ -879,10 +895,11 @@ public class RuleFindRequestMock {
     private static TableInfo getTax400w() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("tax400w");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/tax_400w.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/tax_400w_range.csv");
 
         String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
-        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+//        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
         return table1;
@@ -902,10 +919,11 @@ public class RuleFindRequestMock {
     private static TableInfo getTax600w() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("tax600w");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/tax_600w.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/tax_600w_range.csv");
 
         String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
-        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+//        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
         return table1;
@@ -925,10 +943,11 @@ public class RuleFindRequestMock {
     private static TableInfo getTax800w() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("tax800w");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/tax_800w.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/tax_800w_range.csv");
 
         String header = "fname,lname,gender,areacode,phone,city,state,zip,maritalstatus,haschild,salary,rate,singleexemp,marriedexemp,childexemp";
-        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+//        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,double,int,int,int";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
         return table1;
@@ -1599,7 +1618,7 @@ public class RuleFindRequestMock {
         //table1.setTableName("ncvoter_1001r_19c");
         //table1.setTableDataPath("hdfs:///tmp/datasets_discovery/ncvoter_1001r_19c.csv");
         table1.setTableName("ncvoter");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/ncvoter.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/ncvoter.csv");
 
         // String header = "voter_id,voter_reg_num,name_prefix,first_name,middle_name,last_name,name_suffix,age,gender,race,ethnic,street_address,city,state,zip_code,full_phone_num,birth_place,register_date,download_month";
         // String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -1609,6 +1628,29 @@ public class RuleFindRequestMock {
 
 //        String header = "middle_name,last_name,age,street_address";
 //        String type = "varchar(20),varchar(20),varchar(20),varchar(20)";
+
+        constructTable(table1, header, type);
+        return table1;
+    }
+
+    private static void mockNcvoter(RuleDiscoverExecuteRequest ruleRequest, double sample_ratio) {
+        TableInfos tables = new TableInfos();
+        TableInfo chess = getNcvoter(sample_ratio);
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(chess);
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/" + ruleRequest.getTaskId() + "/result.ree");
+    }
+
+    private static TableInfo getNcvoter(double sample_ratio) {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("ncvoter");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/ncvoter_" + sample_ratio + ".csv");
+
+        String header = "id,date,election_phase,way_of_voting,voting_intention,party,city_id,city,county_id,county_desc,city_id2,city_id3";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
 
         constructTable(table1, header, type);
         return table1;
@@ -1680,7 +1722,7 @@ public class RuleFindRequestMock {
     private static TableInfo getInspection() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("inspection");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/inspection.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/inspection.csv");
 
         String header = "Inspection_ID,DBA_Name,AKA_Name,License,Facility_Type,Risk,Address,City,State,Zip,Inspection_Date,Inspection_Type,Results,Violations,Latitude,Longitude,Location";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -1852,7 +1894,7 @@ public class RuleFindRequestMock {
     private static TableInfo getHospital() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("hospital");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/hospital.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/hospital.csv");
 
         String header = "Provider_Number,Hospital_Name,City,State,ZIP_Code,County_Name,Phone_Number,Hospital_Type,Hospital_Owner,Emergency_Service,Condition,Measure_Code,Measure_Name,Sample,StateAvg";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -2001,7 +2043,7 @@ public class RuleFindRequestMock {
     private static TableInfo getAirports() {
         TableInfo table1 = new TableInfo();
         table1.setTableName("airports");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/airports.csv");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/airports.csv");
 
         String header = "id,ident,type,name,latitude_deg,longitude_deg,elevation_ft,continent,iso_country,iso_region,municipality,scheduled_service,gps_code,iata_code,local_code,home_link,wikipedia_link,keywords";
         String type = "varchar(20),varchar(20),varchar(20),varchar(20),double,double,int,varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
@@ -2175,8 +2217,8 @@ public class RuleFindRequestMock {
 
     private static TableInfo getAdults() {
         TableInfo table1 = new TableInfo();
-        table1.setTableName("adult");
-        table1.setTableDataPath("hdfs:///tmp/datasets_discovery/adult_data.csv");
+        table1.setTableName("adults");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/adults.csv");
 
         String header = "age,workclass,fnlwgt,education,education_num,marital_status,occupation,relationship,race,sex,capital_gain,capital_loss,hours_per_week,native_country,class";
 //        String type = "int,varchar(20),int,varchar(20),int,varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),int,int,int,varchar(20),varchar(20)";

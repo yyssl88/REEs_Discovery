@@ -117,6 +117,18 @@ public class DenialConstraint {
                 " -> " + rhs.toString() + "]";
     }
 
+    public String toStringOutput() {
+        String str = "";
+        for (Predicate p : this.predicateSet) {
+            str += p.toString();
+            str += " ^";
+        }
+        str = str.substring(0, str.length()-1);
+        str += "->";
+        str += this.rhs.toString();
+        return str.trim();
+    }
+
     public String toString(String tableName) {
         return "[REE: " + tableName + "(t0) ^ " + tableName + "(t1) ^ " + predicateSet.toString().replaceAll(tableName +
                 ".", "").replaceAll("==", "=").replaceAll("<>", "!=") +
