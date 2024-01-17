@@ -394,6 +394,9 @@ public class RuleFindRequestMock {
             case "adults":
                 mockAdults(ruleRequest);
                 break;
+            case "adults_categorical":
+                mockAdultsCategorical(ruleRequest);
+                break;
             case "adults_ml":
                 mockAdults_ml(ruleRequest);
                 break;
@@ -2227,6 +2230,31 @@ public class RuleFindRequestMock {
 
         return table1;
     }
+
+    private static void mockAdultsCategorical(RuleDiscoverExecuteRequest ruleRequest) {
+        TableInfos tables = new TableInfos();
+        TableInfo nameBasics = getAdultsCategorical();
+        List<TableInfo> listable = new ArrayList<>();
+        listable.add(nameBasics);
+        tables.setTableInfoList(listable);
+
+        ruleRequest.setTableInfos(tables);
+        ruleRequest.setResultStorePath("/tmp/rulefind/" + ruleRequest.getTaskId() + "/result.ree");
+
+    }
+
+    private static TableInfo getAdultsCategorical() {
+        TableInfo table1 = new TableInfo();
+        table1.setTableName("adults_categorical");
+        table1.setTableDataPath("hdfs:///tmp/diversified_data/adults_categorical.csv");
+
+        String header = "age,workclass,education,education_num,marital_status,occupation,relationship,race,sex,capital_gain,capital_loss,hours_per_week,native_country,class";
+        String type = "varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20),varchar(20)";
+        constructTable(table1, header, type);
+
+        return table1;
+    }
+
 
     private static void mockAdults_ml(RuleDiscoverExecuteRequest ruleRequest) {
         TableInfos tables = new TableInfos();

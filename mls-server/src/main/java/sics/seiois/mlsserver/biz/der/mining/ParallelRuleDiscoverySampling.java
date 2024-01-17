@@ -669,7 +669,8 @@ public class ParallelRuleDiscoverySampling {
 //                applicationRHSs.add(p);
 //                break;
 //            }
-//            if (p.getOperand1().getColumnLight().getName().contains("Facility_Type")) {
+            // for case study
+//            if (p.getOperand1().getColumnLight().getName().equals("Emergency_Service")) {
 //                applicationRHSs.add(p);
 //            }
             applicationRHSs.add(p);
