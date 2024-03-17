@@ -59,7 +59,7 @@ public class ParallelRuleDiscoverySampling {
 
     // max number of partition of Lattice
     public static int NUM_LATTICE = 200;
-    public static int MAX_CURRENT_PREDICTES = 5;
+    public int MAX_CURRENT_PREDICTES = 5; // the maximum |X| size in rule
 
     public static int MAX_WORK_UNITS_PARTITION = 20;
 
@@ -419,7 +419,8 @@ public class ParallelRuleDiscoverySampling {
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
                                          String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
                                          FileSystem hdfs, boolean useConfHeuristic,
-                                         int index_null_string, int index_null_double, int index_null_long) throws IOException {
+                                         int index_null_string, int index_null_double, int index_null_long,
+                                         int MAX_X_LENGTH) throws IOException {
         this(predicates, K, maxTupleNum, support,
                 confidence, maxOneRelationNum, input, allCount,
                 w_1, w_2, w_3, w_4, w_5, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number, useConfHeuristic);
@@ -430,6 +431,9 @@ public class ParallelRuleDiscoverySampling {
         logger.info("index_null_string: {}", index_null_string);
         logger.info("index_null_double: {}", index_null_double);
         logger.info("index_null_long: {}", index_null_long);
+
+        this.MAX_CURRENT_PREDICTES = MAX_X_LENGTH;
+        logger.info("MAX_X_LENGTH: {}", MAX_CURRENT_PREDICTES);
 
         // topKOption is the indicator to switch different ablation study
         this.topKOption = topKOption;

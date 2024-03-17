@@ -253,6 +253,9 @@ public class RuleFinder {
 
         String useConfHeuristic = argsMap.get("useConfHeuristic");
 
+        // for varying |X|
+        String MAX_X_LENGTH = argsMap.get("MAX_X_LENGTH");
+
         numOfProcessors = numOfProcessors_;
 
         StringBuffer otherParam = new StringBuffer();
@@ -304,6 +307,8 @@ public class RuleFinder {
 
         // use confidence to heuristically prune. If confidence of a node decrease, then do not expand this node
         otherParam.append("useConfHeuristic=" + useConfHeuristic + ';');
+
+        otherParam.append("MAX_X_LENGTH=" + MAX_X_LENGTH + ";"); // for varying |X|
 
 //        RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset);
         RuleDiscoverExecuteRequest req = RuleFindRequestMock.mockRuleFindReqest(dataset, taskID);
