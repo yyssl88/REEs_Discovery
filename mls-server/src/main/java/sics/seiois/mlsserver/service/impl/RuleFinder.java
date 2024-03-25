@@ -250,6 +250,7 @@ public class RuleFinder {
         String interestingnessModelFile = argsMap.get("interestingnessModelFile");
         String tokenToIDFile = argsMap.get("tokenToIDFile");
         String filterRegressionFile = argsMap.get("filterRegressionFile");
+        String allPredicatesFile = argsMap.get("allPredicatesFile");
 
         String useConfHeuristic = argsMap.get("useConfHeuristic");
 
@@ -304,6 +305,7 @@ public class RuleFinder {
         otherParam.append("tokenToIDFile=" + tokenToIDFile + ';');
         otherParam.append("filterRegressionFile=" + filterRegressionFile + ';');
         otherParam.append("interestingnessModelFile=" + interestingnessModelFile + ';');
+        otherParam.append("allPredicatesFile=" + allPredicatesFile + ';');
 
         // use confidence to heuristically prune. If confidence of a node decrease, then do not expand this node
         otherParam.append("useConfHeuristic=" + useConfHeuristic + ';');

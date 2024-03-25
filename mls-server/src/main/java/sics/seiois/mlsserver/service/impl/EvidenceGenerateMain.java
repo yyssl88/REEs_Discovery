@@ -623,6 +623,7 @@ public class EvidenceGenerateMain {
         String tokenToIDFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "tokenToIDFile");
         String interestingnessModelFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "interestingnessModelFile");
         String filterRegressionFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "filterRegressionFile");
+        String allPredicatesFile = RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "allPredicatesFile");
 
         boolean useConfHeuristic = Boolean.valueOf(RuntimeParamUtil.getRuntimeParam(spark.conf().get("runtimeParam"), "useConfHeuristic"));
 
@@ -631,7 +632,7 @@ public class EvidenceGenerateMain {
         ParallelRuleDiscoverySampling parallelRuleDiscovery = new ParallelRuleDiscoverySampling(allPredicates, K, maxTupleNum,
                 support, (float)confidence, maxOneRelationNum, reeFinderEvidSet.getInput(), allCount,
                 w_supp, w_conf, w_diver, w_succ, w_sub, ifPrune, if_conf_filter, conf_filter_thr, if_cluster_workunits, filter_enum_number,
-                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs, useConfHeuristic,
+                topKOption, tokenToIDFile, interestingnessModelFile, filterRegressionFile, allPredicatesFile, hdfs, useConfHeuristic,
                 reeFinderEvidSet.getIndex_null_string(), reeFinderEvidSet.getIndex_null_double(), reeFinderEvidSet.getIndex_null_long(),
                 MAX_X_LENGTH);
 

@@ -156,15 +156,16 @@ public class ParallelRuleDiscoverySampling {
 //        } else if (data_name.contains("Property")) {
 //            data_name = "property";
 //        }
-        loadAllPredicates(data_name);
+        loadAllPredicates(data_name, "allPredicatesFilePath!!!");
     }
 
     // load all Predicates from file
 //    private HashMap<Integer, Predicate> index2predicates;
-    public void loadAllPredicates(String data_name) throws IOException {
+    public void loadAllPredicates(String data_name, String allPredicatesFile) throws IOException {
 //        this.index2predicates = new HashMap<>();
         FileSystem hdfs = FileSystem.get(new Configuration());
-        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "interestingness/" + data_name + "_topk/" + data_name + "_predicates.txt";
+//        String inputTxtPath = PredicateConfig.MLS_TMP_HOME + "interestingness/" + data_name + "_topk/" + data_name + "_predicates.txt";
+        String inputTxtPath = allPredicatesFile;
         FSDataInputStream inputTxt = hdfs.open(new Path(inputTxtPath));
         BufferedInputStream bis = new BufferedInputStream(inputTxt);
         InputStreamReader sReader = new InputStreamReader(bis, "UTF-8");
@@ -220,7 +221,7 @@ public class ParallelRuleDiscoverySampling {
     }
 
     // load Rule Interestingness model NN version
-    void loadInterestingnessModel(String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+    void loadInterestingnessModel(String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile, String allPredicatesFile,
                                   FileSystem hdfs) {
         try {
             if (this.predicateDQNHashIDs == null) {
@@ -238,7 +239,7 @@ public class ParallelRuleDiscoverySampling {
                 if (data_name == null) {
                     data_name = this.allPredicates.get(0).getTableName();
                 }
-                this.loadAllPredicates(data_name);
+                this.loadAllPredicates(data_name, allPredicatesFile);
             }
         } catch (IOException e) {
 
@@ -417,7 +418,7 @@ public class ParallelRuleDiscoverySampling {
                                          float confidence, long maxOneRelationNum, Input input, long allCount,
                                          float w_1, float w_2, float w_3, float w_4, float w_5, int ifPrune,
                                          int if_conf_filter, float conf_filter_thr, int if_cluster_workunits, int filter_enum_number,
-                                         String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile,
+                                         String topKOption, String tokenToIDFile, String interestingnessModelFile, String filterRegressionFile, String allPredicatesFile,
                                          FileSystem hdfs, boolean useConfHeuristic,
                                          int index_null_string, int index_null_double, int index_null_long,
                                          int MAX_X_LENGTH) throws IOException {
@@ -438,7 +439,7 @@ public class ParallelRuleDiscoverySampling {
         // topKOption is the indicator to switch different ablation study
         this.topKOption = topKOption;
 //        if (!this.topKOption.equals("noFiltering")) {
-        this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, hdfs);
+        this.loadInterestingnessModel(tokenToIDFile, interestingnessModelFile, filterRegressionFile, allPredicatesFile, hdfs);
 //        }
     }
 
